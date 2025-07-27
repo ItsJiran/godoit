@@ -1,3 +1,4 @@
+@section('title', 'Confirm Password - Godoit')
 <x-guest-layout>
     <a href="{{ url('/login') }}" class="home-link">← Back to Login</a>
 

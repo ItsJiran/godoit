@@ -1,4 +1,4 @@
-@section('title', 'Registrasi Akun - GoDoIt')
+@section('title', 'Registrasi Akun - Godoit')
 <x-guest-layout>
     <a href="{{ url('/') }}" class="home-link">← Home page</a>
 

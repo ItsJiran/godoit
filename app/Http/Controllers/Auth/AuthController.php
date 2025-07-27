@@ -189,7 +189,7 @@ class AuthController extends Controller
                 // Log::info("Perubahan Device ID terdeteksi untuk pengguna ID {$user->id}: Dari {$user->registration_device_cookie_id} ke {$currentDeviceCookieId}.");
             }
 
-            return redirect()->intended('dashboard')->with('success', 'Anda berhasil login!');
+            return redirect('/')->with('success', 'Anda berhasil login!');
         }
 
         throw ValidationException::withMessages([

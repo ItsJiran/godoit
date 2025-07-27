@@ -1,3 +1,4 @@
+@section('title', 'Verifikasi Email - Godoit')
 <x-guest-layout>
     <a href="{{ url('/login') }}" class="home-link">← Back to Login</a>
     
