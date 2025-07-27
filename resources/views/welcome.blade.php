@@ -16,6 +16,7 @@
         </div>
     </section>
 
+    @auth
     <!-- SECTION AFFILIATE -->
     <section class="hero orange-bg">
         <div class="container">
@@ -109,6 +110,7 @@
             </div>
         </div>
     </section>
+    @endauth
 
     <!-- SECTION -->
     <section class="hero">

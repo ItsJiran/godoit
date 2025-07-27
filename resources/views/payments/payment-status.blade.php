@@ -63,6 +63,7 @@
                         </div>
                         @endif
                         @endforeach
+                        <div class="pmt-border"></div>
                         <div class="pmt-detail-row">
                             <span class="pmt-detail-label">Total:</span>
                             <span class="pmt-detail-value">Rp {{ number_format($total, 0, ',', '.') }}</span>
