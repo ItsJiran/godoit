@@ -9,7 +9,6 @@ use App\Http\Controllers\Checkout\CheckoutController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [DashboardController::class, 'home'])->name('welcome.index');
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
 //Route::get('/admin/schedule', [DashboardController::class, 'schedule'])->name('dashboard.schedule');
 //Route::get('/admin/transaction', [DashboardController::class, 'index'])->name('dashboard.index');
 //Route::get('/admin/marketing-kit', [DashboardController::class, 'index'])->name('dashboard.index');
@@ -28,9 +27,13 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/demo/checkout', [CheckoutController::class, 'showCheckoutForm'])->name('checkout.form');
 
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    // DASHBOARD
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
+
+    // PROFILE DATA
+    Route::get('/profile', [ProfileController::class, 'myprofile'])->name('profile.myprofile');
+    Route::get('/edit-profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/edit-profile', [ProfileController::class, 'update'])->name('profile.update');
 });
 
 require __DIR__.'/auth.php';
