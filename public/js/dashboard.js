@@ -86,3 +86,40 @@ document.addEventListener('DOMContentLoaded', () => {
         observer.observe(card);
     });
 });
+
+function copyLink() {
+    const linkInput = document.querySelector('.link-input');
+    const notification = document.getElementById('notification');
+    linkInput.select();
+    linkInput.setSelectionRange(0, 99999);
+    try {
+        document.execCommand('copy');
+        notification.classList.add('show');
+        setTimeout(() => {
+            notification.classList.remove('show');
+        }, 3000);
+    } catch (err) {
+        console.error('Gagal menyalin link: ', err);
+    }
+    window.getSelection().removeAllRanges();
+}
+
+// Alternative modern copy method
+async function copyLinkModern() {
+    const linkInput = document.querySelector('.link-input');
+    const notification = document.getElementById('notification');
+    try {
+        await navigator.clipboard.writeText(linkInput.value);
+        notification.classList.add('show');
+        setTimeout(() => {
+            notification.classList.remove('show');
+        }, 3000);
+    } catch (err) {
+        copyLink();
+    }
+}
+
+// Use modern method if available
+if (navigator.clipboard && navigator.clipboard.writeText) {
+    document.querySelector('.copy-button').setAttribute('onclick', 'copyLinkModern()');
+}
