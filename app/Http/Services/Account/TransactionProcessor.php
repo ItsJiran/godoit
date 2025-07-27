@@ -1,6 +1,6 @@
 <?php
 
-// app/Services/TransactionProcessorService.php
+// app/Services/TransactionProcessor.php
 
 namespace App\Http\Services\Account;
 
@@ -9,7 +9,7 @@ use App\Enums\Account\AccountTransactionStatus;
 use App\Enums\Account\AccountTransactionType;
 use Illuminate\Support\Facades\DB; // Make sure to import DB facade
 
-class TransactionProcessorService
+class TransactionProcessor
 {
     /**
      * Completes a pending account transaction and updates the account balance.

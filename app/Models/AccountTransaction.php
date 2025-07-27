@@ -10,6 +10,8 @@ use App\Enums\Account\AccountTransactionType; // Import the enum you specified f
 use App\Enums\Account\AccountTransactionPurpose; // Import the purpose enum
 use App\Enums\Account\AccountTransactionStatus; // Import the status enum
 
+use Illuminate\Support\Facades\DB; // For database transactions
+
 class AccountTransaction extends Model
 {
     use HasFactory, SoftDeletes;
@@ -171,7 +173,7 @@ class AccountTransaction extends Model
      * @param \Illuminate\Database\Eloquent\Model $sourceable The sourceable model (e.g., an Order, a User model for registration bonus).
      * @return \Illuminate\Support\Collection A collection of AccountTransaction instances.
      */
-    public static function getTransactionsBySourceable(Model $sourceable): Collection
+    public static function getTransactionsBySourceable(Model $sourceable)
     {
         return self::where('sourceable_id', $sourceable->getKey())
                    ->where('sourceable_type', $sourceable->getMorphClass())

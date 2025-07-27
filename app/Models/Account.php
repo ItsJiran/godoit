@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes; // Import the SoftDeletes trait
+use Illuminate\Support\Facades\DB; // For database transactions
 
 class Account extends Model
 {

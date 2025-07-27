@@ -113,12 +113,15 @@ class BuyController
             $payment->save();
 
             // generate comission transaction
-            ReferralService::generateReferralCommission(
-                $request->user()->referrer, // refferer
-                $request->user(), // current user refffered
-                $hargaSetelahDiskon,
-                $payment
-            );
+            if($request->user()->referrer != null){
+                ReferralService::generateReferralCommission(
+                    $request->user()->referrer, // refferer
+                    $request->user(), // current user refffered
+                    $hargaSetelahDiskon,
+                    $payment
+                );
+            }
+
 
             return redirect()->route('payments.show', ['id' => $payment->id])->with('success','Berhasil Checkout, silahkan lakukan pembayaran!');
         } catch (\Exception $e) {
@@ -237,6 +240,45 @@ class BuyController
         // Simpan perubahan status ke database
         $payment->save();
         // Berikan response ke Midtrans
+        return response()->json(['status' => 'success']);
+    }
+
+    // update paymnet to 
+
+    public function manualUpdate(Request $request, $payment_id, $status)
+    {
+        $payment = Payment::where('id', $payment_id)->first();
+
+        // Cek status transaksi
+        if ($status == 'settlement') {
+            $payment->status = '1'; // Pembayaran berhasil
+            ReferralService::processSourceableTransactions(
+                $payment,
+                AccountTransactionStatus::COMPLETED
+            );
+        } elseif ($status == 'pending') {
+            $payment->status = '0'; // Pembayaran pending
+        } elseif ($status == 'deny') {
+            $payment->status = '3'; // Pembayaran ditolak
+            ReferralService::processSourceableTransactions(
+                $payment,
+                AccountTransactionStatus::FAILED
+            );
+        } elseif ($status == 'expire') {
+            $payment->status = '4'; // Pembayaran kadaluwarsa
+            ReferralService::processSourceableTransactions(
+                $payment,
+                AccountTransactionStatus::FAILED
+            );
+        } elseif ($status == 'cancel') {
+            $payment->status = '5'; // Pembayaran dibatalkan
+            ReferralService::processSourceableTransactions(
+                $payment,
+                AccountTransactionStatus::FAILED
+            );
+        }
+        $payment->save();
+
         return response()->json(['status' => 'success']);
     }
 

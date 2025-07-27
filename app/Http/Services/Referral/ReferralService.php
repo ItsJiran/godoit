@@ -4,7 +4,7 @@
 
 namespace App\Http\Services\Referral;
 
-use App\Services\Account\TransactionProcessor;
+use App\Http\Services\Account\TransactionProcessor;
 
 use App\Models\Account;
 use App\Models\User;

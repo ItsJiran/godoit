@@ -30,7 +30,7 @@ return new class extends Migration
             // Kolom untuk deteksi perangkat dan IP saat registrasi
             $table->string('registration_ip_address')->nullable();
             $table->text('registration_user_agent')->nullable();
-            $table->string('registration_device_cookie_id')->nullable()->unique();
+            $table->string('registration_device_cookie_id')->nullable();
             
             $table->rememberToken();
             $table->softDeletes(); // Menambahkan kolom deleted_at untuk soft delete

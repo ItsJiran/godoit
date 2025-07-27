@@ -24,6 +24,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/payment/notification', [BuyController::class, 'notificationHandler'])->name('payment.notification');
     Route::post('/transaction/pay', [BuyController::class, 'updatePaymentStatus'])->name('transaction.pay');
     Route::get('/payment/status/{id}', [BuyController::class, 'paymentStatus'])->name('payment.status');
+    Route::get('/update/payment/status/{id}/{status}', [BuyController::class, 'manualUpdate']);
 
     Route::get('/demo/checkout', [CheckoutController::class, 'showCheckoutForm'])->name('checkout.form');
 
