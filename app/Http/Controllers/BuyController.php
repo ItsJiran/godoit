@@ -84,8 +84,8 @@ class BuyController
 
         // Simpan transaksi di database
         $payment = Payment::create([
-            'user_id' => $request->user()->id,
-            'id_customer' => $request->user()->id,
+            'user_id' => ($request->user() ? $request->user()->id : null),
+            'id_customer' => ($request->user() ? $request->user()->id : null),
             'id_order' => $order_id,
             'transaction_details' => json_encode($transactionDetails),
             'customer_details' => json_encode($customerDetails),
@@ -112,30 +112,28 @@ class BuyController
             $payment->snap_token = $snapToken;
             $payment->save();
 
+            $referrer = null;
+
+            if($request->reg != null)
+                $referrer = User::where('username',$request->reg)->first();
+
+            if($referrer == null && $request->user())
+                $referrer = $request->user()->referrer;
+
+            if($referrer == null)
+                $referrer = User::where('role','admin')->first();
+
             // generate comission transaction
-            if($request->user()->referrer != null){
-                $referral_transaction = ReferralService::generateReferralCommission(
-                    $request->user()->referrer, // refferer
-                    $request->user(), // current user refffered
-                    $hargaSetelahDiskon,
-                    $payment
-                );
+            $referral_transaction = ReferralService::generateReferralCommission(
+                $referrer, // refferer
+                $request->user(), // current user refffered
+                $hargaSetelahDiskon,
+                $payment
+            );
 
-                // pengerugnan harga dengn jumlah dari potongan dari referral
-                $hargaSetelahDiskon -= $referral_transaction->amount;                
-            }
-
-            // kalau referrer null maka masukkan komisi 5% ke admin
-            if($request->user()->referrer == null){
-                $referral_transaction = ReferralService::generateReferralCommission(
-                    User::where('role','admin')->first(), // refferer
-                    $request->user(), // current user refffered
-                    $hargaSetelahDiskon,
-                    $payment
-                );
-
-                $hargaSetelahDiskon -= $referral_transaction->amount;
-            }
+            // pengerugnan harga dengn jumlah dari potongan dari referral
+            $hargaSetelahDiskon -= $referral_transaction->amount;                
+   
 
             TransactionService::generateTransactionCheckout(
                 $request->user(),

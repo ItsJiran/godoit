@@ -76,8 +76,8 @@
                 </div>
 
                 {{-- Hidden Inputs for Payment --}}
-                <input type="hidden" name="user_id" value="{{ auth()->id() }}">
                 <input type="hidden" name="amount" value="{{ $harga }}"> {{-- Use the $harga variable for amount --}}
+                <input type="hidden" name="reg" value="{{ request('reg') }}"> {{-- Use the $harga variable for amount --}}
 
                 <button type="submit" class="proceed-button">
                     Proceed to Payment

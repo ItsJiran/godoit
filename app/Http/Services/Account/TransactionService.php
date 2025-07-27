@@ -31,7 +31,7 @@ class TransactionService
      * @throws \Exception If the referrer's account cannot be found/created or transaction processing fails.
      */
     public static function generateTransactionCheckout(
-        User $customer, // Include for audit/description purposes
+        ?User $customer = null, // Include for audit/description purposes
         float $baseAmount,
         ?Model $sourceable = null,
         ?string $description = null
@@ -59,7 +59,7 @@ class TransactionService
                 direction: AccountTransactionType::IN, // Commission is a credit to the referrer
                 purpose: AccountTransactionPurpose::PRODUCT_BROUGHT, // Or COMMISSION_CREDIT
                 status: AccountTransactionStatus::PENDING, // Start as pending
-                description: $description ?? "Product brought from " . $customer->name . " (ID: " . $customer->id . ")",
+                description: $description ?? "Product brought from " . ($customer ? $customer->name : 'Guest') . " (ID: " . ($customer ? $customer->id : 'No-ID') . ")",
                 sourceable: $sourceable
             );
 

@@ -37,7 +37,7 @@ class ReferralService
      */
     public static function generateReferralCommission(
         User $referrerUser,
-        User $referredUser, // Include for audit/description purposes
+        ?User $referredUser = null, // Include for audit/description purposes
         float $baseAmount,
         ?Model $sourceable = null,
         ?string $description = null
@@ -72,7 +72,7 @@ class ReferralService
                 direction: AccountTransactionType::IN, // Commission is a credit to the referrer
                 purpose: AccountTransactionPurpose::COMMISSION_CREDIT, // Or COMMISSION_CREDIT
                 status: AccountTransactionStatus::PENDING, // Start as pending
-                description: $description ?? "Referral commission from " . $referredUser->name . " (ID: " . $referredUser->id . ")",
+                description: $description ?? "Referral commission from " . ($referredUser ? $referredUser->name : 'Guest') . " (ID: " . ($referredUser ? $referredUser->id : 'No-ID') . ")",
                 sourceable: $sourceable
             );
 

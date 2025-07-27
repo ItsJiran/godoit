@@ -30,7 +30,7 @@ class DashboardController extends Controller
         $userNoId = 999;
 
         if (!is_null($user)) {
-            $userReferral = "http://godoitnew.test/register?reg=" . $user->username;
+            $userReferral = "http://godoitnew.test/?reg=" . $user->username;
             $userCount = User::where('parent_referral_code', $user->referral_code)->count();
 
             // Corrected: Pass $user->id and the enum instance to getAccountUserByType

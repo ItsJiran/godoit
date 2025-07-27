@@ -7,7 +7,8 @@
                 <div class="hero-text">
                     <h1>Program Napak Tilas Kebangsaan</h1>
                     <p class="hero-date">Rabu, 30 Juli 2025 (15:00PM)</p>
-                    <a href="#join-now" class="btn btn-join">Ikuti Sekarang</a>
+                    {{-- <a href="http://godoitnew.test/demo/checkout?reg={{ // get query reg here if exist }}" class="btn btn-join">Ikuti Sekarang</a> --}}
+                    <a href="http://godoitnew.test/demo/checkout?reg={{ request('reg') }}" class="btn btn-join">Ikuti Sekarang</a>
                 </div>
                 <div class="hero-image">
                     <img src="https://t4.ftcdn.net/jpg/15/02/52/47/360_F_1502524799_DgQUHNZHSrbxB1OQr5nbMLuxQQAcjqf6.jpg" alt="Program Leader" />
