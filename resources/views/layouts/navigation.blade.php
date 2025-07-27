@@ -29,7 +29,7 @@
                         </button>
                         <div class="dropdown-content">
                             <a href="/dashboard">Dashboard</a>
-                            <a href="{{ route('profile.edit') }}">My Profile</a>
+                            <a href="{{ route('profile.myprofile') }}">My Profile</a>
                             <a href="{{ route('profile.edit') }}">Settings</a>
                             <form action="{{ route('logout') }}" method="POST" style="margin: 0;">
                                 @csrf

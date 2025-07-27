@@ -7,7 +7,7 @@
                 <div class="hero-text">
                     <h1>Program Napak Tilas Kebangsaan</h1>
                     <p class="hero-date">Rabu, 30 Juli 2025 (15:00PM)</p>
-                    <a href="http://godoitnew.test/demo/checkout" class="btn btn-join">Ikuti Sekarang</a>
+                    <a href="#join-now" class="btn btn-join">Ikuti Sekarang</a>
                 </div>
                 <div class="hero-image">
                     <img src="https://t4.ftcdn.net/jpg/15/02/52/47/360_F_1502524799_DgQUHNZHSrbxB1OQr5nbMLuxQQAcjqf6.jpg" alt="Program Leader" />
@@ -123,7 +123,7 @@
                     <div class="mysection-content">
                         <h2 class="mysection-title">Program Napak Tilas Kebangsaan</h2>
                         <p class="mysection-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam suscipit rhoncus gravida. Proin consectetur congue erat, quis finibus lectus posuere at. Donec sed augue eu est malesuada condimentum.</p>
-                        <a href="#" class="btn">Ikuti Sekarang</a>
+                        <a href="#join-now" class="btn">Ikuti Sekarang</a>
                     </div>
                 </div>
 
@@ -135,7 +135,7 @@
                         <h2 class="mysection-title">Program Napak Tilas Kebangsaan</h2>
                         <div class="mysection-price">Rp 50.000</div>
                         <p class="mysection-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam suscipit rhoncus gravida. Proin consectetur congue erat, quis finibus lectus posuere at. Donec sed augue eu est malesuada condimentum.</p>
-                        <a href="#" class="btn">Ikuti Sekarang</a>
+                        <a href="#join-now#" class="btn">Ikuti Sekarang</a>
                     </div>
                 </div>
             </div>
@@ -143,7 +143,7 @@
     </section>
 
     <!-- SECTION FORMULIR -->
-    <section class="hero orange-bg">
+    <section class="hero orange-bg" id="join-now">
         <div class="container min-container">
             <div class="hero-title">
                 <h2>Formulir Pendaftaran</h2>
