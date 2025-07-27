@@ -87,7 +87,7 @@ class AuthController extends Controller
             $parentReferralCode = $this->determineParentReferralCode($request);
 
             // Lakukan pemeriksaan awal anti-penipuan
-            $this->performPreRegistrationFraudChecks($ipAddress, $deviceCookieId, $parentReferralCode);
+            // $this->performPreRegistrationFraudChecks($ipAddress, $deviceCookieId, $parentReferralCode);
 
             // Buat kode referral unik untuk pengguna baru
             $referralCode = $this->generateUniqueReferralCode();
@@ -246,6 +246,8 @@ class AuthController extends Controller
         if (!$parentReferralCode) {
             $parentReferralCode = $request->parent_referral_code;
         }
+
+        if (is_null($parentReferralCode)) return null;
 
         // Pastikan kode referral valid ada di database
         if ($parentReferralCode && !User::where('referral_code', $parentReferralCode)->exists()) {

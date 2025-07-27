@@ -1,12 +1,11 @@
 {{-- checkout.blade.php --}}
 
-@extends('layouts.admin')
 @section('title', 'Checkout')
 @section('header')
     <link rel="stylesheet" href="{{ asset('css/demo/checkout.css') }}">
 @endsection
 
-@section('content')
+<x-app-layout>
 
 <section class="checkout-hero-section">
     <div class="checkout-container">
@@ -88,4 +87,4 @@
     </div>
 </section>
 
-@endsection
+</x-app-layout>
