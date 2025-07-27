@@ -2,13 +2,18 @@
     <div class="container">
         <nav>
             <div class="logo">
-                <a href="/" title="GoDoit">
-                    <img src="{{asset('img/godoit.png')}}" alt="GoDoit"/>
+                <a href="/" title="Godoit">
+                    <img src="{{asset('img/godoit.png')}}" alt="Godoit"/>
                 </a>
             </div>
             
             <ul class="nav-links">
-                <li><a href="#home">Home</a></li>
+                @auth
+                <li><a href="/dashboard">Dashboard</a></li>
+                @endauth
+                @guest
+                <li><a href="/">Home</a></li>
+                @endguest
                 <li><a href="#products">Products</a></li>
                 <li><a href="#about">About Us</a></li>
                 <li><a href="#contact">Contact Us</a></li>
@@ -21,7 +26,6 @@
                         <a href="{{ route('register') }}" class="btn btn-register">Register</a>
                     </div>
                 @endguest
-
                 @auth
                     <div class="profile-dropdown">
                         <button class="profile-btn" onclick="toggleDropdown()">
