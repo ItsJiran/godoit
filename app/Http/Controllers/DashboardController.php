@@ -22,14 +22,14 @@ class DashboardController extends Controller
         $user = $request->user();
 
         // Initialize variables with default values to ensure they are always defined
-        $userReferral = "http://godoit.test/register?reg=";
+        $userReferral = "http://godoitnew.test/register?reg=";
         $userCount = 0;
         $userComissionTotal = 0;
         $userComissionTotalPending = 0;
         $userNoId = 999;
 
         if (!is_null($user)) {
-            $userReferral = "http://godoit.test/register?reg=" . $user->username;
+            $userReferral = "http://godoitnew.test/register?reg=" . $user->username;
             $userCount = User::where('parent_referral_code', $user->referral_code)->count();
 
             // Corrected: Pass $user->id and the enum instance to getAccountUserByType
