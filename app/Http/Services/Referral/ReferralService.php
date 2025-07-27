@@ -81,43 +81,6 @@ class ReferralService
     }
 
     /**
-     * Processes all pending AccountTransactions related to a given sourceable model.
-     * This method updates their status (e.g., to COMPLETED or CANCELLED)
-     * and triggers the corresponding balance updates via TransactionProcessor.
-     *
-     * @param Model $sourceable The originating model (e.g., Order, Payment) whose status dictates transaction processing.
-     * @param AccountTransactionStatus $targetStatus The desired final status for related pending transactions (e.g., COMPLETED, CANCELLED, FAILED).
-     * @return bool True if all relevant transactions were processed successfully.
-     * @throws \Exception If any transaction processing fails, the entire batch will roll back.
-     */
-    public static function processSourceableTransactions(
-        Model $sourceable,
-        AccountTransactionStatus $targetStatus
-    ): bool {
-        // Wrap the entire batch operation in a single database transaction.
-        // If any individual transaction processing fails, the entire batch will be rolled back.
-        return DB::transaction(function () use ($sourceable, $targetStatus) {
-            // Fetch all pending transactions associated with this sourceable
-            $pendingTransactions = AccountTransaction::getTransactionsBySourceable($sourceable)
-                                                    ->where('status', AccountTransactionStatus::PENDING->value);
-
-            foreach ($pendingTransactions as $transaction) {
-                if ($targetStatus === AccountTransactionStatus::COMPLETED) {
-                    // If the sourceable (e.g., payment) is valid/completed, process the commission as completed
-                    TransactionProcessor::completedTransaction($transaction);
-                } elseif ($targetStatus === AccountTransactionStatus::CANCELLED || $targetStatus === AccountTransactionStatus::FAILED) {
-                    // If the sourceable (e.g., payment) failed or was cancelled, cancel the pending commission
-                    TransactionProcessor::failedTransaction($transaction);
-                } else {
-                    // Handle other target statuses if necessary, or throw an exception
-                    throw new \InvalidArgumentException("Unsupported target status '{$targetStatus->value}' for processing pending transactions.");
-                }
-            }
-            return true; // All relevant transactions processed successfully
-        });
-    }
-
-    /**
      * Calculates the referral commission amount based on a base amount.
      * This logic should be externalized (e.g., config, database settings).
      *
@@ -128,7 +91,7 @@ class ReferralService
     {
         // TODO: Implement your actual commission logic here.
         // This could come from a settings table, a config file, or be tiered.
-        $referralRate = config('referral.commission_rate', 0.10); // Example: 10% commission
+        $referralRate = config('referral.commission_rate', 0.05); // Example: 10% commission
         return round($baseAmount * $referralRate, 2); // Round to 2 decimal places
     }
 

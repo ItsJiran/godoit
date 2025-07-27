@@ -16,6 +16,7 @@ use Midtrans\Snap;
 use Midtrans\Config;
 
 use App\Http\Services\Referral\ReferralService;
+use App\Http\Services\Account\TransactionService;
 use App\Enums\Account\AccountTransactionStatus;
 
 // CREATED BY RIO ILHAM HADI (WWW.BLANTERMEDIA.COM)
@@ -106,7 +107,6 @@ class BuyController
         ];
 
         // pembuatan komisi pending 
-
         try {
             $snapToken = Snap::getSnapToken($params);
             $payment->snap_token = $snapToken;
@@ -114,14 +114,34 @@ class BuyController
 
             // generate comission transaction
             if($request->user()->referrer != null){
-                ReferralService::generateReferralCommission(
+                $referral_transaction = ReferralService::generateReferralCommission(
                     $request->user()->referrer, // refferer
                     $request->user(), // current user refffered
                     $hargaSetelahDiskon,
                     $payment
                 );
+
+                // pengerugnan harga dengn jumlah dari potongan dari referral
+                $hargaSetelahDiskon -= $referral_transaction->amount;                
             }
 
+            // kalau referrer null maka masukkan komisi 5% ke admin
+            if($request->user()->referrer == null){
+                $referral_transaction = ReferralService::generateReferralCommission(
+                    User::where('role','admin')->first(), // refferer
+                    $request->user(), // current user refffered
+                    $hargaSetelahDiskon,
+                    $payment
+                );
+
+                $hargaSetelahDiskon -= $referral_transaction->amount;
+            }
+
+            TransactionService::generateTransactionCheckout(
+                $request->user(),
+                $hargaSetelahDiskon,
+                $payment
+            );
 
             return redirect()->route('payments.show', ['id' => $payment->id])->with('success','Berhasil Checkout, silahkan lakukan pembayaran!');
         } catch (\Exception $e) {
@@ -167,7 +187,7 @@ class BuyController
         if ($request->status == 'success') {              
             $payment->status = '1'; 
 
-            ReferralService::processSourceableTransactions(
+            TransactionService::processSourceableTransactions(
                 $payment,
                 AccountTransactionStatus::COMPLETED
             );
@@ -177,7 +197,7 @@ class BuyController
         } elseif ($request->status == 'error') {
             $payment->status = '2'; // Error
 
-            ReferralService::processSourceableTransactions(
+            TransactionService::processSourceableTransactions(
                 $payment,
                 AccountTransactionStatus::FAILED
             );
@@ -216,7 +236,7 @@ class BuyController
         // Cek status transaksi
         if ($transactionStatus == 'settlement') {
             $payment->status = '1'; // Pembayaran berhasil
-            ReferralService::processSourceableTransactions(
+            TransactionService::processSourceableTransactions(
                 $payment,
                 AccountTransactionStatus::COMPLETED
             );
@@ -224,19 +244,19 @@ class BuyController
             $payment->status = '0'; // Pembayaran pending
         } elseif ($transactionStatus == 'deny') {
             $payment->status = '3'; // Pembayaran ditolak
-            ReferralService::processSourceableTransactions(
+            TransactionService::processSourceableTransactions(
                 $payment,
                 AccountTransactionStatus::FAILED
             );
         } elseif ($transactionStatus == 'expire') {
             $payment->status = '4'; // Pembayaran kadaluwarsa
-            ReferralService::processSourceableTransactions(
+            TransactionService::processSourceableTransactions(
                 $payment,
                 AccountTransactionStatus::FAILED
             );
         } elseif ($transactionStatus == 'cancel') {
             $payment->status = '5'; // Pembayaran dibatalkan
-            ReferralService::processSourceableTransactions(
+            TransactionService::processSourceableTransactions(
                 $payment,
                 AccountTransactionStatus::FAILED
             );
@@ -256,7 +276,7 @@ class BuyController
         // Cek status transaksi
         if ($status == 'settlement') {
             $payment->status = '1'; // Pembayaran berhasil
-            ReferralService::processSourceableTransactions(
+            TransactionService::processSourceableTransactions(
                 $payment,
                 AccountTransactionStatus::COMPLETED
             );
@@ -264,19 +284,19 @@ class BuyController
             $payment->status = '0'; // Pembayaran pending
         } elseif ($status == 'deny') {
             $payment->status = '3'; // Pembayaran ditolak
-            ReferralService::processSourceableTransactions(
+            TransactionService::processSourceableTransactions(
                 $payment,
                 AccountTransactionStatus::FAILED
             );
         } elseif ($status == 'expire') {
             $payment->status = '4'; // Pembayaran kadaluwarsa
-            ReferralService::processSourceableTransactions(
+            TransactionService::processSourceableTransactions(
                 $payment,
                 AccountTransactionStatus::FAILED
             );
         } elseif ($status == 'cancel') {
             $payment->status = '5'; // Pembayaran dibatalkan
-            ReferralService::processSourceableTransactions(
+            TransactionService::processSourceableTransactions(
                 $payment,
                 AccountTransactionStatus::FAILED
             );

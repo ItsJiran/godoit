@@ -9,6 +9,7 @@ enum AccountTransactionPurpose : string
     use BasicEnumTrait;
     
     // referreal
+    case PRODUCT_BROUGHT = 'product_brought';
     case COMMISSION_CREDIT = 'commission_credit';
     case COMMISSION_REVERSAL = 'commission_reversal';
 
@@ -26,6 +27,7 @@ enum AccountTransactionPurpose : string
         return match ($this) {
             self::COMMISSION_CREDIT => 'Commission Credit',
             self::COMMISSION_REVERSAL => 'Commission Reversal',
+            self::PRODUCT_BROUGHT => 'Product Brought',
             self::WITHDRAWAL => 'Withdrawal',
             self::DEPOSIT => 'Deposit',
         };
