@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->nullable();
             // $table->foreignId('id_customer');
             // $table->foreignId('id_order');
-            $table->string('id_customer', 120)->nullable();
+            $table->string('id_customer',120)->nullable();
             $table->string('id_order', 120);
             $table->string('snap_token', 255)->nullable();
             $table->json('transaction_details');

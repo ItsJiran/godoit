@@ -34,18 +34,6 @@ function toggleAuth() {
     }
 }
 
-function logout() {
-    isLoggedIn = false;
-    toggleAuth();
-    alert('Logged out successfully!');
-}
-
-// Simulate login (you can call this function when user logs in)
-function simulateLogin() {
-    isLoggedIn = true;
-    toggleAuth();
-}
-
 function copyLink() {
     const linkInput = document.querySelector('.link-input');
     const notification = document.getElementById('notification');

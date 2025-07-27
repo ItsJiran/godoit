@@ -33,8 +33,6 @@ class BuyController
             'alamat' => 'required',
             'umur' => 'required',
         ]);
-
-        // dd('test');
         
         // Calculate Price
         $finalPrices = 10000;
@@ -62,7 +60,7 @@ class BuyController
         $diskon = 0;
         $hargaSetelahDiskon = 10000;
 
-        // Ambil quantity dari array $quantityData (sesuai index produk)
+        // Ambil quantity dari array $quantityData
         $quantity = 1;
 
         // Tambahkan detail produk ke array
@@ -111,7 +109,6 @@ class BuyController
             $snapToken = Snap::getSnapToken($params);
             $payment->snap_token = $snapToken;
             $payment->save();
-
             $referrer = null;
 
             if($request->reg != null)
@@ -134,7 +131,6 @@ class BuyController
             // pengerugnan harga dengn jumlah dari potongan dari referral
             $hargaSetelahDiskon -= $referral_transaction->amount;                
    
-
             TransactionService::generateTransactionCheckout(
                 $request->user(),
                 $hargaSetelahDiskon,
@@ -184,17 +180,14 @@ class BuyController
         // Update status berdasarkan status yang diterima dari JavaScript
         if ($request->status == 'success') {              
             $payment->status = '1'; 
-
             TransactionService::processSourceableTransactions(
                 $payment,
                 AccountTransactionStatus::COMPLETED
             );
-
         } elseif ($request->status == 'pending') {
             $payment->status = '0'; // Pending
         } elseif ($request->status == 'error') {
             $payment->status = '2'; // Error
-
             TransactionService::processSourceableTransactions(
                 $payment,
                 AccountTransactionStatus::FAILED
@@ -265,12 +258,10 @@ class BuyController
         return response()->json(['status' => 'success']);
     }
 
-    // update paymnet to 
-
+    // MANUAL UPDATE PAYMENT 
     public function manualUpdate(Request $request, $payment_id, $status)
     {
         $payment = Payment::where('id', $payment_id)->first();
-
         // Cek status transaksi
         if ($status == 'settlement') {
             $payment->status = '1'; // Pembayaran berhasil
@@ -300,7 +291,6 @@ class BuyController
             );
         }
         $payment->save();
-
         return response()->json(['status' => 'success']);
     }
 

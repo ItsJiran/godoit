@@ -129,7 +129,7 @@ class AuthController extends Controller
             // Commit transaksi jika semua operasi berhasil
             DB::commit();
 
-            return redirect()->route('dashboard')->with('success', 'Registrasi berhasil! Silakan verifikasi email Anda.');
+            return redirect('/')->with('success', 'Registrasi berhasil!');
 
         } catch (ValidationException $e) {
             // Jika ada ValidationException (dari performPreRegistrationFraudChecks), rollback dan re-throw
