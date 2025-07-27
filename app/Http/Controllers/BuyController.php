@@ -132,14 +132,18 @@ class BuyController
     // ALUR 2: HALAMAN PEMBAYARAN
     public function showPayment($id)
     {
-        // Data Payment
         $payment = Payment::findOrFail($id);
-        
-        //if($payment->user_id == Auth::user()->id){
-            return view('payments.payment', compact('payment'));
-        //} else {
-        //    return back();
-        //}
+        // Pastikan casting manual jika ternyata masih string
+        if (is_string($payment->product_details)) {
+            $payment->product_details = json_decode($payment->product_details, true);
+        }
+        if (is_string($payment->transaction_details)) {
+            $payment->transaction_details = json_decode($payment->transaction_details, true);
+        }
+        if (is_string($payment->customer_details)) {
+            $payment->customer_details = json_decode($payment->customer_details, true);
+        }
+        return view('payments.payment', ['payment' => $payment]);
     }
     
     // ALUR 3: UPDATE DATA PAYMENT DAN CHECKOUT
@@ -286,6 +290,17 @@ class BuyController
     public function paymentStatus($id)
     {
         $payment = Payment::findOrFail($id);
+        // Pastikan casting manual jika ternyata masih string
+        if (is_string($payment->product_details)) {
+            $payment->product_details = json_decode($payment->product_details, true);
+        }
+        if (is_string($payment->transaction_details)) {
+            $payment->transaction_details = json_decode($payment->transaction_details, true);
+        }
+        if (is_string($payment->customer_details)) {
+            $payment->customer_details = json_decode($payment->customer_details, true);
+        }
         return view('payments.payment-status', ['payment' => $payment]);
     }
+
 }

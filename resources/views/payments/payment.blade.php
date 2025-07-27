@@ -7,20 +7,35 @@
                 <div class="payment-content">
                     <div class="checkout-form">
                         <div class="order-summary">
+                            @php $total = 0; @endphp
+                            @foreach ($payment->product_details as $item)
+                            @php
+                                $subtotal = $item['price'] * $item['quantity'];
+                                $total += $subtotal;
+                            @endphp
+                            @if($item['id'] != "SERVICE_FEE")
                             <div class="order-item">
                                 <span class="item-label">Product:</span>
-                                <span class="item-value">Napak Tilas Kebangsaan</span>
+                                <span class="item-value">{{ $item['name'] }}</span>
                             </div>
                             <div class="order-item">
-                                @php
-                                $harga = 10000;
-                                @endphp
+                                <span class="item-label">Price:</span>
+                                <span class="item-value">Rp{{ number_format($item['price'], 0, ',', '.') }} x {{ $item['quantity'] }}</span>
+                            </div>
+                            @else
+                            <div class="order-item">
+                                <span class="item-label">Service Fee:</span>
+                                <span class="item-value">Rp{{ number_format($item['price'], 0, ',', '.') }}</span>
+                            </div>
+                            @endif
+                            @endforeach
+                            <div class="order-item">
                                 <span class="item-label">Total:</span>
-                                <span class="item-value total-price" data-harga="{{$harga}}">Rp {{ number_format($harga, 0, '.', '.') }}</span>
+                                <span class="item-value total-price" data-harga="{{$total}}">Rp {{ number_format($total, 0, ',', '.') }}</span>
                             </div>
                         </div>
                         <div class="payment-actions">
-                            <button class="pay-btn" id="pay-button">Pay Now</button>
+                            <button class="pay-btn" id="pay-button">Bayar Sekarang</button>
                         </div>
                     </div>
                 </div>
