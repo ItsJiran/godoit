@@ -2,7 +2,7 @@
 @section('title', 'Dashboard')
 @section('content')
     <div class="header">
-        <h1 class="greeting">Hi, Rio Chef 👋</h1>
+        <h1 class="greeting">Hi, {{Auth::user()->name}} 👋</h1>
         <p class="greeting-subtitle">Here is your dashboard, let's do some thing!</p>
     </div>
 

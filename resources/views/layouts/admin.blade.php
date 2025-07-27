@@ -29,8 +29,8 @@
                 <div class="profile-section">
                     <div class="profile-avatar">RC</div>
                     <div class="profile-info">
-                        <div class="profile-name">Rio Chef</div>
-                        <div class="profile-email">riomaster@chef.com</div>
+                        <div class="profile-name">{{Auth::user()->name}}</div>
+                        <div class="profile-email">{{Auth::user()->email}}</div>
                     </div>
                 </div>
             </div>
