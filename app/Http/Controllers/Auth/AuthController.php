@@ -188,7 +188,9 @@ class AuthController extends Controller
             if ($user->registration_device_cookie_id !== $currentDeviceCookieId) {
                 // Log::info("Perubahan Device ID terdeteksi untuk pengguna ID {$user->id}: Dari {$user->registration_device_cookie_id} ke {$currentDeviceCookieId}.");
             }
-
+            if(Auth::user()->role == "admin"){
+                return redirect('/dashboard')->with('success', 'Admin berhasil login!');
+            }
             return redirect('/')->with('success', 'Anda berhasil login!');
         }
 
