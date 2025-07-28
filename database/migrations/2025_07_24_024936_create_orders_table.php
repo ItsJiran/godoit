@@ -13,9 +13,11 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id');
+            $table->foreignId('user_id')->nullable();
             $table->string('slug'); 
+            $table->string('status'); 
             $table->decimal('total_price', 15, 2); 
+            $table->jsonb('meta')->nullable(); 
             $table->timestamps(); 
             $table->softDeletes(); 
         });

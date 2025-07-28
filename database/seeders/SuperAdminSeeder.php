@@ -25,6 +25,8 @@ class SuperAdminSeeder extends Seeder
                 'email_verified_at' => now(), // Verifikasi email secara otomatis
                 'password' => Hash::make('password'), // Ganti dengan password yang lebih kuat di produksi!
                 'role' => 'superadmin',
+                'whatsapp' => '',
+                'kota' => '',
                 'referral_code' => Str::random(10), // Buat kode referral unik
                 'registration_ip_address' => '127.0.0.1', // IP localhost
                 'registration_user_agent' => 'Seeder', // User-Agent untuk seeder

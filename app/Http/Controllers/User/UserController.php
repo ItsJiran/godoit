@@ -6,7 +6,7 @@ use App\Models\User;
 use App\Models\Image;
 
 use App\Enums\Image\ImagePurposeType;
-use App\Http\Services\Media\ImageUploadService; // Ensure this is correct
+use App\Services\Media\ImageUploadService; // Ensure this is correct
 use App\Http\Controllers\Controller; // Ensure this is correct
 
 use Illuminate\Http\Request;

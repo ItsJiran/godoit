@@ -2,9 +2,9 @@
 
 // app/Services/ReferralService.php
 
-namespace App\Http\Services\Referral;
+namespace App\Services\Referral;
 
-use App\Http\Services\Account\TransactionProcessor;
+use App\Services\Account\TransactionProcessor;
 
 use App\Models\Account;
 use App\Models\User;

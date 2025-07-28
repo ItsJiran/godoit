@@ -9,7 +9,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 
 use App\Enums\Image\ImagePurposeType;
-use App\Http\Services\Media\ImageUploadService;
+use App\Services\Media\ImageUploadService;
 
 class Image extends Model
 {

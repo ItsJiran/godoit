@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\BuyController;
+use App\Http\Controllers\Product\PremiumMembershipController;
 use App\Http\Controllers\Checkout\CheckoutController;
 use Illuminate\Support\Facades\Route;
 
@@ -41,6 +42,10 @@ Route::middleware('auth')->group(function () {
     Route::put('/admin/unblock-user/{id}', [DashboardController::class, 'unblokiruser'])->name('unblokiruser');
     Route::get('/admin/edit-user/{id}', [DashboardController::class, 'edituser'])->name('edituser');
     Route::put('/admin/edit-user/{id}', [DashboardController::class, 'adminedituser'])->name('adminedituser');
+
+    // CHECKOUT PRODUCT
+    Route::post('/product/checkout', [CheckoutController::class, 'checkoutProduct'])->name('product.checkout');
+    Route::get('/membership/upgrade', [PremiumMembershipController::class, 'index'])->name('membership.upgrade');
 
     // PROFILE DATA
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

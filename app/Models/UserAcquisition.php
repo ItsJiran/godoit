@@ -6,9 +6,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Traits\HasSequentialCode; // Import the trait
-use App\Enums\MembershipStatus; // Ensure you have this Enum created
+use App\Enums\Acquisition\AcquisitionStatus; // Ensure you have this Enum created
 
-class UserMembership extends Model
+class UserAcquisition extends Model
 {
     use HasFactory, SoftDeletes; // Use SoftDeletes trait for the deleted_at column
 
@@ -17,7 +17,7 @@ class UserMembership extends Model
      *
      * @var string
      */
-    protected $table = 'user_memberships'; // Explicitly define table name if it's not plural of model name
+    protected $table = 'user_acquisitions'; // Explicitly define table name if it's not plural of model name
 
     /**
      * The attributes that are mass assignable.
@@ -26,7 +26,10 @@ class UserMembership extends Model
      */
     protected $fillable = [
         'user_id',
-        'product_id',
+        'product_id', 
+        'sourceable_id', 
+        'sourceable_type',
+        'sourceable_description',
         'granted_by_user_id', // Field for auditability: who manually granted
         'grant_reason',       // Field for auditability: why it was manually granted
         'status',
@@ -55,6 +58,11 @@ class UserMembership extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
+    }
+
     /**
      * Get the admin user who manually granted this membership (if applicable).
      * This relationship will return null if granted_by_user_id is null (e.g., via purchase).
@@ -74,7 +82,7 @@ class UserMembership extends Model
      */
     public function scopeActive($query)
     {
-        return $query->where('status', MembershipStatus::Active)
+        return $query->where('status', AcquisitionStatus::ACTIVE)
                      ->where(function ($q) {
                          $q->whereNull('end_date') // No end date (lifetime)
                            ->orWhere('end_date', '>=', now()); // Or end date is in the future
@@ -88,7 +96,7 @@ class UserMembership extends Model
      */
     public function isActive(): bool
     {
-        return $this->status === MembershipStatus::Active &&
+        return $this->status === AcquisitionStatus::ACTIVE &&
                ($this->end_date === null || $this->end_date->isFuture());
     }
 
@@ -99,7 +107,23 @@ class UserMembership extends Model
      */
     public function isExpired(): bool
     {
-        return $this->status === MembershipStatus::Expired ||
+        return $this->status === AcquisitionStatus::EXPIRED ||
                ($this->end_date !== null && $this->end_date->isPast());
+    }
+
+
+    /**
+     * Check if a specific user already has an active acquisition of a given product.
+     *
+     * @param int $userId The ID of the user to check.
+     * @param int $productId The ID of the product to check for.
+     * @return bool True if an active acquisition exists for the user and product, false otherwise.
+     */
+    public static function userHasActiveProductAcquisition(int $userId, int $productId): bool
+    {
+        return self::where('user_id', $userId)
+                   ->where('product_id', $productId)
+                   ->active() // Use the 'active' scope defined on this model
+                   ->exists(); // Check if any matching record exists
     }
 }

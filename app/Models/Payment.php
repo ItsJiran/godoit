@@ -13,6 +13,7 @@ class Payment extends Model
 
     protected $fillable = [
         'user_id',
+        'order_id',
         'id_customer',
         'id_order',
         'snap_token',
@@ -35,5 +36,10 @@ class Payment extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function order()
+    {
+        return $this->belongsTo(Order::class,'order_id');
     }
 }

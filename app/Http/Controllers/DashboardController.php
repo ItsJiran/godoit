@@ -25,14 +25,15 @@ class DashboardController extends Controller
         $user = $request->user();
 
         // Initialize variables with default values to ensure they are always defined
-        $userReferral = "http://godoitnew.test/register?reg=";
+        $userReferral = url('/?reg=');                    
         $userCount = 0;
         $userComissionTotal = 0;
         $userComissionTotalPending = 0;
         $userNoId = 999;
 
         if (!is_null($user)) {
-            $userReferral = "http://godoitnew.test/?reg=" . $user->username;
+            // get env from the 
+            $userReferral = $user->generateReferralUrl();
             $userCount = User::where('parent_referral_code', $user->referral_code)->count();
 
             // Corrected: Pass $user->id and the enum instance to getAccountUserByType
@@ -60,6 +61,7 @@ class DashboardController extends Controller
             'userComissionTotalPending' => $userComissionTotalPending,
             'userNoId' => $userNoId,
             'kits' => $kits,
+            'userPremiumMembership' => $user ? $user->activeMembershipPremium() : null,
         ]);
     }
 
@@ -69,14 +71,14 @@ class DashboardController extends Controller
         $user = $request->user();
 
         // Initialize variables with default values to ensure they are always defined
-        $userReferral = "http://godoitnew.test/register?reg=";
+        $userReferral = url('/?reg=');            
         $userCount = 0;
         $userComissionTotal = 0;
         $userComissionTotalPending = 0;
         $userNoId = 999;
 
         if (!is_null($user)) {
-            $userReferral = "http://godoitnew.test/register?reg=" . $user->username;
+            $userReferral = $user->generateReferralUrl();
             $userCount = User::where('parent_referral_code', $user->referral_code)->count();
 
             // Corrected: Pass $user->id and the enum instance to getAccountUserByType
@@ -101,6 +103,7 @@ class DashboardController extends Controller
             'userComissionTotal' => $userComissionTotal,
             'userComissionTotalPending' => $userComissionTotalPending,
             'userNoId' => $userNoId,
+            'userPremiumMembership' => $user ? $user->activeMembershipPremium() : null,            
         ]);
     }
 

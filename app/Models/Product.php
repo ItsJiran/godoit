@@ -61,14 +61,6 @@ class Product extends Model
     protected static function boot(): void
     {
         parent::boot(); // Always call the parent boot method first
-
-        static::creating(function (Product $model) { // Type-hint $model for clarity
-            // Only generate slug and sequence_number if slug is empty
-            // and productable_type is set and represents a valid class with a slugPrefix
-            if (empty($model->slug) && $model->productable_type && class_exists($model->productable_type)) {
-
-            }
-        });
     }
 
     /**
@@ -79,7 +71,7 @@ class Product extends Model
      * @return int The next sequential number.
      * @throws \RuntimeException If the productable class does not define a static $slugPrefix (though check is redundant here).
      */
-    protected static function determineNextSequenceNumber(string $productableTypeClass): int
+    public static function determineNextSequenceNumber(string $productableTypeClass): int
     {
         // Query for the last record of this productable_type based on the sequence_number
         $lastRecord = static::query()

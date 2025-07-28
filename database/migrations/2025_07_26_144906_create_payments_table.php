@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->nullable();
+            $table->foreignId('order_id')->nullable();
             // $table->foreignId('id_customer');
             // $table->foreignId('id_order');
             $table->string('id_customer',120)->nullable();

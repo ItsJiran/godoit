@@ -17,9 +17,9 @@ enum ProductStatus: string
 {
     use HasValues; // This trait (if you have it) would provide methods like ProductStatus::values()
 
-    case Draft = 'draft';
-    case Published = 'published';
-    case Archived = 'archived';
+    case DRAFT = 'draft';
+    case PUBLISHED = 'published';
+    case ARCHIVED = 'archived';
 
     /**
      * Get a human-readable label for the status.
@@ -29,9 +29,9 @@ enum ProductStatus: string
     public function label(): string
     {
         return match ($this) {
-            self::Draft => 'Draft',
-            self::Published => 'Published',
-            self::Archived => 'Archived',
+            self::DRAFT => 'Draft',
+            self::PUBLISHED => 'Published',
+            self::ARCHIVED => 'Archived',
         };
     }
 
@@ -42,7 +42,7 @@ enum ProductStatus: string
      */
     public function isPublic(): bool
     {
-        return $this === self::Published;
+        return $this === self::PUBLISHED;
     }
 
     /**
@@ -52,7 +52,7 @@ enum ProductStatus: string
      */
     public function isDraft(): bool
     {
-        return $this === self::Draft;
+        return $this === self::DRAFT;
     }
 
     // /**

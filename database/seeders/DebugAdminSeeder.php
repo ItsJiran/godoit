@@ -30,7 +30,9 @@ class DebugAdminSeeder extends Seeder
                     'email_verified_at' => now(), // Verifikasi email secara otomatis untuk kemudahan debug
                     'password' => Hash::make('password'), // Kata sandi default untuk debug (ubah di produksi!)
                     'role' => 'admin', // Peran untuk akun debug ini adalah 'admin'
-                    'referral_code' => Str::random(10), // Buat kode referral unik
+                'whatsapp' => '0',
+                'kota' => '',
+                'referral_code' => Str::random(10), // Buat kode referral unik
                     'registration_ip_address' => '127.0.0.1', // IP localhost
                     'registration_user_agent' => 'Debug Seeder', // User-Agent untuk seeder
                     'registration_device_cookie_id' => Str::uuid()->toString(), // UUID perangkat unik

@@ -15,8 +15,10 @@ return new class extends Migration
             $table->id();
             $table->foreignId('order_id');
             $table->foreignId('product_id');
+            $table->integer('quantity'); 
             $table->decimal('price', 15, 2); 
-            $table->jsonb('meta'); 
+            $table->decimal('total_price', 15, 2); 
+            $table->jsonb('meta')->nullable(); 
             $table->softDeletes(); 
             $table->timestamps();
         });

@@ -14,17 +14,22 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('user_memberships', function (Blueprint $table) {
+        Schema::create('user_acquisitions', function (Blueprint $table) {
             $table->id();
 
             // Link to the user who holds this membership
             $table->foreignId('user_id')
                   ->constrained('users')
-                  ->onDelete('cascade'); // If user is deleted, their memberships are also removed
+                  ->onDelete('cascade'); // If user is deleted, their acsuqoionst are also removed
+
+            $table->foreignId('product_id')
+                ->constrained('products')
+                ->onDelete('cascade'); // If product is deleted, their acquistions are also removed
 
             // Link to the 'membership' product (from your products table)
-            // This defines WHAT kind of membership it is (e.g., "Premium Lifetime Access" Product)
+            // define what cause this acquisitions are created
             $table->nullableMorphs('sourceable');
+            $table->text('sourceable_description')->nullable();
 
             // Audit field: Tracks which admin user manually granted this membership (if applicable)
             $table->foreignId('granted_by_user_id')

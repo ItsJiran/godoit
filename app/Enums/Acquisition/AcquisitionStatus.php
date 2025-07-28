@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Enums; // Recommended namespace for Enums in Laravel/PHP applications
+namespace App\Enums\Acquisition; // Recommended namespace for Enums in Laravel/PHP applications
 
 use App\Traits\BasicEnumTrait; 
 /**
@@ -10,7 +10,7 @@ use App\Traits\BasicEnumTrait;
  *
  * @package App\Enums
  */
-enum MembershipStatus: string
+enum AcquisitionStatus: string
 {   
     use BasicEnumTrait;
 

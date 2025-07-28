@@ -28,6 +28,8 @@ class RegisterRequest extends FormRequest
         return [
             // Nama pengguna harus diisi, berupa string, dan tidak lebih dari 255 karakter.
             'name' => ['required', 'string', 'max:255'],
+            'whatsapp' => ['required', 'string', 'max:255','unique:users'],
+            'kota' => ['required', 'string', 'max:255'],
             // Email harus diisi, berupa string, format email yang valid, tidak lebih dari 255 karakter,
             // dan harus unik di tabel 'users'.
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],

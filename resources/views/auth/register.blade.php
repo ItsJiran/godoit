@@ -43,6 +43,40 @@
                 @enderror
             </div>
 
+            <!-- Username -->
+            <div class="form-group">
+                <label class="form-label" for="whatsapp">{{ __('Whatsapp') }}</label>
+                <input type="text" 
+                        id="whatsapp" 
+                        name="whatsapp" 
+                        class="form-input" 
+                        placeholder="Enter your whatsapp" 
+                        value="{{ old('whatsapp') }}" 
+                        required 
+                        autofocus 
+                        autocomplete="whatsapp">
+                @error('username')
+                    <span class="error-message">{{ $message }}</span>
+                @enderror
+            </div>
+
+            <!-- Username -->
+            <div class="form-group">
+                <label class="form-label" for="kota">{{ __('Kota') }}</label>
+                <input type="text" 
+                        id="kota" 
+                        name="kota" 
+                        class="form-input" 
+                        placeholder="Enter your kota" 
+                        value="{{ old('kota') }}" 
+                        required 
+                        autofocus 
+                        autocomplete="kota">
+                @error('username')
+                    <span class="error-message">{{ $message }}</span>
+                @enderror
+            </div>
+
             <!-- Email Address -->
             <div class="form-group">
                 <label class="form-label" for="email">{{ __('Email') }}</label>

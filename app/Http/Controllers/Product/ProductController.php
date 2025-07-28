@@ -30,10 +30,8 @@ class ProductController extends Controller
 
         // Query products based on user role
         if ($user && in_array($user->role, ['superadmin', 'admin'])) {
-            // Superadmin and admin can see all products, including soft-deleted ones if needed
             $products = Product::withTrashed()->latest()->get(); // Use latest() for ordering
         } else {
-            // Other users (regular users) only see published products
             $products = Product::published()->latest()->get();
         }
 

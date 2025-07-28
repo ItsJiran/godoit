@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Payment;
+use App\Models\Order;
 use App\Mail\CustomMail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -15,9 +16,14 @@ use Midtrans\Notification;
 use Midtrans\Snap;
 use Midtrans\Config;
 
-use App\Http\Services\Referral\ReferralService;
-use App\Http\Services\Account\TransactionService;
+use App\Services\Referral\ReferralService;
+use App\Services\Account\TransactionService;
+use App\Services\Account\TransactionProcessor;
+use App\Services\Order\OrderProcessor;
+
 use App\Enums\Account\AccountTransactionStatus;
+use App\Enums\Order\OrderStatus;
+
 
 // CREATED BY RIO ILHAM HADI (WWW.BLANTERMEDIA.COM)
 class BuyController 
@@ -184,6 +190,9 @@ class BuyController
                 $payment,
                 AccountTransactionStatus::COMPLETED
             );
+
+            OrderProcessor::completeOrder($payment->order);
+
         } elseif ($request->status == 'pending') {
             $payment->status = '0'; // Pending
         } elseif ($request->status == 'error') {

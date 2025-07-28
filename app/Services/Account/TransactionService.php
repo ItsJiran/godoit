@@ -2,7 +2,7 @@
 
 // app/Services/TransactionProcessor.php
 
-namespace App\Http\Services\Account;
+namespace App\Services\Account;
 
 use App\Models\Account;
 use App\Models\User;
