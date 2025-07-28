@@ -1,7 +1,7 @@
-@section('title', 'Pengaturan Akun')
+@section('title', 'My Profile')
 <x-app-layout>
     <section class="hero-title">
-        <h1>Pengaturan Akun</h1>
+        <h1>My Profile</h1>
     </section>
     <section class="hero">
         <div class="container min-container">

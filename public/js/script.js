@@ -1,82 +1,14 @@
-// Mobile menu toggle
-function toggleMobileMenu() {
-    const navLinks = document.querySelector('.nav-links');
-    navLinks.classList.toggle('active');
-}
-
-// Profile dropdown toggle
-function toggleDropdown() {
-    const dropdown = document.querySelector('.profile-dropdown');
-    dropdown.classList.toggle('active');
-}
-
-// Close dropdown when clicking outside
-document.addEventListener('click', function(event) {
-    const dropdown = document.querySelector('.profile-dropdown');
-    const profileBtn = document.querySelector('.profile-btn');
-    if (!dropdown.contains(event.target) && !profileBtn.contains(event.target)) {
-        dropdown.classList.remove('active');
-    }
-});
-
-// Simulate login/logout functionality
-let isLoggedIn = false;
-
-function toggleAuth() {
-    const guestButtons = document.querySelector('.guest-buttons');
-    const profileDropdown = document.querySelector('.profile-dropdown');
-    if (isLoggedIn) {
-        guestButtons.style.display = 'flex';
-        profileDropdown.classList.remove('show');
-    } else {
-        guestButtons.style.display = 'none';
-        profileDropdown.classList.add('show');
-    }
-}
-
-function copyLink() {
-    const linkInput = document.querySelector('.link-input');
-    const notification = document.getElementById('notification');
-    linkInput.select();
-    linkInput.setSelectionRange(0, 99999);
-    try {
-        document.execCommand('copy');
-        notification.classList.add('show');
-        setTimeout(() => {
-            notification.classList.remove('show');
-        }, 3000);
-    } catch (err) {
-        console.error('Gagal menyalin link: ', err);
-    }
-    window.getSelection().removeAllRanges();
-}
-
-// Alternative modern copy method
-async function copyLinkModern() {
-    const linkInput = document.querySelector('.link-input');
-    const notification = document.getElementById('notification');
-    try {
-        await navigator.clipboard.writeText(linkInput.value);
-        notification.classList.add('show');
-        setTimeout(() => {
-            notification.classList.remove('show');
-        }, 3000);
-    } catch (err) {
-        copyLink();
-    }
-}
-
-// Use modern method if available
-if (navigator.clipboard && navigator.clipboard.writeText) {
-    document.querySelector('.copy-button').setAttribute('onclick', 'copyLinkModern()');
-}
-
 // Copy Konten Marketing Kit
 $(document).ready(function(){
     $('.copy-konten').on('click', function(){
+        // Ambil isi konten dari textarea tersembunyi
         var konten = $(this).closest('.program-card').find('.this-konten').val();
+
+        // Salin menggunakan Clipboard API modern
         navigator.clipboard.writeText(konten).then(() => {
+            // Feedback ke user
             $(this).text('Tersalin!');
+
             var button = $(this);
             setTimeout(function(){
                 button.html(`<svg class="copy-icon" viewBox="0 0 24 24">
@@ -87,4 +19,99 @@ $(document).ready(function(){
             alert('Gagal menyalin teks: ' + err);
         });
     });
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+    // Mobile menu toggle
+    function toggleMobileMenu() {
+        const navLinks = document.querySelector('.nav-links');
+        if (navLinks) navLinks.classList.toggle('active');
+    }
+
+    // Profile dropdown toggle
+    function toggleDropdown() {
+        const dropdown = document.querySelector('.profile-dropdown');
+        if (dropdown) dropdown.classList.toggle('active');
+    }
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function (event) {
+        const dropdown = document.querySelector('.profile-dropdown');
+        const profileBtn = document.querySelector('.profile-btn');
+        if (dropdown && profileBtn && !dropdown.contains(event.target) && !profileBtn.contains(event.target)) {
+            dropdown.classList.remove('active');
+        }
+    });
+
+    // Simulate login/logout functionality
+    let isLoggedIn = false;
+
+    function toggleAuth() {
+        const guestButtons = document.querySelector('.guest-buttons');
+        const profileDropdown = document.querySelector('.profile-dropdown');
+        if (guestButtons && profileDropdown) {
+            if (isLoggedIn) {
+                guestButtons.style.display = 'flex';
+                profileDropdown.classList.remove('show');
+            } else {
+                guestButtons.style.display = 'none';
+                profileDropdown.classList.add('show');
+            }
+        }
+    }
+
+    // Classic copy fallback
+    function copyLink() {
+        const linkInput = document.querySelector('.link-input');
+        const notification = document.getElementById('notification');
+        if (linkInput && notification) {
+            linkInput.select();
+            linkInput.setSelectionRange(0, 99999);
+            try {
+                document.execCommand('copy');
+                notification.classList.add('show');
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                }, 3000);
+            } catch (err) {
+                console.error('Gagal menyalin link: ', err);
+            }
+            window.getSelection().removeAllRanges();
+        }
+    }
+
+    // Modern async copy
+    async function copyLinkModern() {
+        const linkInput = document.querySelector('.link-input');
+        const notification = document.getElementById('notification');
+        if (linkInput && notification) {
+            try {
+                await navigator.clipboard.writeText(linkInput.value);
+                notification.classList.add('show');
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                }, 3000);
+            } catch (err) {
+                copyLink(); // fallback
+            }
+        }
+    }
+
+    // Attach copy handler
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        const copyBtn = document.querySelector('.copy-button');
+        if (copyBtn) {
+            copyBtn.addEventListener('click', copyLinkModern);
+        }
+    } else {
+        const copyBtn = document.querySelector('.copy-button');
+        if (copyBtn) {
+            copyBtn.addEventListener('click', copyLink);
+        }
+    }
+
+    // Optional: expose toggle functions if used from HTML onclick
+    window.toggleMobileMenu = toggleMobileMenu;
+    window.toggleDropdown = toggleDropdown;
+    window.toggleAuth = toggleAuth;
 });

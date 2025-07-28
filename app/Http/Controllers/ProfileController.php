@@ -11,14 +11,7 @@ use Illuminate\View\View;
 
 class ProfileController extends Controller
 {
-    // My Profile
-    public function myprofile()
-    {
-        $user = Auth::user();
-        return view('profile.myprofile', compact('user'));
-    }
-
-    // Edit Profile
+    // Edit with My Profile
     public function edit()
     {
         $user = Auth::user();

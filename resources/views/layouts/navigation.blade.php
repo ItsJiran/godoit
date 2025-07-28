@@ -32,8 +32,7 @@
                             {{ Auth::user()->name }} ▼
                         </button>
                         <div class="dropdown-content">
-                            <a href="{{ route('profile.myprofile') }}">My Profile</a>
-                            <a href="{{ route('profile.edit') }}">Settings</a>
+                            <a href="{{ route('profile.edit') }}">My Profile</a>
                             <form action="{{ route('logout') }}" method="POST" style="margin: 0;">
                                 @csrf
                                 <button type="submit" class="logout-button dropdown-item">Logout</button>

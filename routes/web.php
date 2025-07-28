@@ -36,9 +36,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/admin/marketing-kit/{id}', [DashboardController::class, 'hapuskit'])->name('hapuskit');
 
     // PROFILE DATA
-    Route::get('/profile', [ProfileController::class, 'myprofile'])->name('profile.myprofile');
-    Route::get('/edit-profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/edit-profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
 });
 
 require __DIR__.'/auth.php';
