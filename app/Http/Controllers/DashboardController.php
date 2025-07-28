@@ -178,10 +178,10 @@ class DashboardController extends Controller
     {
         $query = $request->input('search');
         if ($query) {
-            $users = User::where('name', 'like', '%' . $query . '%')
+            $users = User::where('role','user')->where('name', 'like', '%' . $query . '%')
                                 ->paginate(4);
         } else {
-            $users = User::latest()->paginate(4);
+            $users = User::where('role','user')->latest()->paginate(4);
         }
         return view('dashboard.users', compact('users', 'query'));
     }
@@ -236,27 +236,11 @@ class DashboardController extends Controller
     public function admin_transaction(Request $request)
     {
         $query = $request->input('search');
-        if ($query) {
-            $payments = Payment::where('order_id', 'like', '%' . $query . '%')
-                                ->latest()
-                                ->paginate(5);
-        } else {
-            $payments = Payment::latest()->paginate(5);
-        }
-
-        // Decode JSON fields for each payment
-        foreach ($payments as $payment) {
-            if (is_string($payment->product_details)) {
-                $payment->product_details = json_decode($payment->product_details, true);
-            }
-            if (is_string($payment->transaction_details)) {
-                $payment->transaction_details = json_decode($payment->transaction_details, true);
-            }
-            if (is_string($payment->customer_details)) {
-                $payment->customer_details = json_decode($payment->customer_details, true);
-            }
-        }
-
+        $payments = Payment::when($query, function ($q) use ($query) {
+                            return $q->where('order_id', 'like', '%' . $query . '%');
+                        })
+                        ->latest()
+                        ->paginate(5);
         return view('dashboard.transaction', compact('payments', 'query'));
     }
 

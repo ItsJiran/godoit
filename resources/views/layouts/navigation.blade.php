@@ -12,16 +12,19 @@
                 @if(Auth::user()->role == "user")
                 <li><a href="/memberarea" title="Member Area">Member Area</a></li>
                 <li><a href="/transaction" title="Transaction">Transaction</a></li>
+                <li><a href="/marketing-kit" title="Marketing Kit">Marketing Kit</a></li>
                 @else
                 <li><a href="/dashboard" title="Dashboard">Dashboard</a></li>
+                <li><a href="/admin/transaction" title="Transaction">Transaction</a></li>
+                <li><a href="/admin/marketing-kit" title="Marketing Kit">Marketing Kit</a></li>
                 @endif
                 @endauth
                 @guest
                 <li><a href="/" title="Home">Home</a></li>
-                @endguest
                 <li><a href="/products" title="Products">Products</a></li>
                 <li><a href="/about" title="About Us">About Us</a></li>
                 <li><a href="/contact" title="Contact Us">Contact Us</a></li>
+                @endguest
             </ul>
 
             <div class="auth-buttons">

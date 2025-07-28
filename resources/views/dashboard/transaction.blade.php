@@ -58,69 +58,59 @@
     <!-- START -->
     <div class="unit-list-wrapper">
         @forelse($payments as $payment)
-        <div class="unit-list-item">
-            <!-- Basic Info -->
-            <div class="unit-item-row">
-                <div class="unit-item-label">Nama:</div>
-                <div class="unit-item-value"><b>{{ $payment->name }}</b>
-                </div>
-            </div>
-            <div class="unit-item-row">
-                <div class="unit-item-label">Email:</div>
-                <div class="unit-item-value">{{ $payment->email }}</div>
-            </div>
-            <div class="unit-item-row">
-                <div class="unit-item-label">Whatsapp:</div>
-                <div class="unit-item-value">{{ $payment->whatsapp }}</div>
-            </div>
+        @php
+            // Decode jika masih string
+            $productDetails = is_string($payment->product_details) ? json_decode($payment->product_details, true) : $payment->product_details;
+            $customerDetails = is_string($payment->customer_details) ? json_decode($payment->customer_details, true) : $payment->customer_details;
 
-            <!-- Product Details -->
-            @if(!empty($payment->product_details))
+            // Hitung total biaya
+            $totalBiaya = 0;
+            if (is_array($productDetails)) {
+                foreach ($productDetails as $item) {
+                    $totalBiaya += ($item['price'] ?? 0) * ($item['quantity'] ?? 1);
+                }
+            }
+        @endphp
+            <div class="unit-list-item">
+                <!-- Info Dasar -->
                 <div class="unit-item-row">
-                    <div class="unit-item-label">Produk:</div>
+                    <div class="unit-item-label">Order ID:</div>
                     <div class="unit-item-value">
-                        @foreach($payment->product_details as $item)
-                            <div>{{ $item['name'] ?? '-' }} x{{ $item['quantity'] ?? 1 }}</div>
-                        @endforeach
+                        <b>#{{ $payment->id_order }}</b>
                     </div>
                 </div>
-            @endif
-
-            <!-- Transaction Details -->
-            @if(!empty($payment->transaction_details))
                 <div class="unit-item-row">
-                    <div class="unit-item-label">Total Bayar:</div>
-                    <div class="unit-item-value">
-                        Rp {{ number_format($payment->transaction_details['gross_amount'] ?? 0, 0, ',', '.') }}
-                    </div>
+                    <div class="unit-item-label">Nama:</div>
+                    <div class="unit-item-value">{{ $customerDetails['first_name'] ?? '-' }}</div>
+                </div>
+                <div class="unit-item-row">
+                    <div class="unit-item-label">Tanggal:</div>
+                    <div class="unit-item-value">{{ $payment->created_at->format('d M Y, H:i') }}</div>
+                </div>
+                <div class="unit-item-row">
+                    <div class="unit-item-label">Total Biaya:</div>
+                    <div class="unit-item-value"><b>Rp {{ number_format($totalBiaya, 0, ',', '.') }}</b></div>
                 </div>
                 <div class="unit-item-row">
                     <div class="unit-item-label">Status:</div>
-                    <div class="unit-item-value">{{ ucfirst($payment->transaction_details['transaction_status'] ?? '-') }}</div>
-                </div>
-            @endif
-
-            <!-- Customer Details -->
-            @if(!empty($payment->customer_details))
-                <div class="unit-item-row">
-                    <div class="unit-item-label">Alamat:</div>
                     <div class="unit-item-value">
-                        {{ $payment->customer_details['address'] ?? '-' }},
-                        {{ $payment->customer_details['city'] ?? '' }},
-                        {{ $payment->customer_details['postal_code'] ?? '' }}
+                        @if($payment->status == 0) Pending @endif
+                        @if($payment->status == 1) Selesai @endif
+                        @if($payment->status == 2) Gagal @endif
                     </div>
                 </div>
-            @endif
-
-            <hr>
-        </div>
-    @empty
-        <div class="unit-empty-state">
-            Belum ada data pembayaran.
-            <br>
-            <small>Coba lakukan pencarian atau tunggu transaksi baru.</small>
-        </div>
-    @endforelse
+                <div class="unit-action-buttons mobile-action-buttons">
+                <a href="{{ route('payments.show', $payment->id) }}" class="unit-btn unit-btn-edit">Payment</a>
+                <a href="{{ route('payment.status', $payment->id) }}" class="unit-btn unit-btn-edit">Bill Status</a>
+            </div>
+            </div>
+        @empty
+            <div class="unit-empty-state">
+                Belum ada data pembayaran.
+                <br>
+                <small>Coba lakukan pencarian atau tunggu transaksi baru.</small>
+            </div>
+        @endforelse
     </div>
 
     <!-- PAGINATION -->

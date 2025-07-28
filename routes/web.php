@@ -27,7 +27,6 @@ Route::get('/update/payment/status/{id}/{status}', [BuyController::class, 'manua
 Route::middleware('auth')->group(function () {
     // DASHBOARD
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
-    Route::get('/admin/products', [DashboardController::class, 'products'])->name('products');
 
     // MARKETING KIT
     Route::get('/admin/marketing-kit', [DashboardController::class, 'marketing_kit'])->name('marketingkit');
