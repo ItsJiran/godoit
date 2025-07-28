@@ -237,7 +237,7 @@ class DashboardController extends Controller
     {
         $query = $request->input('search');
         $payments = Payment::when($query, function ($q) use ($query) {
-                            return $q->where('order_id', 'like', '%' . $query . '%');
+                            return $q->where('id_order', 'like', '%' . $query . '%');
                         })
                         ->latest()
                         ->paginate(5);

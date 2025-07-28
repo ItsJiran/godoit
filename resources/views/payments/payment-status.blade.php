@@ -1,7 +1,7 @@
 @section('title', 'Status Pembayaran')
 <x-app-layout>
     <section class="hero payment-status">
-        <div class="container minx-container">
+        <div class="container min-container">
             @php
                 // Determine status classes and content
                 $statusClass = '';
