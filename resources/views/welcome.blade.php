@@ -79,6 +79,7 @@
         </div>
     </section>
     <div class="notification" id="notification">Link berhasil disalin!</div>
+    @endif
 
     <!-- SECTION MARKETING KIT -->
     <section class="hero">
@@ -88,35 +89,26 @@
             </div>
 
             <div class="program-grid">
+                @forelse($kits as $kit)
                 <div class="program-card">
                     <div class="program-image">
-                        <img src="https://t4.ftcdn.net/jpg/15/02/52/47/360_F_1502524799_DgQUHNZHSrbxB1OQr5nbMLuxQQAcjqf6.jpg" alt="Program"/>
+                        <img src="{{ asset('storage/' . $kit->gambar) }}" alt="{{ $kit->judul }}">
                     </div>
                     <div class="program-content">
-                        <h3 class="program-title">Program Napak Tilas Kebangsaan</h3>
-                        <p class="program-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam suscipit rhoncus gravida. Proin consectetur congue erat, quis finibus lectus posuere at. Donec sed augue eu est malesuada condimentum.</p>
-                        <a href="#" class="btn"><svg class="copy-icon" viewBox="0 0 24 24">
+                        <h3 class="program-title">{{ $kit->judul }}</h3>
+                        <p class="program-description">Salin copywriting dan link affiliasi anda ini ⬇️⬇️⬇️</p>
+                        <textarea class="form-input this-konten hidden" name="konten" class="form-control" rows="10" readonly>{{ $kit->konten }} {{ $userReferral }}</textarea>
+                        <a href="javascript:;" class="btn copy-konten"><svg class="copy-icon" viewBox="0 0 24 24">
                             <path d="M16 1H4C2.9 1 2 1.9 2 3V17H4V3H16V1ZM19 5H8C6.9 5 6 5.9 6 7V21C6 22.1 6.9 23 8 23H19C20.1 23 21 22.1 21 21V7C21 5.9 20.1 5 19 5ZM19 21H8V7H19V21Z"></path>
                         </svg> Copy</a>
                     </div>
                 </div>
-
-                <div class="program-card">
-                    <div class="program-image">
-                        <img src="https://t4.ftcdn.net/jpg/15/02/52/47/360_F_1502524799_DgQUHNZHSrbxB1OQr5nbMLuxQQAcjqf6.jpg" alt="Program"/>
-                    </div>
-                    <div class="program-content">
-                        <h3 class="program-title">Program Napak Tilas Kebangsaan</h3>
-                        <p class="program-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam suscipit rhoncus gravida. Proin consectetur congue erat, quis finibus lectus posuere at. Donec sed augue eu est malesuada condimentum.</p>
-                        <a href="#" class="btn"><svg class="copy-icon" viewBox="0 0 24 24">
-                            <path d="M16 1H4C2.9 1 2 1.9 2 3V17H4V3H16V1ZM19 5H8C6.9 5 6 5.9 6 7V21C6 22.1 6.9 23 8 23H19C20.1 23 21 22.1 21 21V7C21 5.9 20.1 5 19 5ZM19 21H8V7H19V21Z"></path>
-                        </svg> Copy</a>
-                    </div>
-                </div>
+                @empty
+                <b>Kosong!</b>
+                @endforelse
             </div>
         </div>
     </section>
-    @endif
     @endauth
 
     <!-- SECTION -->

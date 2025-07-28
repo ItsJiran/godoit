@@ -49,10 +49,10 @@
         <form action="{{ route('marketingkit') }}" method="GET">
             <input type="text" name="search" placeholder="Cari Data Marketing Kit..." required="" value="{{ $query ?? '' }}">
             <button type="submit">Cari</button>
-            @if ($query)
-                <a href="{{ route('marketingkit') }}">Reset Pencarian</a>
-            @endif
         </form>
+        @if ($query)
+            <a href="{{ route('marketingkit') }}">Reset Pencarian</a>
+        @endif
     </div>
 
     {{-- Flash message --}}

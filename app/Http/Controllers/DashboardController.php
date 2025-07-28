@@ -48,6 +48,8 @@ class DashboardController extends Controller
             
             $userNoId = $user->id;
         }
+
+        $kits = MarketingKit::latest()->paginate(2);
         
         // Using ->with() to pass variables to the view
         return view('welcome')->with([
@@ -56,6 +58,7 @@ class DashboardController extends Controller
             'userComissionTotal' => $userComissionTotal,
             'userComissionTotalPending' => $userComissionTotalPending,
             'userNoId' => $userNoId,
+            'kits' => $kits,
         ]);
     }
 
