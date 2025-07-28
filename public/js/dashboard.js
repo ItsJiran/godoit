@@ -123,3 +123,21 @@ async function copyLinkModern() {
 if (navigator.clipboard && navigator.clipboard.writeText) {
     document.querySelector('.copy-button').setAttribute('onclick', 'copyLinkModern()');
 }
+
+// Notification Alert Support
+function showNotificationModal() {
+    $('#notificationModal').addClass('nm-active');
+    $('body').css('overflow', 'hidden');
+}
+function hideNotificationModal() {
+    $('#notificationModal').removeClass('nm-active');
+    $('body').css('overflow', 'auto');
+}
+$(document).keydown(function(e) {
+    if (e.key === 'Escape') {
+        hideNotificationModal();
+    }
+});
+$('.notification-modal-container').on('click', function(e) {
+    e.stopPropagation();
+});

@@ -28,6 +28,13 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
     Route::get('/admin/products', [DashboardController::class, 'products'])->name('products');
 
+    // MARKETING KIT
+    Route::get('/admin/marketing-kit', [DashboardController::class, 'marketing_kit'])->name('marketingkit');
+    Route::post('/admin/marketing-kit', [DashboardController::class, 'simpankit'])->name('simpankit');
+    Route::get('/admin/marketing-kit/{id}/edit', [DashboardController::class, 'editkit'])->name('editkit');
+    Route::put('/admin/marketing-kit/{id}', [DashboardController::class, 'updatekit'])->name('updatekit');
+    Route::delete('/admin/marketing-kit/{id}', [DashboardController::class, 'hapuskit'])->name('hapuskit');
+
     // PROFILE DATA
     Route::get('/profile', [ProfileController::class, 'myprofile'])->name('profile.myprofile');
     Route::get('/edit-profile', [ProfileController::class, 'edit'])->name('profile.edit');

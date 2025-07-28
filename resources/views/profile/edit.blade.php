@@ -12,7 +12,7 @@
                     <div class="alert-icon">✓</div>
                     <div class="alert-text">
                         <div class="alert-title">Success!</div>
-                        <div class="alert-message">Data berhasil disimpan ke database.</div>
+                        <div class="alert-message">{{ session('success') }}</div>
                     </div>
                 </div>
                 @endif

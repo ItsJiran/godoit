@@ -10,6 +10,7 @@ use Illuminate\View\View;
 use App\Models\User;
 use App\Models\Account;
 use App\Models\AccountTransaction;
+use App\Models\MarketingKit;
 
 use App\Enums\Account\AccountType;
 use App\Enums\Account\AccountTransactionStatus;
@@ -17,7 +18,7 @@ use App\Enums\Account\AccountTransactionPurpose;
 
 class DashboardController extends Controller
 {
-    // INDEX HOME
+    // INDEX HOME LANDING PAGE
     public function home(Request $request): View
     {
         $user = $request->user();
@@ -98,4 +99,77 @@ class DashboardController extends Controller
             'userNoId' => $userNoId,
         ]);
     }
+
+    // MARKETING KIT
+    public function marketing_kit(Request $request)
+    {
+        $query = $request->input('search');
+        if ($query) {
+            $kits = MarketingKit::where('judul', 'like', '%' . $query . '%')
+                               ->get();
+        } else {
+            $kits = MarketingKit::latest()->get();
+        }
+        return view('dashboard.marketing-kit.index', compact('kits', 'query'));
+    }
+
+    // SIMPAN DATA MARKETING KIT
+    public function simpankit(Request $request)
+    {
+        $request->validate([
+            'judul' => 'required|string|max:255',
+            'gambar' => 'required|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'konten' => 'required|string',
+        ]);
+
+        // Simpan gambar
+        $gambarPath = $request->file('gambar')->store('marketing-kit', 'public');
+
+        MarketingKit::create([
+            'judul' => $request->judul,
+            'gambar' => $gambarPath,
+            'konten' => $request->konten,
+        ]);
+
+        return redirect()->route('marketingkit')->with('success', 'Marketing Kit berhasil ditambahkan.');
+    }
+
+    // EDIT MARKETING KIT
+    public function editkit($id)
+    {
+        $kit = MarketingKit::findOrFail($id);
+        return view('dashboard.marketing-kit.edit', compact('kit'));
+    }
+
+    // UPDATE DATA MARKETING KIT
+    public function updatekit(Request $request, $id)
+    {
+        $kit = MarketingKit::findOrFail($id);
+
+        $request->validate([
+            'judul' => 'required|string|max:255',
+            'gambar' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'konten' => 'required|string',
+        ]);
+
+        if ($request->hasFile('gambar')) {
+            $gambarPath = $request->file('gambar')->store('marketing-kit', 'public');
+            $kit->gambar = $gambarPath;
+        }
+
+        $kit->judul = $request->judul;
+        $kit->konten = $request->konten;
+        $kit->save();
+
+        return redirect()->route('marketingkit')->with('success', 'Marketing Kit berhasil diperbarui.');
+    }
+
+    // HAPUS DATA MARKETING KIT
+    public function hapuskit($id)
+    {
+        $kit = MarketingKit::findOrFail($id);
+        $kit->delete();
+        return redirect()->route('marketingkit')->with('success', 'Marketing Kit berhasil dihapus.');
+    }
+
 }
