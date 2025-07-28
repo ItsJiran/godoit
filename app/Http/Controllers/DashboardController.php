@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
+use Carbon\Carbon;
 
 use App\Models\User;
 use App\Models\Account;
@@ -107,14 +108,12 @@ class DashboardController extends Controller
     public function marketing_kit(Request $request)
     {
         $query = $request->input('search');
-        
         if ($query) {
             $kits = MarketingKit::where('judul', 'like', '%' . $query . '%')
                                 ->paginate(10);
         } else {
             $kits = MarketingKit::latest()->paginate(2);
         }
-
         return view('dashboard.marketing-kit.index', compact('kits', 'query'));
     }
 
@@ -126,16 +125,13 @@ class DashboardController extends Controller
             'gambar' => 'required|image|mimes:jpeg,png,jpg,webp|max:2048',
             'konten' => 'required|string',
         ]);
-
         // Simpan gambar
         $gambarPath = $request->file('gambar')->store('marketing-kit', 'public');
-
         MarketingKit::create([
             'judul' => $request->judul,
             'gambar' => $gambarPath,
             'konten' => $request->konten,
         ]);
-
         return redirect()->route('marketingkit')->with('success', 'Marketing Kit berhasil ditambahkan.');
     }
 
@@ -150,22 +146,18 @@ class DashboardController extends Controller
     public function updatekit(Request $request, $id)
     {
         $kit = MarketingKit::findOrFail($id);
-
         $request->validate([
             'judul' => 'required|string|max:255',
             'gambar' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'konten' => 'required|string',
         ]);
-
         if ($request->hasFile('gambar')) {
             $gambarPath = $request->file('gambar')->store('marketing-kit', 'public');
             $kit->gambar = $gambarPath;
         }
-
         $kit->judul = $request->judul;
         $kit->konten = $request->konten;
         $kit->save();
-
         return redirect()->route('marketingkit')->with('success', 'Marketing Kit berhasil diperbarui.');
     }
 
@@ -175,6 +167,65 @@ class DashboardController extends Controller
         $kit = MarketingKit::findOrFail($id);
         $kit->delete();
         return redirect()->route('marketingkit')->with('success', 'Marketing Kit berhasil dihapus.');
+    }
+
+    // ALL USERS (ADMIN)
+    public function allusers(Request $request)
+    {
+        $query = $request->input('search');
+        if ($query) {
+            $users = User::where('name', 'like', '%' . $query . '%')
+                                ->paginate(4);
+        } else {
+            $users = User::latest()->paginate(4);
+        }
+        return view('dashboard.users', compact('users', 'query'));
+    }
+
+    // BLOKIR USERS (ADMIN)
+    public function blokiruser(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+        $today = Carbon::now('Asia/Jakarta');
+        $user->deleted_at = $today;
+        $user->save();
+        return redirect()->route('allusers')->with('success', 'Akses Pengguna: '.$user->name.' telah diblokir.');
+    }
+
+    // UN-BLOKIR USERS (ADMIN)
+    public function unblokiruser(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+        $today = Carbon::now('Asia/Jakarta');
+        $user->deleted_at = NULL;
+        $user->save();
+        return redirect()->route('allusers')->with('success', 'Akses Pengguna: '.$user->name.' telah dibuka.');
+    }
+
+    // EDIT USER (ADMIN)
+    public function edituser($id)
+    {
+        $user = User::findOrFail($id);
+        return view('dashboard.user-edit', compact('user'));
+    }
+
+    // AKSI EDIT USER (ADMIN)
+    public function adminedituser(Request $request,$id)
+    {
+        $user = User::findOrFail($id);
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $user->id,
+            'whatsapp' => 'required|unique:users,whatsapp,' . $user->id,
+            'kota' => 'required|string|max:255',
+        ]);
+        $user->update([
+            'name' => $request->name,
+            'email' => $request->email,
+            'whatsapp' => $request->whatsapp ?? null,
+            'kota' => $request->kota ?? null,
+        ]);
+        return redirect()->route('allusers')->with('success', 'Profil '.$user->name.' berhasil diperbarui.');
     }
 
 }

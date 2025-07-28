@@ -35,6 +35,13 @@ Route::middleware('auth')->group(function () {
     Route::put('/admin/marketing-kit/{id}', [DashboardController::class, 'updatekit'])->name('updatekit');
     Route::delete('/admin/marketing-kit/{id}', [DashboardController::class, 'hapuskit'])->name('hapuskit');
 
+    // USERS
+    Route::get('/admin/all-users', [DashboardController::class, 'allusers'])->name('allusers');
+    Route::put('/admin/blokir-user/{id}', [DashboardController::class, 'blokiruser'])->name('blokiruser');
+    Route::put('/admin/unblock-user/{id}', [DashboardController::class, 'unblokiruser'])->name('unblokiruser');
+    Route::get('/admin/edit-user/{id}', [DashboardController::class, 'edituser'])->name('edituser');
+    Route::put('/admin/edit-user/{id}', [DashboardController::class, 'adminedituser'])->name('adminedituser');
+
     // PROFILE DATA
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
