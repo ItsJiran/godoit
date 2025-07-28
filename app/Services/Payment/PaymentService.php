@@ -8,7 +8,10 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+
+use App\Services\Referral\ReferralService; // Import the static MidtransService
 use App\Services\Payment\MidtransService; // Import the static MidtransService
+use App\Services\Account\TransactionService; // Import the static MidtransService
 
 /**
  * Service to handle the creation and processing of payment data.
@@ -77,6 +80,36 @@ class PaymentService
             'product_details' => json_encode($itemDetails), // Store item details as product_details
             'status' => '0', // Initial status: Pending
         ]);
+
+        $referrer = null;
+
+        if($request->reg != null)
+            $referrer = User::where('username',$request->reg)->first();
+
+        if($referrer == null && $request->user())
+            $referrer = $request->user()->referrer;
+
+        if($referrer == null)
+            $referrer = User::where('role','admin')->first();
+
+        $harga = $order->total_price;
+
+        // generate comission transaction
+        $referral_transaction = ReferralService::generateReferralCommission(
+            $referrer, // refferer
+            $request->user(), // current user refffered
+            $harga,
+            $payment
+        );
+
+        // pengerugnan harga dengn jumlah dari potongan dari referral
+        $harga -= $referral_transaction->amount;                
+
+        TransactionService::generateTransactionCheckout(
+            $request->user(),
+            $harga,
+            $payment
+        );
 
         try {
             // Get Snap Token from MidtransService
