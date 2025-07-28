@@ -9,14 +9,19 @@
             
             <ul class="nav-links">
                 @auth
-                <li><a href="/dashboard">Dashboard</a></li>
+                @if(Auth::user()->role == "user")
+                <li><a href="/memberarea" title="Member Area">Member Area</a></li>
+                <li><a href="/transaction" title="Transaction">Transaction</a></li>
+                @else
+                <li><a href="/dashboard" title="Dashboard">Dashboard</a></li>
+                @endif
                 @endauth
                 @guest
-                <li><a href="/">Home</a></li>
+                <li><a href="/" title="Home">Home</a></li>
                 @endguest
-                <li><a href="#products">Products</a></li>
-                <li><a href="#about">About Us</a></li>
-                <li><a href="#contact">Contact Us</a></li>
+                <li><a href="/products" title="Products">Products</a></li>
+                <li><a href="/about" title="About Us">About Us</a></li>
+                <li><a href="/contact" title="Contact Us">Contact Us</a></li>
             </ul>
 
             <div class="auth-buttons">
@@ -32,7 +37,7 @@
                             {{ Auth::user()->name }} ▼
                         </button>
                         <div class="dropdown-content">
-                            <a href="{{ route('profile.edit') }}">My Profile</a>
+                            <a href="{{ route('profile.edit') }}" title="My Profile">My Profile</a>
                             <form action="{{ route('logout') }}" method="POST" style="margin: 0;">
                                 @csrf
                                 <button type="submit" class="logout-button dropdown-item">Logout</button>

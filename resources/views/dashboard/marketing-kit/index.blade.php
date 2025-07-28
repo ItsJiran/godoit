@@ -122,5 +122,8 @@
         </div>
         @endforelse
     </div>
+
+    <!-- PAGINATION -->
+    <x-pagination :paginator="$kits" />
 </div>
 @endsection

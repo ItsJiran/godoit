@@ -107,12 +107,14 @@ class DashboardController extends Controller
     public function marketing_kit(Request $request)
     {
         $query = $request->input('search');
+        
         if ($query) {
             $kits = MarketingKit::where('judul', 'like', '%' . $query . '%')
-                               ->get();
+                                ->paginate(10);
         } else {
-            $kits = MarketingKit::latest()->get();
+            $kits = MarketingKit::latest()->paginate(2);
         }
+
         return view('dashboard.marketing-kit.index', compact('kits', 'query'));
     }
 
