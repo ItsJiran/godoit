@@ -26,6 +26,7 @@ Route::get('/update/payment/status/{id}/{status}', [BuyController::class, 'manua
 Route::middleware('auth')->group(function () {
     // DASHBOARD
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
+    Route::get('/admin/products', [DashboardController::class, 'products'])->name('products');
 
     // PROFILE DATA
     Route::get('/profile', [ProfileController::class, 'myprofile'])->name('profile.myprofile');

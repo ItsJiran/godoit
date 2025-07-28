@@ -15,7 +15,7 @@ class ProductController extends Controller
 {
     /**
      * Display a listing of the products.
-     *
+     * 
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\View\View|\Illuminate\Http\Response
      */

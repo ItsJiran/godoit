@@ -24,6 +24,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'whatsapp',
+        'kota',
         'referral_code',                
         'parent_referral_code',         
         'registration_ip_address',      

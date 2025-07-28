@@ -6,6 +6,7 @@
         <p class="greeting-subtitle">Here is your dashboard, let's do some thing!</p>
     </div>
 
+    @if(Auth::user()->role == "user")
     <!-- SECTION AFFILIATE -->
     <section class="hero orange-bg">
         <div class="container">
@@ -21,7 +22,6 @@
                     </button>
                 </div>
             </div>
-
             <div class="stats-grid">
                 <div class="stat-card">
                     <div class="stat-icon">
@@ -66,4 +66,5 @@
         </div>
     </section>
     <div class="notification" id="notification">Link berhasil disalin!</div>
+    @endif
 @endsection

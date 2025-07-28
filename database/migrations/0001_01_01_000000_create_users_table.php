@@ -18,6 +18,8 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->string('whatsapp')->unique();
+            $table->string('kota');
 
             // Kolom 'role' ditempatkan di sini sesuai urutan yang diinginkan.
             // Tidak perlu '->after()' karena ini adalah Schema::create.

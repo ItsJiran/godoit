@@ -18,6 +18,7 @@
     </section>
 
     @auth
+    @if(Auth::user()->role == "user")
     <!-- SECTION AFFILIATE -->
     <section class="hero orange-bg">
         <div class="container">
@@ -115,6 +116,7 @@
             </div>
         </div>
     </section>
+    @endif
     @endauth
 
     <!-- SECTION -->
