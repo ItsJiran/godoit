@@ -161,3 +161,18 @@ $(document).keydown(function (e) {
 $('.notification-modal-container').on('click', function (e) {
     e.stopPropagation();
 });
+
+// Menu sidebar
+$(document).ready(function () {
+    var currentPath = window.location.pathname;
+    $('.menu-item').each(function () {
+        var linkPath = $(this).attr('href');
+        if (!linkPath.startsWith('/')) {
+            linkPath = '/' + linkPath;
+        }
+        if (currentPath === linkPath) {
+            $('.menu-item').removeClass('active'); // hilangkan yang lama
+            $(this).addClass('active'); // tambahkan yang cocok
+        }
+    });
+});
