@@ -77,4 +77,18 @@ class PageController extends Controller
             'userPremiumMembership' => $user ? $user->activeMembershipPremium() : null,
         ]);
     }
+
+    // PAGE TRANSACTION (USERS)
+    public function transaction(Request $request)
+    {
+        $query = $request->input('search');
+        if ($query) {
+            $payments = Payment::where('user_id',Auth::user()->id)
+                                ->where('id_order', 'like', '%' . $query . '%')
+                                ->paginate(10);
+        } else {
+            $payments = Payment::where('user_id',Auth::user()->id)->paginate(5);
+        }
+        return view('page.transaction', compact('payments', 'query'));
+    }
 }

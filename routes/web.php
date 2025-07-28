@@ -49,6 +49,7 @@ Route::middleware('auth')->group(function () {
     // PAGES (USER)
     Route::get('/marketing-kit', [PageController::class, 'marketing_kit'])->name('page.marketingkit');
     Route::get('/memberarea', [PageController::class, 'memberarea'])->name('page.memberarea');
+    Route::get('/transaction', [PageController::class, 'transaction'])->name('page.transaction');
 
     // CHECKOUT PRODUCT
     Route::post('/product/checkout', [CheckoutController::class, 'checkoutProduct'])->name('product.checkout');
