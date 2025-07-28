@@ -34,9 +34,11 @@
                                 <span class="item-value total-price" data-harga="{{$total}}">Rp {{ number_format($total, 0, ',', '.') }}</span>
                             </div>
                         </div>
+                        @if($payment->status == 0)
                         <div class="payment-actions">
                             <button class="pay-btn" id="pay-button">Bayar Sekarang</button>
                         </div>
+                        @endif
                     </div>
                 </div>
             </div>

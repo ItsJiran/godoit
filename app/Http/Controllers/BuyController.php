@@ -15,6 +15,7 @@ use Carbon\Carbon;
 use Midtrans\Notification;
 use Midtrans\Snap;
 use Midtrans\Config;
+use Midtrans\Transaction;
 
 use App\Services\Referral\ReferralService;
 use App\Services\Account\TransactionService;
