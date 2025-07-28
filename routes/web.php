@@ -43,6 +43,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/admin/edit-user/{id}', [DashboardController::class, 'edituser'])->name('edituser');
     Route::put('/admin/edit-user/{id}', [DashboardController::class, 'adminedituser'])->name('adminedituser');
 
+    // TRANSACTION
+    Route::get('/admin/transaction', [DashboardController::class, 'admin_transaction'])->name('admin.transaction');
+
     // CHECKOUT PRODUCT
     Route::post('/product/checkout', [CheckoutController::class, 'checkoutProduct'])->name('product.checkout');
     Route::get('/membership/upgrade', [PremiumMembershipController::class, 'index'])->name('membership.upgrade');

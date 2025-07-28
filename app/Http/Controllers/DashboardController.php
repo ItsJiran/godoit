@@ -12,6 +12,7 @@ use App\Models\User;
 use App\Models\Account;
 use App\Models\AccountTransaction;
 use App\Models\MarketingKit;
+use App\Models\Payment;
 
 use App\Enums\Account\AccountType;
 use App\Enums\Account\AccountTransactionStatus;
@@ -229,6 +230,34 @@ class DashboardController extends Controller
             'kota' => $request->kota ?? null,
         ]);
         return redirect()->route('allusers')->with('success', 'Profil '.$user->name.' berhasil diperbarui.');
+    }
+
+    // PAYMENT TRANSACTION (ADMIN)
+    public function admin_transaction(Request $request)
+    {
+        $query = $request->input('search');
+        if ($query) {
+            $payments = Payment::where('order_id', 'like', '%' . $query . '%')
+                                ->latest()
+                                ->paginate(5);
+        } else {
+            $payments = Payment::latest()->paginate(5);
+        }
+
+        // Decode JSON fields for each payment
+        foreach ($payments as $payment) {
+            if (is_string($payment->product_details)) {
+                $payment->product_details = json_decode($payment->product_details, true);
+            }
+            if (is_string($payment->transaction_details)) {
+                $payment->transaction_details = json_decode($payment->transaction_details, true);
+            }
+            if (is_string($payment->customer_details)) {
+                $payment->customer_details = json_decode($payment->customer_details, true);
+            }
+        }
+
+        return view('dashboard.transaction', compact('payments', 'query'));
     }
 
 }
