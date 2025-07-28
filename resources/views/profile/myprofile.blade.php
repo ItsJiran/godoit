@@ -1,10 +1,11 @@
 @section('title', 'My Profile')
 <x-app-layout>
+    <section class="hero-title">
+        <h1>My Profile</h1>
+    </section>
     <section class="hero">
         <div class="container min-container">
             <div class="profile-box">
-                <h2 class="profile-title">Profil Saya</h2>
-
                 <div class="profile-info">
                     <p><strong>Nama:</strong> {{ $user->name }}</p>
                     <p><strong>Email:</strong> {{ $user->email }}</p>

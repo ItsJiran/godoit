@@ -7,6 +7,7 @@
         <div class="container min-container">
             <div class="edit-profile-box">
                 @if(session('success'))
+                <!-- Success -->
                 <div class="alert alert-success">
                     <div class="alert-icon">✓</div>
                     <div class="alert-text">
@@ -16,6 +17,7 @@
                 </div>
                 @endif
                 @if ($errors->any())
+                <!-- Error -->
                 <div class="alert alert-error">
                     <div class="alert-icon">✕</div>
                     <div class="alert-text">
