@@ -13,6 +13,7 @@
                 <li><a href="/memberarea" title="Member Area">Member Area</a></li>
                 <li><a href="/transaction" title="Transaction">Transaction</a></li>
                 <li><a href="/marketing-kit" title="Marketing Kit">Marketing Kit</a></li>
+                <li><a href="/contact" title="Contact Us">Contact Us</a></li>
                 @else
                 <li><a href="/dashboard" title="Dashboard">Dashboard</a></li>
                 <li><a href="/admin/product" title="Products">Products</a></li>

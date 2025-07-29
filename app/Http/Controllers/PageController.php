@@ -13,6 +13,7 @@ use App\Models\Account;
 use App\Models\AccountTransaction;
 use App\Models\MarketingKit;
 use App\Models\Payment;
+use App\Models\ContactMessage;
 
 use App\Enums\Account\AccountType;
 use App\Enums\Account\AccountTransactionStatus;
@@ -90,5 +91,38 @@ class PageController extends Controller
             $payments = Payment::where('user_id',Auth::user()->id)->latest()->paginate(5);
         }
         return view('page.transaction', compact('payments', 'query'));
+    }
+
+    // HALAMAN CONTACT
+    public function contact()
+    {
+        return view('page.contact');
+    }
+
+    // KIRIM PESAN
+    public function submitContact(Request $request)
+    {
+        // Cek session agar tidak spam
+        if (session()->has('last_contact_submission')) {
+            $lastSubmission = session('last_contact_submission');
+            if (now()->diffInMinutes($lastSubmission) < 5) {
+                return back()->withErrors(['pesan' => 'Anda baru saja mengirim pesan. Silakan tunggu 5 menit.']);
+            }
+        }
+
+        $request->validate([
+            'judul' => 'required|max:255',
+            'nama' => 'required|max:255',
+            'email' => 'required|email',
+            'whatsapp' => 'required|numeric',
+            'pesan' => 'required',
+        ]);
+
+        ContactMessage::create($request->only('judul', 'nama', 'email', 'whatsapp', 'pesan'));
+
+        // Simpan waktu terakhir pengiriman
+        session(['last_contact_submission' => now()]);
+
+        return back()->with('success', 'Pesan Anda berhasil dikirim.');
     }
 }

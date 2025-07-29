@@ -61,6 +61,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/marketing-kit', [PageController::class, 'marketing_kit'])->name('page.marketingkit');
     Route::get('/memberarea', [PageController::class, 'memberarea'])->name('page.memberarea');
     Route::get('/transaction', [PageController::class, 'transaction'])->name('page.transaction');
+    Route::get('/contact', [PageController::class, 'contact'])->name('page.contact');
+    Route::post('/contact', [PageController::class, 'submitContact'])->name('page.contact.submit');
 
     // CHECKOUT PRODUCT
     Route::get('/membership/upgrade', [PremiumMembershipController::class, 'index'])->name('membership.upgrade');
