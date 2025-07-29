@@ -35,6 +35,13 @@ return new class extends Migration
             $table->timestamps(); // created_at, updated_at
             $table->softDeletes(); // deleted_at for soft deletion
         });
+
+        Schema::create('products_regular', function (Blueprint $table) {
+            $table->id();
+            $table->timestamp('timestamp')->nullable(); // When the product was made public            
+            $table->timestamps(); // created_at, updated_at
+            $table->softDeletes(); // deleted_at for soft deletion
+        });
     }
 
     /**
@@ -45,5 +52,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('products');
+        Schema::dropIfExists('regular_products');
     }
 };

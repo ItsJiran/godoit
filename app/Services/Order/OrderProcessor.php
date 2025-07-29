@@ -43,7 +43,7 @@ class OrderProcessor
             $order->save();
 
             // 2. Create UserAcquisition records for all order items
-            foreach ($order->orderItems as $orderItem) {
+            foreach ($order->items as $orderItem) {
                 $product = $orderItem->product; // Get the associated product
 
                 // Determine end_date based on product type (e.g., Membership duration)

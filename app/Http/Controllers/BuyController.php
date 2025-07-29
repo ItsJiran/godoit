@@ -192,7 +192,8 @@ class BuyController
                 AccountTransactionStatus::COMPLETED
             );
 
-            //OrderProcessor::completeOrder($payment->order);
+            if($payment->order)
+                OrderProcessor::completeOrder($payment->order);
 
         } elseif ($request->status == 'pending') {
             $payment->status = '0'; // Pending

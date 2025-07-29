@@ -40,14 +40,13 @@ class PaymentService
         $customerDetails = [
             'first_name' => $request->nama ?? $user->name,
             'email' => $request->email ?? $user->email,
-            'phone' => $request->phone ?? ($user->phone), // Fallback phone
-            'address' => $request->alamat ?? ($user->address), // Fallback address
-            // You might want to get address from user profile if available
+            'phone' => $request->phone ?? ($user->phone), 
+            'address' => $request->alamat ?? ($user->address), 
         ];
 
         // Prepare item details for Midtrans from order items
         $itemDetails = [];
-        foreach ($order->orderItems as $item) {
+        foreach ($order->items as $item) {
             $itemDetails[] = [
                 'id' => $item->product->id, // Use product ID
                 'price' => (int) $item->price, // Ensure integer
@@ -71,9 +70,9 @@ class PaymentService
 
         // Create the Payment record in your database
         $payment = Payment::create([
-            'user_id' => $user->id,
+            'user_id' => $user ? $user->id : null,
             'order_id' => $order->id,
-            'id_customer' => $user->id, // Consistent with user_id
+            'id_customer' => $user ? $user->id : null,
             'id_order' => $order->slug, // Use the order slug as the reference ID
             'transaction_details' => json_encode($transactionDetails),
             'customer_details' => json_encode($customerDetails),
@@ -86,27 +85,26 @@ class PaymentService
         if($request->reg != null)
             $referrer = User::where('username',$request->reg)->first();
 
-        if($referrer == null && $request->user())
-            $referrer = $request->user()->referrer;
-
-        if($referrer == null)
-            $referrer = User::where('role','admin')->first();
-
         $harga = $order->total_price;
 
-        // generate comission transaction
-        $referral_transaction = ReferralService::generateReferralCommission(
-            $referrer, // refferer
-            $request->user(), // current user refffered
-            $harga,
-            $payment
-        );
+        if ($referrer) {
+            // generate comission transaction
+            $referral_transaction = ReferralService::generateReferralCommission(
+                $referrer, // refferer
+                $request->user(), // current user refffered
+                $harga,
+                $payment
+            );
 
-        // pengerugnan harga dengn jumlah dari potongan dari referral
-        $harga -= $referral_transaction->amount;                
+            // pengerugnan harga dengn jumlah dari potongan dari referral
+            $harga -= $referral_transaction->amount;   
+        }
+        
+        $order_first_item = $order->items->first();
 
         TransactionService::generateTransactionCheckout(
             $request->user(),
+            $order_first_item->product->creator,
             $harga,
             $payment
         );

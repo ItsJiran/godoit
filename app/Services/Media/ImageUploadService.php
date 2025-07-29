@@ -142,7 +142,7 @@ class ImageUploadService
 
             $conversions[$name] = [
                 'path' => $conversionFullPath,
-                'url' => Storage::disk($diskName)->url($conversionFullPath),
+                'url' => Storage::disk($diskName)->url($conversionFullPath), 
                 'width' => $manipulatedImage->width(),
                 'height' => $manipulatedImage->height(),
                 'size' => Storage::disk($diskName)->size($conversionFullPath),

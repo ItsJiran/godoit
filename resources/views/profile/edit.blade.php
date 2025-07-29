@@ -34,9 +34,15 @@
                 @endif
 
                 <div class="box-formulir">
-                    <form action="{{ route('profile.update') }}" method="POST" class="edit-profile-form">
+                    <form action="{{ route('profile.update') }}" method="POST" class="edit-profile-form" enctype="multipart/form-data">
                         @csrf
                         @method('PATCH')
+
+                        <div class="profile-section">
+                            <div class="profile-avatar" style="border-radius:100%; width:120px; aspect-ratio:1; margin:0px auto; background-color:gray; overflow:hidden;">
+                                <img style="width:100%" src="{{ $user->avatar ?  asset('storage/' . $user->avatar->conversions['medium']['path']) : '' }}">                                            
+                            </div>                     
+                        </div>
 
                         <div class="form-group">
                             <label for="name" class="form-label">Nama Lengkap</label>
@@ -46,6 +52,11 @@
                         <div class="form-group">
                             <label for="email" class="form-label">Email Address</label>
                             <input type="email" name="email" id="email" class="form-input" value="{{ old('email', $user->email) }}" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Foto Profile (Kosongkan jika tidak ingin mengubah)</label>
+                            <input class="form-input" type="file" id='avatar' name="avatar" class="form-control">
                         </div>
 
                         <div class="form-group">

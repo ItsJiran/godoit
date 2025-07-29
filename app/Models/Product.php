@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 use App\Enums\Product\ProductType; 
 use App\Enums\Product\ProductStatus; 
+use App\Enums\Image\ImagePurposeType; // Import the enum
 
 class Product extends Model
 {
@@ -77,6 +78,7 @@ class Product extends Model
         $lastRecord = static::query()
             ->where('productable_type', $productableTypeClass)
             ->orderByDesc('sequence_number') // Order by the actual sequence_number field
+            ->withTrashed()
             ->first();
 
         // If a last record exists, increment its sequence_number; otherwise, start from 1
@@ -104,6 +106,14 @@ class Product extends Model
     public function creator()
     {
         return $this->belongsTo(User::class);
+    }
+
+
+    // thumbnail
+    public function thumbnail(): \Illuminate\Database\Eloquent\Relations\MorphOne
+    {
+        return $this->morphOne(Image::class, 'imageable')
+                    ->where('purpose', ImagePurposeType::PRODUCT_THUMBNAIL->value); // Use ->value
     }
 
     /**

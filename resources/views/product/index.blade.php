@@ -40,32 +40,42 @@
     </div>
     @endif
 
-        <div class="product-header">
-            <h1>{{ $product->name ?? 'Premium Membership' }}</h1>
-            <p>{{ $product->description ?? 'Unlock exclusive features and content with our premium offering.' }}</p>
-        </div>
+    <div class="product-header">
+        <h1>{{ $product->title }}</h1>
+        <p>{{ $product->description }}</p>
+    </div>
 
-        <div class="product-details">
-            <div class="detail-item">
-                <svg class="detail-icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l3 3a1 1 0 001.414-1.414L11 9.586V6z" clip-rule="evenodd"></path></svg>
-                <span class="detail-label">Type:</span>
-                <span class="detail-value">{{ ucfirst($product->type ?? 'N/A') }}</span>
-            </div>
-            @if(isset($product->productable) && $product->productable instanceof \App\Models\Membership)
-            <div class="detail-item">
-                <svg class="detail-icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                <span class="detail-label">Access Duration:</span>
-                <span class="detail-value">
-                    @if($product->productable->duration_days)
-                        {{ $product->productable->duration_days }} Days
-                    @else
-                        Lifetime
-                    @endif
-                </span>
-            </div>
-            @endif
-            {{-- Add more detail items here based on your Product model's attributes --}}
+    <div class="product-details">
+        <div class="detail-item">
+            <svg class="detail-icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l3 3a1 1 0 001.414-1.414L11 9.586V6z" clip-rule="evenodd"></path></svg>
+            <span class="detail-label">Type:</span>
+            <span class="detail-value">{{ ucfirst($product->type ?? 'N/A') }}</span>
         </div>
+        @if(isset($product->productable) && $product->productable instanceof \App\Models\ProductRegular)
+        <div class="detail-item">
+            <svg class="detail-icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <span class="detail-label">Event Date:</span>
+            <span class="detail-value">
+                <p class="hero-date">{{ \Carbon\Carbon::parse($product->productable->timestamp)->translatedFormat('l, j F Y, (H:iA)') }}</p>
+            </span>
+        </div>
+        @endif
+
+        @if(isset($product->productable) && $product->productable instanceof \App\Models\Membership)
+        <div class="detail-item">
+            <svg class="detail-icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <span class="detail-label">Access Duration:</span>
+            <span class="detail-value">
+                @if($product->productable->duration_days)
+                    {{ $product->productable->duration_days }} Days
+                @else
+                    Lifetime
+                @endif
+            </span>
+        </div>
+        @endif
+        {{-- Add more detail items here based on your Product model's attributes --}}
+    </div>
 
         <div class="product-price">
             <div class="price-label">Price:</div>
@@ -74,24 +84,74 @@
             </div>
         </div>
 
-        <div class="call-to-action mb-3">
-            @auth
-                {{-- Check if the user already has this product --}}
-                @if (Auth::user()->acquisitions()->where('product_id', $product->id)->active()->exists())
-                    <button class="btn-buy" disabled>Already Acquired</button>
-                    <p class="mt-3 text-gray-600">You already have an active acquisition for this product.</p>
-                @else
-                    {{-- Use a form for the purchase action --}}
-                    <form action="{{ route('product.checkout') }}" method="POST">
-                        @csrf
-                        <input type="hidden" name="product_id" value="{{ $product->id }}">
-                        <button type="submit" class="btn-buy">Buy Now</button>
-                    </form>
-                @endif
+    <div class="call-to-action">
+        @auth
+            {{-- Check if the user already has this product --}}
+            @if (Auth::user()->acquisitions()->where('product_id', $product->id)->active()->exists())
+                <button class="btn-buy" disabled>Already Acquired</button>
+                <p class="mt-3 text-gray-600">You already have an active acquisition for this product.</p>
             @else
-                <p class="text-gray-600 mb-3">Please log in to acquire this product.</p>
-                <a href="{{ route('login') }}" class="btn-buy">Login to Buy</a>
-            @endauth
-        </div>
+                {{-- Use a form for the purchase action --}}
+                <form action="{{ route('product.checkout') }}" method="POST">
+                    @csrf
+                    <input type="hidden" name="product_id" value="{{ $product->id }}">
+                    <input type="hidden" name="reg" value="{{ request('reg') }}"> {{-- Use the $harga variable for amount --}}
+                    <button type="submit" class="btn-buy">Buy Now</button>
+                </form>
+            @endif
+        @else
+            {{-- Use a form for the purchase action --}}
+            <form action="{{ route('product.checkout') }}" method="POST">
+                @csrf
+                <input type="hidden" name="product_id" value="{{ $product->id }}">
+                <input type="hidden" name="reg" value="{{ request('reg') }}"> {{-- Use the $harga variable for amount --}}
+
+                {{-- User Information Fields --}}
+                <h3 class="form-section-title">Your Information</h3>
+
+                <div class="form-group">
+                    <label for="nama" class="form-label">Name:</label>
+                    <input type="text" id="nama" name="nama" class="form-input" value="{{ old('nama') }}" required>
+                    @error('nama')
+                        <span class="error-message">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <div class="form-group">
+                    <label for="email" class="form-label">Email:</label>
+                    <input type="email" id="email" name="email" class="form-input" value="{{ old('email') }}" required>
+                    @error('email')
+                        <span class="error-message">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <div class="form-group">
+                    <label for="phone" class="form-label">Phone:</label>
+                    <input type="text" id="phone" name="phone" class="form-input" value="{{ old('phone') }}" required>
+                    @error('phone')
+                        <span class="error-message">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <div class="form-group">
+                    <label for="alamat" class="form-label">Address:</label>
+                    <textarea id="alamat" name="alamat" class="form-input" rows="3" required>{{ old('alamat') }}</textarea>
+                    @error('alamat')
+                        <span class="error-message">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <div class="form-group">
+                    <label for="umur" class="form-label">Age:</label>
+                    <input type="number" id="umur" name="umur" class="form-input" value="{{ old('umur') }}" required>
+                    @error('umur')
+                        <span class="error-message">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <button type="submit" class="btn-buy">Buy Now</button>
+            </form>
+        @endauth
     </div>
+</div>
 </x-app-layout>

@@ -32,29 +32,29 @@ class TransactionService
      */
     public static function generateTransactionCheckout(
         ?User $customer = null, // Include for audit/description purposes
+        ?User $acquirer = null, // Include for audit/description purposes
         float $baseAmount,
         ?Model $sourceable = null,
         ?string $description = null
     ): AccountTransaction {
         return DB::transaction(function () use (
             $customer,
+            $acquirer,
             $baseAmount,
             $sourceable,
             $description,
         ) {
-            $adminUser = User::where('role','admin')->first();
-
             // 2. Get the first admin container commission account
             // Assuming you have a specific AccountType for referral commissions
-            $adminAccount = Account::getAccountUserByType(
-                $adminUser->id,
+            $acquirerAccount = Account::getAccountUserByType(
+                $acquirer->id,
                 AccountType::E_WALLET->value 
             );
 
             // 3. Create the pending AccountTransaction for the referrer
             $mainTransaction = AccountTransaction::createTransaction(
-                userId: $adminUser->id,
-                accountId: $adminAccount->id,
+                userId: $acquirer->id,
+                accountId: $acquirerAccount->id,
                 amount: $baseAmount,
                 direction: AccountTransactionType::IN, // Commission is a credit to the referrer
                 purpose: AccountTransactionPurpose::PRODUCT_BROUGHT, // Or COMMISSION_CREDIT

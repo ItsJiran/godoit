@@ -9,10 +9,33 @@ use App\Http\Requests\Product\StoreProductRequest;
 use App\Http\Requests\Product\UpdateProductRequest;
 
 use App\Models\Product;
+use App\Models\ProductRegular;
 use App\Enums\Product\ProductType;
+use App\Enums\Product\ProductStatus;
+
+use App\Models\Image;
+use App\Enums\Image\ImagePurposeType;
+use App\Services\Media\ImageUploadService; // Ensure this is correct
+
+use Carbon\Carbon;
 
 class ProductController extends Controller
 {
+
+
+    public function viewProduct(Request $request, $id)
+    {
+        $user = $request->user();
+        $product = Product::where('id',$id)->with(['thumbnail','productable'])->first();
+
+        // Pass products and the current user's ID to the view
+        return view('product.index', [
+            'product' => $product,
+            'currentUserId' => $user ? $user->id : null, // Pass user ID for comparison in view
+        ]);
+    }
+
+
     /**
      * Display a listing of the products.
      * 
@@ -23,23 +46,26 @@ class ProductController extends Controller
     {
         // Authorize the 'viewAny' action for the Product model.
         // This will check the 'viewAny' method in ProductPolicy.
-        $this->authorize('viewAny', Product::class);
+        // $this->authorize('viewAny', Product::class);
 
         // Get the authenticated user
         $user = $request->user();
 
-        // Query products based on user role
-        if ($user && in_array($user->role, ['superadmin', 'admin'])) {
-            $products = Product::withTrashed()->latest()->get(); // Use latest() for ordering
+        $query = $request->input('search');
+        if ($query) {
+            $products = Product::where('title', 'like', '%' . $query . '%')
+                                ->where('creator_id',$request->user()->id)
+                                ->with('thumbnail')
+                                ->paginate(10);
         } else {
-            $products = Product::published()->latest()->get();
+            $products = Product::latest()
+                            ->where('creator_id',$request->user()->id)
+                            ->with('thumbnail')
+                            ->paginate(2);
         }
 
         // Pass products and the current user's ID to the view
-        return view('products.index', [
-            'products' => $products,
-            'currentUserId' => $user ? $user->id : null, // Pass user ID for comparison in view
-        ]);
+        return view('dashboard.products.index', compact('products', 'query'));
     }
 
     /**
@@ -152,4 +178,127 @@ class ProductController extends Controller
             return back()->withInput()->withErrors(['error' => 'Terjadi kesalahan saat memperbarui produk: ' . $e->getMessage()]);
         }
     }
+
+    // temporary
+
+    public function saveProduct( Request $request )
+    {
+        try {
+
+            $request->validate([
+                'title' => 'required|string|max:255',
+                'description' => 'required|string',
+                'price' => 'required|numeric',
+                'timestamp' => 'required|date_format:Y-m-d\TH:i', // Changed from datetime to date_format            
+                'gambar' => ['nullable', 'image', 'max:5120'], // Max 5MB
+            ]);
+
+            $regular_product = ProductRegular::create([
+                'timestamp' => $request->timestamp
+            ]);
+            
+            $sequence_number = Product::determineNextSequenceNumber($regular_product::class);
+            $slug = Product::determineNextSequenceSlug($regular_product::class,$sequence_number);
+
+            $product = Product::create([
+                'title' => $request->title,
+                'creator_id' => $request->user()->id,
+                'description' => $request->description,
+                'productable_id' => $regular_product->id,
+                'productable_type' => $regular_product::class,
+                'status' => ProductStatus::PUBLISHED,
+                'price' => $request->price,
+                'slug' => $slug,
+                'sequence_number' => $sequence_number,
+            ]);
+
+            if ($request->hasFile('gambar')) {                
+
+                try {                    
+                    $newThumbnail = Image::createImageRecord(
+                        $request->file('gambar'),
+                        $product,
+                        ImagePurposeType::PRODUCT_THUMBNAIL->value,
+                        $product->title . ' product thumbnail',
+                        'public',
+                        null,
+                        ImagePurposeType::PRODUCT_THUMBNAIL->value
+                    );                    
+                } catch (\Exception $e) {                                        
+                    \Log::error('Failed to upload product thumbnail: ' . $e->getMessage());                    
+                    return redirect()->route('admin.product')->with('error', 'Gagal mengunggah foto produk baru. Silakan coba lagi.');
+                }
+            }
+
+            return redirect()->route('admin.product')->with('success', 'Produk berhasil ditambahkan!');
+        } catch (\InvalidArgumentException $e) {
+            return back()->withInput()->withErrors(['productable_type' => $e->getMessage()]);
+        } catch (\Exception $e) {
+            return back()->withInput()->withErrors(['error' => 'Terjadi kesalahan saat membuat produk: ' . $e->getMessage()]);
+        }
+    }
+
+    public function editProduct($id)
+    {
+        $product = Product::with(['thumbnail','productable'])->findOrFail($id);
+        return view('dashboard.products.edit', compact('product'));
+    }
+
+    public function updateProduct(Request $request, $id)
+    {
+        $product = Product::findOrFail($id);
+
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'gambar' => ['nullable', 'image', 'max:5120'], // Max 5MB
+            'description' => 'required|string',
+            'timestamp' => 'required|date_format:Y-m-d\TH:i', // Changed from datetime to date_format         
+            'price' => 'required|numeric',
+        ]);
+
+        if ($request->hasFile('gambar')) {            
+            $product->loadMissing('thumbnail');
+            
+            $oldAvatar = $product->thumbnail;
+
+            try {                
+                $newAvatar = Image::createImageRecord(
+                    $request->file('gambar'),
+                    $product,
+                    ImagePurposeType::PRODUCT_THUMBNAIL->value,
+                    $product->title . ' product thumbnail',
+                    'public',
+                    null,
+                    ImagePurposeType::PRODUCT_THUMBNAIL->value
+                );
+                
+                if ($oldAvatar) {
+                    ImageUploadService::deleteImage($oldAvatar); 
+                    $oldAvatar->forceDelete();
+                }
+            } catch (\Exception $e) {                                
+                \Log::error('Failed to upload product thumbnail: ' . $e->getMessage());
+                return redirect()->route('admin.product')->with('error', 'Gagal mengunggah foto produk baru. Silakan coba lagi.');
+            }
+        }
+
+        $product->loadMissing('productable');
+        $product->productable->timestamp = $request->timestamp;
+        $product->productable->save();
+
+        $product->title = $request->title;
+        $product->description = $request->description;
+        $product->price = $request->price;
+        $product->save();
+
+        return redirect()->route('admin.product')->with('success', 'Product berhasil diperbarui.');
+    }
+
+    public function deleteProduct($id)
+    {
+        $kit = Product::findOrFail($id);
+        $kit->delete();
+        return redirect()->route('admin.product')->with('success', 'Product berhasil dihapus.');
+    }
+
 }

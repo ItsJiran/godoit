@@ -6,12 +6,14 @@ use App\Traits\BasicEnumTrait;
 
 // models product type
 use App\Models\Membership;
+use App\Models\ProductRegular;
 
 enum ProductType: string
 {
     use BasicEnumTrait;
 
     case MEMBERSHIP = 'membership'; // For premium account upgrades or access levels
+    case REGULAR = 'regular'; // For premium account upgrades or access levels
 
     /**
      * Get a human-readable label for the product type.
@@ -22,6 +24,7 @@ enum ProductType: string
     {
         return match ($this) {
             self::MEMBERSHIP => 'Membership / Premium Access',
+            self::REGULAR => 'Regular Product',
         };
     }
 
@@ -29,6 +32,7 @@ enum ProductType: string
     {
         return match ($this) {
             self::MEMBERSHIP => Membership::class,
+            self::REGULAR => ProductRegular::class,
         };
     }
 

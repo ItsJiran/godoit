@@ -10,6 +10,8 @@ use Carbon\Carbon;
 
 use App\Models\User;
 use App\Models\Account;
+use App\Models\Product;
+use App\Models\ProductRegular;
 use App\Models\AccountTransaction;
 use App\Models\MarketingKit;
 use App\Models\Payment;
@@ -53,6 +55,7 @@ class DashboardController extends Controller
         }
 
         $kits = MarketingKit::latest()->paginate(2);
+        $products = Product::latest()->where('productable_type',ProductRegular::class)->with(['productable','thumbnail'])->paginate(2);
         
         // Using ->with() to pass variables to the view
         return view('welcome')->with([
@@ -62,6 +65,7 @@ class DashboardController extends Controller
             'userComissionTotalPending' => $userComissionTotalPending,
             'userNoId' => $userNoId,
             'kits' => $kits,
+            'products' => $products,
             'userPremiumMembership' => $user ? $user->activeMembershipPremium() : null,
         ]);
     }

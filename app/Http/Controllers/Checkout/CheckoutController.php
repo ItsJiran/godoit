@@ -47,8 +47,14 @@ class CheckoutController extends Controller
     {
         // Ensure the user is authenticated
         if (!Auth::check()) {
-            return redirect()->route('login')->with('error', 'Please log in to complete your purchase.');
-        }
+            $request->validate([
+                'nama' => 'required',
+                'email' => 'required',
+                'phone' => 'required',
+                'alamat' => 'required',
+                'umur' => 'required',
+            ]);    
+        } 
 
         $user = Auth::user();
 
@@ -60,34 +66,43 @@ class CheckoutController extends Controller
         $productId = $request->input('product_id');
         $product = Product::find($productId);
 
+
+
         // If product somehow not found after validation (shouldn't happen with exists rule, but as a safeguard)
         if (!$product) {
             return back()->with('error', 'Product not found.');
         }
 
+
+
         // 2. Check if the user already has an active acquisition for this product
-        if (UserAcquisition::userHasActiveProductAcquisition($user->id, $product->id)) {
+        if (Auth::check() && UserAcquisition::userHasActiveProductAcquisition($user->id, $product->id)) {
             return back()->with('error', 'You already have an active acquisition for this product.');
         }
 
-        // 3. Check if the user already has an active (pending) order containing this product
-        $existingActiveOrder = Order::where('user_id', $user->id)
-                                    ->where('status', OrderStatus::PENDING->value) // Assuming PENDING is the status for active, unfulfilled orders
-                                    ->whereHas('orderItems', function ($query) use ($productId) {
-                                        $query->where('product_id', $productId);
-                                    })
-                                    ->first();
 
-        if ($existingActiveOrder) {
-            return back()->with('error', 'You already have a pending order for this product. Please complete or cancel it first.');
+
+        // 3. Check if the user already has an active (pending) order containing this product
+        if (Auth::check() ) {
+            $existingActiveOrder = Order::where('user_id', $user->id)
+                ->where('status', OrderStatus::PENDING->value) // Assuming PENDING is the status for active, unfulfilled orders
+                ->whereHas('items', function ($query) use ($productId) {
+                    $query->where('product_id', $productId);
+                })
+                ->first();
+
+            if ($existingActiveOrder) {
+                return back()->with('error', 'You already have a pending order for this product. Please complete or cancel it first.');
+            }
         }
+
 
         // If all checks pass, proceed to create the order and order item
         DB::beginTransaction();
         try {
             // Create a new Order
             $order = Order::create([
-                'user_id' => $user->id ?? null,
+                'user_id' => $user ? $user->id : null,
                 'total_price' => $product->price, // Assuming simple case where order total is just product price
                 'status' => OrderStatus::PENDING->value, // Set initial status to PENDING
                 // Add other relevant order fields like currency, payment_method, etc.
@@ -104,15 +119,13 @@ class CheckoutController extends Controller
 
             $payment = PaymentService::generatePaymentForOrder($order, $request);
 
-
             DB::commit();
-
-            // Redirect to a payment gateway or a confirmation page
-            // You would typically redirect to a payment page here, or a success message.
+            
             return redirect()->route('payments.show', ['id' => $payment->id])->with('success','Berhasil Checkout, silahkan lakukan pembayaran!');
         } catch (\Exception $e) {
             DB::rollBack();
-            \Log::error("Error during product checkout for user {$user->id}, product {$productId}: " . $e->getMessage());
+            dd($e->getMessage());
+            \Log::error("Error during product checkout for user " . ($user ? $user->id : 'Guest' . $request->email) . ", product {$productId}: " . $e->getMessage());
             return back()->with('error', 'An error occurred during checkout. Please try again.');
         }
     }
