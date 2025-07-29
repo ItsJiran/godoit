@@ -79,7 +79,7 @@
             </div>
         @empty
             <div class="unit-empty-state">
-                Belum ada data kontak.
+                Belum ada pesan masuk.
             </div>
         @endforelse
     </div>

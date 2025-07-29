@@ -17,7 +17,7 @@
             <div class="form-group">
                 <label class="form-label">Gambar (Kosongkan jika tidak ingin mengubah)</label>
                 <input class="form-input" type="file" name="gambar" class="form-control">
-                <img style="width:100%" src="{{ $product->thumbnail ?  asset('storage/' . $product->thumbnail->path) : '' }}">                
+                <div class="goto-img"><img style="width:90%" src="{{ $product->thumbnail ?  asset('storage/' . $product->thumbnail->path) : '' }}"></div>                
             </div>
             <div class="form-group">
                 <label class="form-label">Description</label>

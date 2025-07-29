@@ -20,7 +20,7 @@
                 <div class="goto-img"><img src="{{ asset('storage/' . $kit->gambar) }}" width="150"></div>
             </div>
             <div class="form-group">
-                <label class="form-label">Konten <small>(Gunakan <code>{link_affiliate}</code> untuk posisi link)</label>
+                <label class="form-label">Konten <small>(Gunakan <code>{link_affiliate}</code> untuk posisi link)</small></label>
                 <textarea class="form-input" name="konten" class="form-control" id="ckeditor" rows="10" required>{{ $kit->konten }}</textarea>
             </div>
             <button type="submit" class="btn btn-primary">Update</button>

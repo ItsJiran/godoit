@@ -67,6 +67,9 @@ class PageController extends Controller
             
             $userNoId = $user->id;
         }
+
+        // Get Pengundang
+        $pengundang = User::where('referral_code',$user->parent_referral_code)->first();
         
         // Using ->with() to pass variables to the view
         return view('page.memberarea')->with([
@@ -76,6 +79,7 @@ class PageController extends Controller
             'userComissionTotalPending' => $userComissionTotalPending,
             'userNoId' => $userNoId,
             'userPremiumMembership' => $user ? $user->activeMembershipPremium() : null,
+            'pengundang' => $pengundang,
         ]);
     }
 

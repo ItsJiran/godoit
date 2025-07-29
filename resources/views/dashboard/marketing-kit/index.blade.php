@@ -32,7 +32,7 @@
                         <input class="form-input" type="file" name="gambar" class="form-control" required>
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Konten</label>
+                        <label class="form-label">Konten <small>(Gunakan <code>{link_affiliate}</code> untuk posisi link)</small></label>
                         <textarea class="form-input" name="konten" class="form-control" id="ckeditor" rows="5" required></textarea>
                     </div>
                 </p>

@@ -10,15 +10,9 @@ use App\Http\Controllers\Checkout\CheckoutController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [DashboardController::class, 'home'])->name('welcome.index');
+
 Route::get('/product/{product_id}', [DashboardController::class, 'product'])->name('welcome_product.index');
-//Route::get('/admin/schedule', [DashboardController::class, 'schedule'])->name('dashboard.schedule');
-//Route::get('/admin/transaction', [DashboardController::class, 'index'])->name('dashboard.index');
-//Route::get('/admin/marketing-kit', [DashboardController::class, 'index'])->name('dashboard.index');
-//Route::get('/admin/all-users', [DashboardController::class, 'index'])->name('dashboard.index');
-//Route::get('/admin/web-settings', [DashboardController::class, 'index'])->name('dashboard.index');
-
 Route::get('/demo/checkout', [CheckoutController::class, 'showCheckoutForm'])->name('checkout.form');
-
 Route::get('/product/view/{id}', [ProductController::class, 'viewProduct'])->name('product.view');
 Route::post('/product/checkout', [CheckoutController::class, 'checkoutProduct'])->name('product.checkout');
 
@@ -59,12 +53,9 @@ Route::middleware('auth')->group(function () {
     // TRANSACTION (ADMIN)
     Route::get('/admin/transaction', [DashboardController::class, 'admin_transaction'])->name('admin.transaction');
 
-    // PAGES (USER)
-    Route::get('/marketing-kit', [PageController::class, 'marketing_kit'])->name('page.marketingkit');
+    // PAGES (USER) NEED TO LOGIN
     Route::get('/memberarea', [PageController::class, 'memberarea'])->name('page.memberarea');
     Route::get('/transaction', [PageController::class, 'transaction'])->name('page.transaction');
-    Route::get('/contact', [PageController::class, 'contact'])->name('page.contact');
-    Route::post('/contact', [PageController::class, 'submitContact'])->name('page.contact.submit');
 
     // CHECKOUT PRODUCT
     Route::get('/membership/upgrade', [PremiumMembershipController::class, 'index'])->name('membership.upgrade');
@@ -73,5 +64,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
 });
+
+// PAGES (GUEST or USER) NO LOGIN
+Route::get('/marketing-kit', [PageController::class, 'marketing_kit'])->name('page.marketingkit');
+Route::get('/contact', [PageController::class, 'contact'])->name('page.contact');
+Route::post('/contact', [PageController::class, 'submitContact'])->name('page.contact.submit');
 
 require __DIR__.'/auth.php';

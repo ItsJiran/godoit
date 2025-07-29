@@ -3,9 +3,22 @@
     <section class="hero-title">
         <h1>Member Area</h1>
     </section>
-    <!-- SECTION AFFILIATE -->
+    <!-- SECTION MEMBER AREA -->
     <section class="hero orange-bg">
         <div class="container">
+            <!-- WALLET -->
+            <div class="box-custom">
+                <div class="data-wallet">
+                    <h2>Total Balance</h2>
+                    <div class="wallet-balance">Rp 100.000</div>
+                    <div class="wallet-button">
+                        <a class="btn label-button" href="#" title="Withdraw">Withdraw</a>
+                        <a class="btn label-button classic-button" href="#" title="Your Bank">Your Bank</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AFFILIATE -->
             <div class="affiliate-link-section">
                 <div class="link-label">Link Affiliasi Anda:</div>
                 <div class="link-input-wrapper">
@@ -18,7 +31,6 @@
                     </button>
                 </div>
             </div>
-
             <div class="stats-grid">
                 <div class="stat-card">
                     <div class="stat-icon">
@@ -60,12 +72,36 @@
                     <div class="stat-value">{{ $userPremiumMembership ? 'Premium' : 'Free' }}</div>                    
                 </div>
             </div>
-            @if (!$userPremiumMembership)
-                <a href="{{ route('membership.upgrade') }}" style="margin-top:20px;text-align:center;display:block" class="btn btn-primary btn-lg">Upgrade Now!</a> {{-- Example route. Ensure this route is defined in your web.php --}}
-            @endif
         </div>
-
-
     </section>
     <div class="notification" id="notification">Link berhasil disalin!</div>
+
+    <!-- SECTION SELANJUTNYA -->
+    <section class="min-hero">
+        <div class="container">
+            @if(Auth::user()->parent_referral_code != NULL)
+            <div class="konten-pengundang">
+                @php
+                    $whatsappNumber = $pengundang->whatsapp;
+                    if (str_starts_with($whatsappNumber, '0')) {
+                        $whatsappNumber = '62' . substr($whatsappNumber, 1);
+                    }
+                @endphp
+                Pengundang Anda: <b>{{$pengundang->name}}</b> <a class="btn btn-whatsapp label-btn" href="https://wa.me/{{$whatsappNumber}}" target="_blank" title="Whatsapp">Chat via Whatsapp</a>
+            </div>
+            @endif
+            @if(!$userPremiumMembership)
+            <div class="mysection-item reverse mysection-box">
+                <div class="mysection-image">
+                    <img src="https://t4.ftcdn.net/jpg/15/02/52/47/360_F_1502524799_DgQUHNZHSrbxB1OQr5nbMLuxQQAcjqf6.jpg" alt="Program">
+                </div>
+                <div class="mysection-content">
+                    <h2 class="mysection-title">Mau Komisi Maksimal?</h2>
+                    <p class="mysection-description">Upgrade status anda dan dapatkan manfaat lebih</p>
+                    <a href="{{ route('membership.upgrade') }}" class="btn btn-primary">Upgrade Now</a>
+                </div>
+            </div>
+            @endif
+        </div>
+    </section>
 </x-app-layout>

@@ -36,7 +36,9 @@
                         </div>                     
                     </div>
                     <div class="profile-info">
-                        <div class="profile-name">{{Auth::user()->name}}</div>
+                        <div class="profile-name">
+                            <a href="{{ route('profile.edit') }}" title="Profile">{{Auth::user()->name}}</a>
+                        </div>
                         <div class="profile-email">{{Auth::user()->email}}</div>
                     </div>
                 </div>
