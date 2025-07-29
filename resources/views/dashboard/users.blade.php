@@ -95,8 +95,6 @@
         @empty
         <div class="unit-empty-state">
             Belum ada data.
-            <br>
-            <small>Klik tombol "Tambah Data" untuk menambahkan data.</small>
         </div>
         @endforelse
     </div>

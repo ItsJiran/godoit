@@ -8,7 +8,7 @@
                 <div class="hero-text">
                     <h1>{{ $product->title }}</h1>
                     <p class="hero-date">{{ \Carbon\Carbon::parse($product->productable->timestamp)->translatedFormat('l, j F Y, (H:iA)') }}</p>
-                    <a href="http://godoitnew.test/product/view/{{$product->id}}?reg={{ request('reg') }}" class="btn btn-join">Ikuti Sekarang</a>
+                    <a href="/product/view/{{$product->id}}?reg={{ request('reg') }}" class="btn btn-join">Ikuti Sekarang</a>
                 </div>
                 <div class="hero-image">
                     <img src="/storage/{{$product->thumbnail->path}}" alt="Program Leader" />
@@ -19,7 +19,6 @@
     @empty
     <b>Kosong!</b>
     @endforelse
-
 
     @auth
     @if(Auth::user()->role == "user")
@@ -84,43 +83,9 @@
                 <a href="{{ route('membership.upgrade') }}" style="margin-top:20px;text-align:center;display:block" class="btn btn-primary btn-lg">Upgrade Now!</a> {{-- Example route. Ensure this route is defined in your web.php --}}
             @endif
         </div>
-
-
     </section>
-
     <div class="notification" id="notification">Link berhasil disalin!</div>
     @endif
-
-    <!-- SECTION MARKETING KIT -->
-    <section class="hero">
-        <div class="container">
-            <div class="hero-title">
-                <h2>Marketing Kit</h2>
-            </div>
-
-            <div class="program-grid">
-                @forelse($kits as $kit)
-                <div class="program-card">
-                    <div class="program-image">
-                        <img src="{{ asset('storage/' . $kit->gambar) }}" alt="{{ $kit->judul }}">
-                    </div>
-                    <div class="program-content">
-                        <h3 class="program-title">{{ $kit->judul }}</h3>
-                        <p class="program-description">Salin copywriting dan link affiliasi anda ini ⬇️⬇️⬇️</p>
-                        <textarea class="form-input this-konten hidden" name="konten" class="form-control" rows="10" readonly>{!! str_replace('{link_affiliate}', $userReferral, $kit->konten) !!}</textarea>
-                        <a href="javascript:;" class="btn copy-konten"><svg class="copy-icon" viewBox="0 0 24 24">
-                            <path d="M16 1H4C2.9 1 2 1.9 2 3V17H4V3H16V1ZM19 5H8C6.9 5 6 5.9 6 7V21C6 22.1 6.9 23 8 23H19C20.1 23 21 22.1 21 21V7C21 5.9 20.1 5 19 5ZM19 21H8V7H19V21Z"></path>
-                        </svg> Copy</a>
-                    </div>
-                </div>
-                @empty
-                <b>Kosong!</b>
-                @endforelse
-            </div>
-        </div>
-    </section>
-
-
     @endauth
 
     <!-- SECTION -->
@@ -146,7 +111,7 @@
                         <h2 class="mysection-title">Program Napak Tilas Kebangsaan</h2>
                         <div class="mysection-price">Rp 50.000</div>
                         <p class="mysection-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam suscipit rhoncus gravida. Proin consectetur congue erat, quis finibus lectus posuere at. Donec sed augue eu est malesuada condimentum.</p>
-                        <a href="#join-now#" class="btn">Ikuti Sekarang</a>
+                        <a href="#join-now" class="btn">Ikuti Sekarang</a>
                     </div>
                 </div>
             </div>

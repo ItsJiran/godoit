@@ -84,7 +84,7 @@
             </div>
         </div>
 
-    <div class="call-to-action">
+    <div class="call-to-action full-action">
         @auth
             {{-- Check if the user already has this product --}}
             @if (Auth::user()->acquisitions()->where('product_id', $product->id)->active()->exists())
@@ -110,7 +110,7 @@
                 <h3 class="form-section-title">Your Information</h3>
 
                 <div class="form-group">
-                    <label for="nama" class="form-label">Name:</label>
+                    <label for="nama" class="form-label">Nama Lengkap</label>
                     <input type="text" id="nama" name="nama" class="form-input" value="{{ old('nama') }}" required>
                     @error('nama')
                         <span class="error-message">{{ $message }}</span>
@@ -118,7 +118,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="email" class="form-label">Email:</label>
+                    <label for="email" class="form-label">Email Address</label>
                     <input type="email" id="email" name="email" class="form-input" value="{{ old('email') }}" required>
                     @error('email')
                         <span class="error-message">{{ $message }}</span>
@@ -126,7 +126,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="phone" class="form-label">Phone:</label>
+                    <label for="phone" class="form-label">Whatsapp</label>
                     <input type="text" id="phone" name="phone" class="form-input" value="{{ old('phone') }}" required>
                     @error('phone')
                         <span class="error-message">{{ $message }}</span>
@@ -134,7 +134,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="alamat" class="form-label">Address:</label>
+                    <label for="alamat" class="form-label">Alamat Lengkap</label>
                     <textarea id="alamat" name="alamat" class="form-input" rows="3" required>{{ old('alamat') }}</textarea>
                     @error('alamat')
                         <span class="error-message">{{ $message }}</span>
@@ -142,7 +142,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="umur" class="form-label">Age:</label>
+                    <label for="umur" class="form-label">Umur</label>
                     <input type="number" id="umur" name="umur" class="form-input" value="{{ old('umur') }}" required>
                     @error('umur')
                         <span class="error-message">{{ $message }}</span>

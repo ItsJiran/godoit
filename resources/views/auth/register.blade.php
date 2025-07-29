@@ -11,7 +11,7 @@
             
             <!-- Name -->
             <div class="form-group">
-                <label class="form-label" for="name">{{ __('Full Name') }}</label>
+                <label class="form-label" for="name">{{ __('Nama Lengkap') }}</label>
                 <input type="text" 
                        id="name" 
                        name="name" 
@@ -62,12 +62,12 @@
 
             <!-- Username -->
             <div class="form-group">
-                <label class="form-label" for="kota">{{ __('Kota') }}</label>
+                <label class="form-label" for="kota">{{ __('Kota/Provinsi') }}</label>
                 <input type="text" 
                         id="kota" 
                         name="kota" 
                         class="form-input" 
-                        placeholder="Enter your kota" 
+                        placeholder="Enter your city" 
                         value="{{ old('kota') }}" 
                         required 
                         autofocus 

@@ -55,7 +55,7 @@
     <!-- Search -->
     <div class="search-form">
         <form action="{{ route('admin.product') }}" method="GET">
-            <input type="text" name="search" placeholder="Cari Data Marketing Kit..." required="" value="{{ $query ?? '' }}">
+            <input type="text" name="search" placeholder="Cari Data Produk..." required="" value="{{ $query ?? '' }}">
             <button type="submit">Cari</button>
         </form>
         @if ($query)
