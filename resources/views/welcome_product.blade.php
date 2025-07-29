@@ -156,7 +156,7 @@
             <div class="hero-title">
                 <h2>Formulir Pendaftaran</h2>
             </div>
-            @if (Auth::user()->acquisitions()->where('product_id', $product->id)->active()->exists())
+            @if (Auth::user() && Auth::user()->acquisitions()->where('product_id', $product->id)->active()->exists())
                 <button style='margin:0px auto; display:block;' class="btn-buy" disabled>Already Acquired</button>
                 <p style='margin:0px auto; display:block; text-align:center; margin-top:20px;' class="mt-3 text-gray-600">You already have an active acquisition for this product.</p>
             @else
