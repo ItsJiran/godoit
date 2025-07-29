@@ -16,7 +16,7 @@ use Midtrans\Notification;
 use Midtrans\Snap;
 use Midtrans\Config;
 use Midtrans\Transaction;
-
+use Illuminate\Support\Facades\DB; // Import DB facade
 use App\Services\Referral\ReferralService;
 use App\Services\Account\TransactionService;
 use App\Services\Account\TransactionProcessor;
@@ -168,6 +168,7 @@ class BuyController
     }
     
     // ALUR 3: UPDATE DATA PAYMENT DAN CHECKOUT
+
     public function updatePaymentStatus(Request $request)
     {
         // Validasi data yang masuk
@@ -175,42 +176,48 @@ class BuyController
             'status' => 'required|string',
             'order_id' => 'required|string',
         ]);
-    
-        // Cari Payment berdasarkan order_id
-        $payment = Payment::where('id_order', $request->order_id)->first();
-        //$user = User::find(Auth::user()->id);
 
-        if (!$payment) {
-            return response()->json(['error' => 'Payment not found'], 404);
+        DB::beginTransaction(); // Start database transaction
+
+        try {
+            // Cari Payment berdasarkan order_id
+            $payment = Payment::where('id_order', $request->order_id)->first();
+
+            if (!$payment) {
+                DB::rollBack(); // Rollback if payment not found
+                return response()->json(['error' => 'Payment not found'], 404);
+            }
+
+            // Update status berdasarkan status yang diterima dari JavaScript
+            if ($request->status == 'success') {              
+                $payment->status = '1'; 
+                TransactionService::processSourceableTransactions( $payment, AccountTransactionStatus::COMPLETED );
+                if($payment->order){ OrderProcessor::completeOrder( $payment->order ); }
+            } elseif ($request->status == 'pending') {
+                $payment->status = '0'; // Pending
+            } elseif ($request->status == 'error') {
+                $payment->status = '2'; // Error
+                TransactionService::processSourceableTransactions( $payment, AccountTransactionStatus::FAILED );
+            }
+
+            // Simpan perubahan ke database
+            $payment->save();
+            
+            DB::commit(); // Commit the transaction if all operations are successful
+
+            // Return response sebagai indikasi bahwa update berhasil
+            return response()->json(['status' => 'Payment status updated successfully']);
+
+        } catch (\Exception $e) {
+            DB::rollBack(); // Rollback in case of any exception
+            // Log the error for debugging
+            \Log::error('Error updating payment status: ' . $e->getMessage(), [
+                'order_id' => $request->order_id,
+                'status' => $request->status,
+                'exception' => $e
+            ]);
+            return response()->json(['error' => 'Failed to update payment status', 'message' => $e->getMessage()], 500);
         }
-    
-        // Update status berdasarkan status yang diterima dari JavaScript
-        if ($request->status == 'success') {              
-            $payment->status = '1'; 
-            TransactionService::processSourceableTransactions(
-                $payment,
-                AccountTransactionStatus::COMPLETED
-            );
-
-            if($payment->order)
-                OrderProcessor::completeOrder($payment->order);
-
-        } elseif ($request->status == 'pending') {
-            $payment->status = '0'; // Pending
-        } elseif ($request->status == 'error') {
-            $payment->status = '2'; // Error
-            TransactionService::processSourceableTransactions(
-                $payment,
-                AccountTransactionStatus::FAILED
-            );
-        }
-    
-        // Simpan perubahan ke database
-        $payment->save();
-        //$user->save();
-    
-        // Return response sebagai indikasi bahwa update berhasil
-        return response()->json(['status' => 'Payment status updated successfully']);
     }
 
 

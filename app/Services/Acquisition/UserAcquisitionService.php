@@ -49,4 +49,25 @@ class UserAcquisitionService
             'end_date' => $endDate, // Or calculated based on product
         ]);
     }
+
+        /**
+     * Checks if a user has an active acquisition for a specific product.
+     * An acquisition is considered active if its status is 'ACTIVE' and its end_date is either null or in the future.
+     *
+     * @param User $user The user to check.
+     * @param Product $product The product to check for.
+     * @return bool True if the user has an active acquisition for the product, false otherwise.
+     */
+    public static function hasActiveAcquisition(User $user, Product $product): bool
+    {
+        return UserAcquisition::where('user_id', $user->id)
+            ->where('product_id', $product->id)
+            ->where('status', AcquisitionStatus::ACTIVE->value)
+            ->where(function ($query) {
+                $query->whereNull('end_date')
+                      ->orWhere('end_date', '>', now());
+            })
+            ->exists();
+    }
+    
 }

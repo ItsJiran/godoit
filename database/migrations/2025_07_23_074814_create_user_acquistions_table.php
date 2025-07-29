@@ -59,7 +59,6 @@ return new class extends Migration
             // for the EXACT SAME product at the same time.
             // Adjust if a user can hold multiple active memberships of the same 'product_id'.
             // For general 'premium' this usually implies one active.
-            $table->unique(['user_id', 'status']);
 
             // Indexes for common queries
             $table->index(['user_id', 'status', 'end_date']);

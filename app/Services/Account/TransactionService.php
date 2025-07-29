@@ -81,26 +81,21 @@ class TransactionService
         Model $sourceable,
         AccountTransactionStatus $targetStatus
     ): bool {
-        // Wrap the entire batch operation in a single database transaction.
-        // If any individual transaction processing fails, the entire batch will be rolled back.
-        return DB::transaction(function () use ($sourceable, $targetStatus) {
-            // Fetch all pending transactions associated with this sourceable
-            $pendingTransactions = AccountTransaction::getTransactionsBySourceable($sourceable)
-                                                    ->where('status', AccountTransactionStatus::PENDING->value);
+        $pendingTransactions = AccountTransaction::getTransactionsBySourceable($sourceable)->where('status', AccountTransactionStatus::PENDING->value);
 
-            foreach ($pendingTransactions as $transaction) {
-                if ($targetStatus === AccountTransactionStatus::COMPLETED) {
-                    // If the sourceable (e.g., payment) is valid/completed, process the commission as completed
-                    TransactionProcessor::completedTransaction($transaction);
-                } elseif ($targetStatus === AccountTransactionStatus::CANCELLED || $targetStatus === AccountTransactionStatus::FAILED) {
-                    // If the sourceable (e.g., payment) failed or was cancelled, cancel the pending commission
-                    TransactionProcessor::failedTransaction($transaction);
-                } else {
-                    // Handle other target statuses if necessary, or throw an exception
-                    throw new \InvalidArgumentException("Unsupported target status '{$targetStatus->value}' for processing pending transactions.");
-                }
+        foreach ($pendingTransactions as $transaction) {
+            if ($targetStatus === AccountTransactionStatus::COMPLETED) {
+                // If the sourceable (e.g., payment) is valid/completed, process the commission as completed
+                TransactionProcessor::completedTransaction($transaction);
+            } elseif ($targetStatus === AccountTransactionStatus::CANCELLED || $targetStatus === AccountTransactionStatus::FAILED) {
+                // If the sourceable (e.g., payment) failed or was cancelled, cancel the pending commission
+                TransactionProcessor::failedTransaction($transaction);
+            } else {
+                // Handle other target statuses if necessary, or throw an exception
+                throw new \InvalidArgumentException("Unsupported target status '{$targetStatus->value}' for processing pending transactions.");
             }
-            return true; // All relevant transactions processed successfully
-        });
+        }
+
+        return true; // All relevant transactions processed successfully
     }
 }

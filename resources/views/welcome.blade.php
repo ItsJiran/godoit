@@ -8,7 +8,7 @@
                 <div class="hero-text">
                     <h1>{{ $product->title }}</h1>
                     <p class="hero-date">{{ \Carbon\Carbon::parse($product->productable->timestamp)->translatedFormat('l, j F Y, (H:iA)') }}</p>
-                    <a href="/product/view/{{$product->id}}?reg={{ request('reg') }}" class="btn btn-join">Ikuti Sekarang</a>
+                    <a href="/product/{{$product->id}}?reg={{ request('reg') }}" class="btn btn-join">Ikuti Sekarang</a>
                 </div>
                 <div class="hero-image">
                     <img src="/storage/{{$product->thumbnail->path}}" alt="Program Leader" />

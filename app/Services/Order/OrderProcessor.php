@@ -22,7 +22,7 @@ class OrderProcessor
      * @param Order $order The order to be completed.
      * @return bool True if the order was successfully completed, false otherwise.
      */
-    public static function completeOrder(Order $order): bool
+    public static function completeOrder(Order $order)
     {
         // Prevent processing if the order is already completed
         if ($order->status === OrderStatus::COMPLETED->value) {
@@ -36,27 +36,26 @@ class OrderProcessor
             return false; // Cannot complete an order that's not pending
         }
 
-        DB::beginTransaction();
-        try {
-            // 1. Update the Order status to COMPLETED
-            $order->status = OrderStatus::COMPLETED->value;
-            $order->save();
+        // 1. Update the Order status to COMPLETED
+        $order->status = OrderStatus::COMPLETED->value;
+        $order->save();
 
-            // 2. Create UserAcquisition records for all order items
-            foreach ($order->items as $orderItem) {
-                $product = $orderItem->product; // Get the associated product
+        // 2. Create UserAcquisition records for all order items
+        foreach ($order->items as $orderItem) {
+            $product = $orderItem->product; // Get the associated product
 
-                // Determine end_date based on product type (e.g., Membership duration)
-                $endDate = null;
-                if ($product && $product->productable instanceof Membership) {
-                    // If the product is a membership and has a duration
-                    if ($product->productable->duration_days) {
-                        $endDate = Carbon::now()->addDays($product->productable->duration_days);
-                    }
-                    // If duration_days is null or 0, it's a lifetime membership, so $endDate remains null
+            // Determine end_date based on product type (e.g., Membership duration)
+            $endDate = null;
+            if ($product && $product->productable instanceof Membership) {
+                // If the product is a membership and has a duration
+                if ($product->productable->duration_days) {
+                    $endDate = Carbon::now()->addDays($product->productable->duration_days);
                 }
-                // Add logic for other productable types if they have expiry dates
+                // If duration_days is null or 0, it's a lifetime membership, so $endDate remains null
+            }
 
+            // Add logic for other productable types if they have expiry dates
+            if(!is_null($order->user)){
                 UserAcquisition::create([
                     'user_id' => $order->user_id,
                     'product_id' => $product->id,
@@ -70,15 +69,8 @@ class OrderProcessor
                     // but typically, it's a "purchase" so these might be null.
                 ]);
             }
-
-            DB::commit();
-            Log::info("Order {$order->id} successfully completed and user acquisitions created.");
-            return true;
-
-        } catch (\Exception $e) {
-            DB::rollBack();
-            Log::error("Failed to complete order {$order->id} and create user acquisitions: " . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
-            return false;
         }
+
+        Log::info("Order {$order->id} successfully completed and user acquisitions created.");
     }
 }

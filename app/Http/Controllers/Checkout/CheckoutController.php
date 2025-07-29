@@ -15,6 +15,7 @@ use App\Models\UserAcquisition; // The model we just created/updated
 use App\Enums\Order\OrderStatus; // Assuming you have this Enum
 use App\Enums\Acquisition\AcquisitionStatus; // Assuming you have this Enum
 use App\Services\Payment\PaymentService;
+use App\Services\Order\OrderService;
 
 class CheckoutController extends Controller
 {
@@ -66,36 +67,20 @@ class CheckoutController extends Controller
         $productId = $request->input('product_id');
         $product = Product::find($productId);
 
-
-
         // If product somehow not found after validation (shouldn't happen with exists rule, but as a safeguard)
         if (!$product) {
             return back()->with('error', 'Product not found.');
         }
-
-
 
         // 2. Check if the user already has an active acquisition for this product
         if (Auth::check() && UserAcquisition::userHasActiveProductAcquisition($user->id, $product->id)) {
             return back()->with('error', 'You already have an active acquisition for this product.');
         }
 
-
-
         // 3. Check if the user already has an active (pending) order containing this product
-        if (Auth::check() ) {
-            $existingActiveOrder = Order::where('user_id', $user->id)
-                ->where('status', OrderStatus::PENDING->value) // Assuming PENDING is the status for active, unfulfilled orders
-                ->whereHas('items', function ($query) use ($productId) {
-                    $query->where('product_id', $productId);
-                })
-                ->first();
-
-            if ($existingActiveOrder) {
-                return back()->with('error', 'You already have a pending order for this product. Please complete or cancel it first.');
-            }
+        if (Auth::check() && OrderService::hasPendingOrderForProduct($user->id, $product->id)  ) { 
+            return back()->with('error', 'You already have a pending order for this product. Please complete or cancel it first.');            
         }
-
 
         // If all checks pass, proceed to create the order and order item
         DB::beginTransaction();
@@ -124,7 +109,6 @@ class CheckoutController extends Controller
             return redirect()->route('payments.show', ['id' => $payment->id])->with('success','Berhasil Checkout, silahkan lakukan pembayaran!');
         } catch (\Exception $e) {
             DB::rollBack();
-            dd($e->getMessage());
             \Log::error("Error during product checkout for user " . ($user ? $user->id : 'Guest' . $request->email) . ", product {$productId}: " . $e->getMessage());
             return back()->with('error', 'An error occurred during checkout. Please try again.');
         }

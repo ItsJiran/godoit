@@ -10,6 +10,7 @@ use App\Http\Controllers\Checkout\CheckoutController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [DashboardController::class, 'home'])->name('welcome.index');
+Route::get('/product/{product_id}', [DashboardController::class, 'product'])->name('welcome_product.index');
 //Route::get('/admin/schedule', [DashboardController::class, 'schedule'])->name('dashboard.schedule');
 //Route::get('/admin/transaction', [DashboardController::class, 'index'])->name('dashboard.index');
 //Route::get('/admin/marketing-kit', [DashboardController::class, 'index'])->name('dashboard.index');
