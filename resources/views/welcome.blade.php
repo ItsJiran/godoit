@@ -29,9 +29,9 @@
                         <img src="https://t4.ftcdn.net/jpg/15/02/52/47/360_F_1502524799_DgQUHNZHSrbxB1OQr5nbMLuxQQAcjqf6.jpg" alt="Program"/>
                     </div>
                     <div class="mysection-content">
-                        <h2 class="mysection-title">Program Napak Tilas Kebangsaan</h2>
+                        <h2 class="mysection-title">Tentang Sistem Program Godoit</h2>
                         <p class="mysection-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam suscipit rhoncus gravida. Proin consectetur congue erat, quis finibus lectus posuere at. Donec sed augue eu est malesuada condimentum.</p>
-                        <a href="#join-now" class="btn">Ikuti Sekarang</a>
+                        <a href="#join-now" class="btn">Selengkapnya</a>
                     </div>
                 </div>
 
@@ -40,10 +40,10 @@
                         <img src="https://t4.ftcdn.net/jpg/15/02/52/47/360_F_1502524799_DgQUHNZHSrbxB1OQr5nbMLuxQQAcjqf6.jpg" alt="Program"/>
                     </div>
                     <div class="mysection-content">
-                        <h2 class="mysection-title">Program Napak Tilas Kebangsaan</h2>
+                        <h2 class="mysection-title">Tentang Sistem Program Godoit</h2>
                         <div class="mysection-price">Rp 50.000</div>
                         <p class="mysection-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam suscipit rhoncus gravida. Proin consectetur congue erat, quis finibus lectus posuere at. Donec sed augue eu est malesuada condimentum.</p>
-                        <a href="#join-now" class="btn">Ikuti Sekarang</a>
+                        <a href="#join-now" class="btn">Selengkapnya</a>
                     </div>
                 </div>
             </div>

@@ -16,6 +16,8 @@ use App\Models\AccountTransaction;
 use App\Models\MarketingKit;
 use App\Models\Payment;
 use App\Models\ContactMessage;
+use App\Models\UserBank;
+use App\Models\WithdrawManual;
 
 use App\Enums\Account\AccountType;
 use App\Enums\Account\AccountTransactionStatus;
@@ -314,5 +316,34 @@ class DashboardController extends Controller
             $contacts = ContactMessage::latest()->paginate(5);
         }
         return view('dashboard.inbox', compact('contacts', 'query'));
+    }
+
+    // ADMIN WITHDRAW (ADMIN)
+    public function admin_withdraw(Request $request)
+    {
+        $query = $request->get('search');
+        $withdraws = WithdrawManual::with('user')
+            ->when($query, function ($q) use ($query) {
+                $q->whereHas('user', function ($sub) use ($query) {
+                    $sub->where('name', 'like', "%$query%");
+                })
+                ->orWhere('atas_nama', 'like', "%$query%")
+                ->orWhere('nama_bank', 'like', "%$query%");
+            })
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+        return view('dashboard.withdraw', compact('withdraws', 'query'));
+    }
+
+    // AKSI WITHDRAW (ADMIN)
+    public function admin_withdraw_update($id, Request $request)
+    {
+        $request->validate([
+            'status' => 'required|in:sukses,ditolak'
+        ]);
+        $withdraw = WithdrawManual::findOrFail($id);
+        $withdraw->status = $request->status;
+        $withdraw->save();
+        return redirect()->route('admin.withdraw')->with('success', 'Status withdraw berhasil diperbarui.');
     }
 }

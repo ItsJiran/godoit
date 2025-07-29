@@ -55,6 +55,8 @@ Route::middleware('auth')->group(function () {
 
     // TRANSACTION (ADMIN)
     Route::get('/admin/transaction', [DashboardController::class, 'admin_transaction'])->name('admin.transaction');
+    Route::get('/admin/withdraw', [DashboardController::class, 'admin_withdraw'])->name('admin.withdraw');
+    Route::post('/admin/withdraw/update/{id}', [DashboardController::class, 'admin_withdraw_update'])->name('admin.withdraw.update');
 
     // PAGES (USER) NEED TO LOGIN
     Route::get('/memberarea', [PageController::class, 'memberarea'])->name('page.memberarea');
