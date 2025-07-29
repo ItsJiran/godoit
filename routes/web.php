@@ -4,13 +4,16 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\BuyController;
 use App\Http\Controllers\PageController;
+use App\Http\Controllers\WalletController;
 use App\Http\Controllers\Product\PremiumMembershipController;
 use App\Http\Controllers\Product\ProductController;
 use App\Http\Controllers\Checkout\CheckoutController;
 use Illuminate\Support\Facades\Route;
 
+// HOME
 Route::get('/', [DashboardController::class, 'home'])->name('welcome.index');
 
+// PRODUCT
 Route::get('/product/{product_id}', [DashboardController::class, 'product'])->name('welcome_product.index');
 Route::get('/demo/checkout', [CheckoutController::class, 'showCheckoutForm'])->name('checkout.form');
 Route::get('/product/view/{id}', [ProductController::class, 'viewProduct'])->name('product.view');
@@ -28,7 +31,7 @@ Route::middleware('auth')->group(function () {
     // DASHBOARD (ADMIN)
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
 
-    // PRODUCT
+    // PRODUCT (ADMIN)
     Route::get('/admin/product', [ProductController::class, 'index'])->name('admin.product');
     Route::post('/admin/product', [ProductController::class, 'saveProduct'])->name('saveProduct');
     Route::get('/admin/product/{id}/edit', [ProductController::class, 'editProduct'])->name('editProduct');
@@ -57,10 +60,16 @@ Route::middleware('auth')->group(function () {
     Route::get('/memberarea', [PageController::class, 'memberarea'])->name('page.memberarea');
     Route::get('/transaction', [PageController::class, 'transaction'])->name('page.transaction');
 
-    // CHECKOUT PRODUCT
+    // WALLET KEUANGAN (USER)
+    Route::get('/withdraw', [WalletController::class, 'withdraw'])->name('wallet.withdraw');
+    Route::post('/withdraw', [WalletController::class, 'withdrawStore'])->name('wallet.withdraw.store');
+    Route::get('/my-bank', [WalletController::class, 'mybank'])->name('wallet.mybank');
+    Route::post('/my-bank/save', [WalletController::class, 'saveBank'])->name('wallet.savebank');
+
+    // CHECKOUT PRODUCT (USER)
     Route::get('/membership/upgrade', [PremiumMembershipController::class, 'index'])->name('membership.upgrade');
 
-    // PROFILE DATA
+    // PROFILE DATA (AUTH)
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
 });
