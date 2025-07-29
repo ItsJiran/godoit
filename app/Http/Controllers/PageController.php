@@ -87,7 +87,7 @@ class PageController extends Controller
                                 ->where('id_order', 'like', '%' . $query . '%')
                                 ->paginate(10);
         } else {
-            $payments = Payment::where('user_id',Auth::user()->id)->paginate(5);
+            $payments = Payment::where('user_id',Auth::user()->id)->latest()->paginate(5);
         }
         return view('page.transaction', compact('payments', 'query'));
     }

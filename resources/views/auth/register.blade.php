@@ -42,8 +42,24 @@
                     <span class="error-message">{{ $message }}</span>
                 @enderror
             </div>
+            
+            <!-- Email Address -->
+            <div class="form-group">
+                <label class="form-label" for="email">{{ __('Email') }}</label>
+                <input type="email" 
+                       id="email" 
+                       name="email" 
+                       class="form-input" 
+                       placeholder="Enter your email" 
+                       value="{{ old('email') }}" 
+                       required 
+                       autocomplete="username">
+                @error('email')
+                    <span class="error-message">{{ $message }}</span>
+                @enderror
+            </div>
 
-            <!-- Username -->
+            <!-- Whatsapp -->
             <div class="form-group">
                 <label class="form-label" for="whatsapp">{{ __('Whatsapp') }}</label>
                 <input type="text" 
@@ -60,7 +76,7 @@
                 @enderror
             </div>
 
-            <!-- Username -->
+            <!-- Kota/Provinsi -->
             <div class="form-group">
                 <label class="form-label" for="kota">{{ __('Kota/Provinsi') }}</label>
                 <input type="text" 
@@ -73,22 +89,6 @@
                         autofocus 
                         autocomplete="kota">
                 @error('username')
-                    <span class="error-message">{{ $message }}</span>
-                @enderror
-            </div>
-
-            <!-- Email Address -->
-            <div class="form-group">
-                <label class="form-label" for="email">{{ __('Email') }}</label>
-                <input type="email" 
-                       id="email" 
-                       name="email" 
-                       class="form-input" 
-                       placeholder="Enter your email" 
-                       value="{{ old('email') }}" 
-                       required 
-                       autocomplete="username">
-                @error('email')
                     <span class="error-message">{{ $message }}</span>
                 @enderror
             </div>
@@ -129,7 +129,7 @@
                 @enderror
             </div>
 
-            <!-- Username -->
+            <!-- Kode Refferal -->
             <div class="form-group">
                 <label class="form-label" for="parent_referral_code">{{ __('Kode Refferal') }}</label>
                 <input type="text" 

@@ -112,8 +112,8 @@
                     {{-- Action Buttons based on status --}}
                     @if($payment->status == 1) {{-- Success --}}
                         <div class="pmt-action-buttons">
-                            <button class="pmt-btn pmt-btn-primary">Continue</button>
-                            <button class="pmt-btn pmt-btn-secondary">Download Receipt</button>
+                            <a href="/transaction" class="pmt-btn pmt-btn-primary" title="Transaction">Transaction</a>
+                            <a href="/" class="pmt-btn pmt-btn-secondary" title="Back to Home">Back To Home</a>
                         </div>
                     @elseif($payment->status == 0) {{-- Pending --}}
                         <div class="pmt-action-buttons">

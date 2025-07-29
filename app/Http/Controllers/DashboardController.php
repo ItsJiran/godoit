@@ -26,37 +26,44 @@ class DashboardController extends Controller
     public function home(Request $request): View
     {
         $user = $request->user();
-
         // Initialize variables with default values to ensure they are always defined
         $userReferral = url('/?reg=');                    
         $userCount = 0;
         $userComissionTotal = 0;
         $userComissionTotalPending = 0;
         $userNoId = 999;
-
         if (!is_null($user)) {
             // get env from the 
             $userReferral = $user->generateReferralUrl();
             $userCount = User::where('parent_referral_code', $user->referral_code)->count();
-
             // Corrected: Pass $user->id and the enum instance to getAccountUserByType
             $userAccount = Account::getAccountUserByType($user->id, AccountType::E_WALLET->value);
-            
             // Access the balance directly from the retrieved account model
             $userComissionTotal = $userAccount->balance;
-            
             // Corrected: Query for pending commissions using the correct status and purpose
             $userComissionTotalPending = AccountTransaction::where('account_id', $userAccount->id)
                 ->where('status', AccountTransactionStatus::PENDING->value)
                 ->where('purpose', AccountTransactionPurpose::COMMISSION_CREDIT->value)
                 ->sum('amount');
-            
             $userNoId = $user->id;
         }
-
         $kits = MarketingKit::latest()->paginate(2);
         $products = Product::latest()->where('productable_type',ProductRegular::class)->with(['productable','thumbnail'])->paginate(2);
-        
+        // Refferal Save for This Page
+        $parentReferralCandidate = $request->query('reg');
+        $sessionReferralCode = $request->session()->get('parent_referral_code_session');
+        $parentReferralCode = $sessionReferralCode;
+        if (!$parentReferralCode && $parentReferralCandidate) {
+            $foundUser = null;
+            $foundUser = User::where('referral_code', $parentReferralCandidate)->first();
+            if (!$foundUser) {
+                $foundUser = User::where('username', $parentReferralCandidate)->first();
+            }
+            if ($foundUser) {
+                $parentReferralCode = $foundUser->referral_code;
+                $request->session()->put('parent_referral_code_session', $parentReferralCode);
+            }
+        }
         // Using ->with() to pass variables to the view
         return view('welcome')->with([
             'userReferral' => $userReferral,

@@ -96,7 +96,7 @@
                     @csrf
                     <input type="hidden" name="product_id" value="{{ $product->id }}">
                     <input type="hidden" name="reg" value="{{ request('reg') }}"> {{-- Use the $harga variable for amount --}}
-                    <button type="submit" class="btn-buy">Buy Now</button>
+                    <button type="submit" class="btn-buy full-buy">Buy Now</button>
                 </form>
             @endif
         @else
