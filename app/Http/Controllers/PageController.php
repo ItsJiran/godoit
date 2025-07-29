@@ -93,13 +93,13 @@ class PageController extends Controller
         return view('page.transaction', compact('payments', 'query'));
     }
 
-    // HALAMAN CONTACT
+    // PAGE CONTACT (USERS)
     public function contact()
     {
         return view('page.contact');
     }
 
-    // KIRIM PESAN
+    // KIRIM PESAN (USERS)
     public function submitContact(Request $request)
     {
         // Cek session agar tidak spam

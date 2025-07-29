@@ -15,6 +15,7 @@ use App\Models\ProductRegular;
 use App\Models\AccountTransaction;
 use App\Models\MarketingKit;
 use App\Models\Payment;
+use App\Models\ContactMessage;
 
 use App\Enums\Account\AccountType;
 use App\Enums\Account\AccountTransactionStatus;
@@ -255,4 +256,16 @@ class DashboardController extends Controller
         return view('dashboard.transaction', compact('payments', 'query'));
     }
 
+    // PAGE INBOX (ADMIN)
+    public function inbox(Request $request)
+    {
+        $query = $request->input('search');
+        if ($query) {
+            $contacts = ContactMessage::where('judul', 'like', '%' . $query . '%')
+                                ->paginate(10);
+        } else {
+            $contacts = ContactMessage::latest()->paginate(5);
+        }
+        return view('dashboard.inbox', compact('contacts', 'query'));
+    }
 }

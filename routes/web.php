@@ -53,6 +53,7 @@ Route::middleware('auth')->group(function () {
     Route::put('/admin/unblock-user/{id}', [DashboardController::class, 'unblokiruser'])->name('unblokiruser');
     Route::get('/admin/edit-user/{id}', [DashboardController::class, 'edituser'])->name('edituser');
     Route::put('/admin/edit-user/{id}', [DashboardController::class, 'adminedituser'])->name('adminedituser');
+    Route::get('/admin/inbox', [DashboardController::class, 'inbox'])->name('admin.inbox');
 
     // TRANSACTION (ADMIN)
     Route::get('/admin/transaction', [DashboardController::class, 'admin_transaction'])->name('admin.transaction');
