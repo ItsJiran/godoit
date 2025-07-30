@@ -26,10 +26,10 @@ use App\Enums\Account\AccountTransactionPurpose;
 use App\Services\Account\TransactionProcessor;
 use App\Services\Account\TransactionService;
 
-
+// MANY ADMIN SETTINGS IS HERE, BUT NOT ALL :)
 class DashboardController extends Controller
 {
-    // INDEX HOME LANDING PAGE
+    // INDEX HOME LANDING PAGE (ALL)
     public function home(Request $request): View
     {
         $user = $request->user();
@@ -84,6 +84,7 @@ class DashboardController extends Controller
         ]);
     }
 
+    // PAGE PRODUCT INDEX (ALL)
     public function product(Request $request, $product_id): View
     {
         $user = $request->user();
@@ -100,19 +101,15 @@ class DashboardController extends Controller
             // get env from the 
             $userReferral = $user->generateReferralUrl();
             $userCount = User::where('parent_referral_code', $user->referral_code)->count();
-
             // Corrected: Pass $user->id and the enum instance to getAccountUserByType
             $userAccount = Account::getAccountUserByType($user->id, AccountType::E_WALLET->value);
-            
             // Access the balance directly from the retrieved account model
             $userComissionTotal = $userAccount->balance;
-            
             // Corrected: Query for pending commissions using the correct status and purpose
             $userComissionTotalPending = AccountTransaction::where('account_id', $userAccount->id)
                 ->where('status', AccountTransactionStatus::PENDING->value)
                 ->where('purpose', AccountTransactionPurpose::COMMISSION_CREDIT->value)
                 ->sum('amount');
-            
             $userNoId = $user->id;
         }
 
@@ -134,6 +131,11 @@ class DashboardController extends Controller
     // INDEX DASHBOARD
     public function index(Request $request): View
     {
+        // SECURITY (THIS PAGE IS NOT FOR USER)
+        if (Auth::check() && Auth::user()->role === 'user') {
+            abort(403, 'Anda tidak memiliki izin!');
+        }
+
         $user = $request->user();
 
         // Initialize variables with default values to ensure they are always defined
@@ -176,6 +178,10 @@ class DashboardController extends Controller
     // MARKETING KIT
     public function marketing_kit(Request $request)
     {
+        // SECURITY (THIS PAGE IS NOT FOR USER)
+        if (Auth::check() && Auth::user()->role === 'user') {
+            abort(403, 'Anda tidak memiliki izin!');
+        }
         $query = $request->input('search');
         if ($query) {
             $kits = MarketingKit::where('judul', 'like', '%' . $query . '%')
@@ -189,6 +195,10 @@ class DashboardController extends Controller
     // SIMPAN DATA MARKETING KIT
     public function simpankit(Request $request)
     {
+        // SECURITY (THIS PAGE IS NOT FOR USER)
+        if (Auth::check() && Auth::user()->role === 'user') {
+            abort(403, 'Anda tidak memiliki izin!');
+        }
         $request->validate([
             'judul' => 'required|string|max:255',
             'gambar' => 'required|image|mimes:jpeg,png,jpg,webp|max:2048',
@@ -207,6 +217,10 @@ class DashboardController extends Controller
     // EDIT MARKETING KIT
     public function editkit($id)
     {
+        // SECURITY (THIS PAGE IS NOT FOR USER)
+        if (Auth::check() && Auth::user()->role === 'user') {
+            abort(403, 'Anda tidak memiliki izin!');
+        }
         $kit = MarketingKit::findOrFail($id);
         return view('dashboard.marketing-kit.edit', compact('kit'));
     }
@@ -214,6 +228,10 @@ class DashboardController extends Controller
     // UPDATE DATA MARKETING KIT
     public function updatekit(Request $request, $id)
     {
+        // SECURITY (THIS PAGE IS NOT FOR USER)
+        if (Auth::check() && Auth::user()->role === 'user') {
+            abort(403, 'Anda tidak memiliki izin!');
+        }
         $kit = MarketingKit::findOrFail($id);
         $request->validate([
             'judul' => 'required|string|max:255',
@@ -233,6 +251,10 @@ class DashboardController extends Controller
     // HAPUS DATA MARKETING KIT
     public function hapuskit($id)
     {
+        // SECURITY (THIS PAGE IS NOT FOR USER)
+        if (Auth::check() && Auth::user()->role === 'user') {
+            abort(403, 'Anda tidak memiliki izin!');
+        }
         $kit = MarketingKit::findOrFail($id);
         $kit->delete();
         return redirect()->route('marketingkit')->with('success', 'Marketing Kit berhasil dihapus.');
@@ -241,6 +263,10 @@ class DashboardController extends Controller
     // ALL USERS (ADMIN)
     public function allusers(Request $request)
     {
+        // SECURITY (THIS PAGE IS NOT FOR USER)
+        if (Auth::check() && Auth::user()->role === 'user') {
+            abort(403, 'Anda tidak memiliki izin!');
+        }
         $query = $request->input('search');
         if ($query) {
             $users = User::where('role','user')->where('name', 'like', '%' . $query . '%')
@@ -254,6 +280,10 @@ class DashboardController extends Controller
     // BLOKIR USERS (ADMIN)
     public function blokiruser(Request $request, $id)
     {
+        // SECURITY (THIS PAGE IS NOT FOR USER)
+        if (Auth::check() && Auth::user()->role === 'user') {
+            abort(403, 'Anda tidak memiliki izin!');
+        }
         $user = User::findOrFail($id);
         $today = Carbon::now('Asia/Jakarta');
         $user->deleted_at = $today;
@@ -264,6 +294,10 @@ class DashboardController extends Controller
     // UN-BLOKIR USERS (ADMIN)
     public function unblokiruser(Request $request, $id)
     {
+        // SECURITY (THIS PAGE IS NOT FOR USER)
+        if (Auth::check() && Auth::user()->role === 'user') {
+            abort(403, 'Anda tidak memiliki izin!');
+        }
         $user = User::findOrFail($id);
         $today = Carbon::now('Asia/Jakarta');
         $user->deleted_at = NULL;
@@ -274,6 +308,10 @@ class DashboardController extends Controller
     // EDIT USER (ADMIN)
     public function edituser($id)
     {
+        // SECURITY (THIS PAGE IS NOT FOR USER)
+        if (Auth::check() && Auth::user()->role === 'user') {
+            abort(403, 'Anda tidak memiliki izin!');
+        }
         $user = User::findOrFail($id);
         return view('dashboard.user-edit', compact('user'));
     }
@@ -281,6 +319,10 @@ class DashboardController extends Controller
     // AKSI EDIT USER (ADMIN)
     public function adminedituser(Request $request,$id)
     {
+        // SECURITY (THIS PAGE IS NOT FOR USER)
+        if (Auth::check() && Auth::user()->role === 'user') {
+            abort(403, 'Anda tidak memiliki izin!');
+        }
         $user = User::findOrFail($id);
         $request->validate([
             'name' => 'required|string|max:255',
@@ -300,6 +342,10 @@ class DashboardController extends Controller
     // PAYMENT TRANSACTION (ADMIN)
     public function admin_transaction(Request $request)
     {
+        // SECURITY (THIS PAGE IS NOT FOR USER)
+        if (Auth::check() && Auth::user()->role === 'user') {
+            abort(403, 'Anda tidak memiliki izin!');
+        }
         $query = $request->input('search');
         $payments = Payment::when($query, function ($q) use ($query) {
                             return $q->where('id_order', 'like', '%' . $query . '%');
@@ -312,6 +358,10 @@ class DashboardController extends Controller
     // PAGE INBOX (ADMIN)
     public function inbox(Request $request)
     {
+        // SECURITY (THIS PAGE IS NOT FOR USER)
+        if (Auth::check() && Auth::user()->role === 'user') {
+            abort(403, 'Anda tidak memiliki izin!');
+        }
         $query = $request->input('search');
         if ($query) {
             $contacts = ContactMessage::where('judul', 'like', '%' . $query . '%')
@@ -325,6 +375,10 @@ class DashboardController extends Controller
     // ADMIN WITHDRAW (ADMIN)
     public function admin_withdraw(Request $request)
     {
+        // SECURITY (THIS PAGE IS NOT FOR USER)
+        if (Auth::check() && Auth::user()->role === 'user') {
+            abort(403, 'Anda tidak memiliki izin!');
+        }
         $query = $request->get('search');
         $withdraws = WithdrawManual::with('user')
             ->when($query, function ($q) use ($query) {
@@ -342,6 +396,10 @@ class DashboardController extends Controller
     // AKSI WITHDRAW (ADMIN)
     public function admin_withdraw_update($id, Request $request)
     {
+        // SECURITY (THIS PAGE IS NOT FOR USER)
+        if (Auth::check() && Auth::user()->role === 'user') {
+            abort(403, 'Anda tidak memiliki izin!');
+        }
         $request->validate([
             'status' => 'required|in:sukses,ditolak'
         ]);
@@ -360,8 +418,6 @@ class DashboardController extends Controller
                 AccountTransactionStatus::CANCELLED 
             );
         }
-        
-
         return redirect()->route('admin.withdraw')->with('success', 'Status withdraw berhasil diperbarui.');
     }
 }

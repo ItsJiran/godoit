@@ -69,6 +69,10 @@
                     <div class="unit-item-value">{{ $contact->nama }}</div>
                 </div>
                 <div class="unit-item-row">
+                    <div class="unit-item-label">Email:</div>
+                    <div class="unit-item-value">{{ $contact->email }}</div>
+                </div>
+                <div class="unit-item-row">
                     <div class="unit-item-label">Tanggal:</div>
                     <div class="unit-item-value">{{ $contact->created_at->format('d M Y, H:i') }}</div>
                 </div>

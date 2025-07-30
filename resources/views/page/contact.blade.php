@@ -45,10 +45,12 @@
                             <input type="text" name="nama" id="nama" class="form-input" value="{{ old('nama') }}" required>
                         </div>
 
+                        @guest
                         <div class="form-group">
                             <label for="email" class="form-label">Email</label>
                             <input type="email" name="email" id="email" class="form-input" value="{{ old('email') }}" required>
                         </div>
+                        @endguest
 
                         <div class="form-group">
                             <label for="whatsapp" class="form-label">Whatsapp</label>

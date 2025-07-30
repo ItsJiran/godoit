@@ -118,27 +118,33 @@ class PageController extends Controller
     // KIRIM PESAN (USERS)
     public function submitContact(Request $request)
     {
-        // Cek session agar tidak spam
+        // Cegah spam: cek apakah sudah submit dalam 5 menit terakhir
         if (session()->has('last_contact_submission')) {
             $lastSubmission = session('last_contact_submission');
             if (now()->diffInMinutes($lastSubmission) < 5) {
                 return back()->withErrors(['pesan' => 'Anda baru saja mengirim pesan. Silakan tunggu 5 menit.']);
             }
         }
-
-        $request->validate([
+        // Validasi
+        $rules = [
             'judul' => 'required|max:255',
             'nama' => 'required|max:255',
-            'email' => 'required|email',
             'whatsapp' => 'required|numeric',
             'pesan' => 'required',
-        ]);
-
-        ContactMessage::create($request->only('judul', 'nama', 'email', 'whatsapp', 'pesan'));
-
-        // Simpan waktu terakhir pengiriman
+        ];
+        // Hanya validasi email jika user belum login
+        if (!Auth::check()) {
+            $rules['email'] = 'required|email';
+        }
+        $validated = $request->validate($rules);
+        // Jika login, isi email dari Auth user
+        if (Auth::check()) {
+            $validated['email'] = Auth::user()->email;
+        }
+        // Simpan ke database
+        ContactMessage::create($validated);
+        // Simpan waktu terakhir pengiriman ke session
         session(['last_contact_submission' => now()]);
-
         return back()->with('success', 'Pesan Anda berhasil dikirim.');
     }
 }

@@ -57,13 +57,19 @@
                     <div class="unit-item-row">
                         <div class="unit-item-label">Status:</div>
                         <div class="unit-item-value">
-                            @if($payment->status == 0) Pending @endif
-                            @if($payment->status == 1) Selesai @endif
-                            @if($payment->status == 2) Gagal @endif
+                            @if($payment->status == 0)
+                                <span class="status-badge status-pending">Pending</span>
+                            @elseif($payment->status == 1)
+                                <span class="status-badge status-success">Selesai</span>
+                            @elseif($payment->status == 2)
+                                <span class="status-badge status-rejected">Gagal</span>
+                            @endif
                         </div>
                     </div>
                     <div class="unit-action-buttons mobile-action-buttons">
+                        @if($payment->status == 0)
                         <a href="{{ route('payments.show', $payment->id) }}" class="unit-btn unit-btn-edit">Payment</a>
+                        @endif
                         <a href="{{ route('payment.status', $payment->id) }}" class="unit-btn unit-btn-edit">Bill Status</a>
                     </div>
                 </div>
