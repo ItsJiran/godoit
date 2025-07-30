@@ -90,12 +90,12 @@
                         <tbody>
                             @foreach($riwayat as $item)
                             <tr>
-                                <td>{{ $item->created_at->format('d/m/Y H:i') }}</td>
-                                <td>Rp {{ number_format($item->jumlah, 0, ',', '.') }}</td>
-                                <td>{{ $item->nama_bank }}</td>
-                                <td>{{ $item->no_rek }}</td>
-                                <td>{{ $item->atas_nama }}</td>
-                                <td>
+                                <td data-label="Tanggal">{{ $item->created_at->format('d/m/Y H:i') }}</td>
+                                <td data-label="Jumlah">Rp {{ number_format($item->jumlah, 0, ',', '.') }}</td>
+                                <td data-label="Bank">{{ $item->nama_bank }}</td>
+                                <td data-label="No Rekening">{{ $item->no_rek }}</td>
+                                <td data-label="Atas Nama">{{ $item->atas_nama }}</td>
+                                <td data-label="Status">
                                     @if($item->status == 'pending')
                                         <span class="status-badge status-pending">Pending</span>
                                     @elseif($item->status == 'sukses')

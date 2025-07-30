@@ -331,7 +331,7 @@ class DashboardController extends Controller
                 ->orWhere('nama_bank', 'like', "%$query%");
             })
             ->orderBy('created_at', 'desc')
-            ->paginate(10);
+            ->paginate(15);
         return view('dashboard.withdraw', compact('withdraws', 'query'));
     }
 
