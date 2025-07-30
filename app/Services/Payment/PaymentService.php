@@ -82,7 +82,9 @@ class PaymentService
 
         $referrer = null;
 
-        if($request->reg != null)
+        if (Auth::check() && Auth::user()->referrer)
+            $referrer = Auth::user()->referrer;
+        else if($request->reg != null)
             $referrer = User::where('username',$request->reg)->first();
 
         $harga = $order->total_price;

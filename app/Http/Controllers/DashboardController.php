@@ -23,6 +23,10 @@ use App\Enums\Account\AccountType;
 use App\Enums\Account\AccountTransactionStatus;
 use App\Enums\Account\AccountTransactionPurpose;
 
+use App\Services\Account\TransactionProcessor;
+use App\Services\Account\TransactionService;
+
+
 class DashboardController extends Controller
 {
     // INDEX HOME LANDING PAGE
@@ -344,6 +348,20 @@ class DashboardController extends Controller
         $withdraw = WithdrawManual::findOrFail($id);
         $withdraw->status = $request->status;
         $withdraw->save();
+
+        if($request->status == 'sukses'){
+            TransactionService::processSourceableTransactions( 
+                $withdraw, 
+                AccountTransactionStatus::COMPLETED 
+            );
+        } else {
+            TransactionService::processSourceableTransactions( 
+                $withdraw, 
+                AccountTransactionStatus::CANCELLED 
+            );
+        }
+        
+
         return redirect()->route('admin.withdraw')->with('success', 'Status withdraw berhasil diperbarui.');
     }
 }

@@ -44,6 +44,7 @@ class PageController extends Controller
         // Initialize variables with default values to ensure they are always defined
         $userReferral = url('/?reg=');                    
         $userCount = 0;
+        $userBalance = 0;
         $userComissionTotal = 0;
         $userComissionTotalPending = 0;
         $userNoId = 999;
@@ -53,17 +54,27 @@ class PageController extends Controller
             $userReferral = $user->generateReferralUrl();
             $userCount = User::where('parent_referral_code', $user->referral_code)->count();
 
-            // Corrected: Pass $user->id and the enum instance to getAccountUserByType
-            $userAccount = Account::getAccountUserByType($user->id, AccountType::E_WALLET->value);
+            $userAccount = Account::getAccountUserByType($user->id, AccountType::E_WALLET->value);        
+            $userBalance = $userAccount->balance;
             
-            // Access the balance directly from the retrieved account model
-            $userComissionTotal = $userAccount->balance;
+            $userComissionTotal = AccountTransaction::getCachedTransactionSum(
+                $user,
+                $userAccount,
+                AccountTransactionPurpose::COMMISSION_CREDIT,
+                AccountTransactionStatus::COMPLETED,
+            );
+
+            $userComissionTotalPending = AccountTransaction::getCachedTransactionSum(
+                $user,
+                $userAccount,
+                AccountTransactionPurpose::COMMISSION_CREDIT,
+                AccountTransactionStatus::PENDING,
+            );
             
-            // Corrected: Query for pending commissions using the correct status and purpose
-            $userComissionTotalPending = AccountTransaction::where('account_id', $userAccount->id)
-                ->where('status', AccountTransactionStatus::PENDING->value)
-                ->where('purpose', AccountTransactionPurpose::COMMISSION_CREDIT->value)
-                ->sum('amount');
+            // AccountTransaction::where('account_id', $userAccount->id)
+            //     ->where('status', AccountTransactionStatus::PENDING->value)
+            //     ->where('purpose', AccountTransactionPurpose::COMMISSION_CREDIT->value)
+            //     ->sum('amount');
             
             $userNoId = $user->id;
         }
@@ -80,6 +91,7 @@ class PageController extends Controller
             'userNoId' => $userNoId,
             'userPremiumMembership' => $user ? $user->activeMembershipPremium() : null,
             'pengundang' => $pengundang,
+            'userBalance' => $userBalance,
         ]);
     }
 

@@ -109,6 +109,10 @@
                 {{-- User Information Fields --}}
                 <h3 class="form-section-title">Your Information</h3>
 
+                @error('error')
+                <span class="error-message">{{ $message }}</span>
+            @enderror
+
                 <div class="form-group">
                     <label for="nama" class="form-label">Nama Lengkap</label>
                     <input type="text" id="nama" name="nama" class="form-input" value="{{ old('nama') }}" required>

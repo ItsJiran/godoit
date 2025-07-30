@@ -11,6 +11,7 @@ use App\Enums\Account\AccountTransactionPurpose; // Import the purpose enum
 use App\Enums\Account\AccountTransactionStatus; // Import the status enum
 
 use Illuminate\Support\Facades\DB; // For database transactions
+use Illuminate\Support\Facades\Cache;
 
 class AccountTransaction extends Model
 {
@@ -189,6 +190,94 @@ class AccountTransaction extends Model
     public static function findTransactionById(int $id): ?self
     {
         return self::find($id);
+    }
+
+    /**
+     * Calculates and caches the sum of account transactions based on filters, particularly useful for
+     * different transaction statuses (pending, completed, etc.) for display purposes.
+     * This method is intended for display sums where immediate absolute consistency is not paramount,
+     * as the primary wallet/account balance is managed separately in the database.
+     * The cache is typically invalidated on relevant transaction events.
+     *
+     * @param int $userId The ID of the user.
+     * @param \App\Enums\Account\AccountTransactionPurpose $purpose The purpose of the transaction (e.g., COMMISSION_CREDIT).
+     * @param \App\Enums\Account\AccountTransactionStatus $status The status of the transaction (e.g., PENDING, COMPLETED).
+     * @return float The sum of transactions matching the criteria.
+     */
+    public static function getCachedTransactionSum(
+        User $user,
+        Account $account,
+        AccountTransactionPurpose $purpose,
+        AccountTransactionStatus $status,
+        int $ttlSeconds = 300 
+    ): float {
+        // Construct a unique cache key for this specific sum
+        $cacheKey = "user:{$user->id}:account:{$account->id}:transactions:sum:purpose:{$purpose->value}:status:{$status->value}";
+
+        return Cache::remember($cacheKey, $ttlSeconds, function () use ($user, $account, $purpose, $status) {
+            return self::where('user_id', $user->id)
+                ->where('account_id', $account->id)
+                ->where('purpose', $purpose)
+                ->where('status', $status)
+                ->sum('amount');
+        });
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+    
+        // Refresh cache when a transaction is created or its status is updated
+        static::created(function (AccountTransaction $transaction) {
+            self::clearTransactionSumCache($transaction);
+        });
+    
+        static::updated(function (AccountTransaction $transaction) {
+            // Only clear cache if status or amount (or other relevant fields) changed
+            if ($transaction->isDirty('status') || $transaction->isDirty('amount') || $transaction->isDirty('purpose') || $transaction->isDirty('user_id') || $transaction->isDirty('account_id')) {
+                self::clearTransactionSumCache($transaction);
+            }
+        });
+    }
+
+    /**
+     * Clears the relevant transaction sum caches for a given transaction.
+     *
+     * @param AccountTransaction $transaction The transaction instance that was created or updated.
+     * @return void
+     */
+    protected static function clearTransactionSumCache(AccountTransaction $transaction): void
+    {
+        // These are the specific cache keys that might need clearing
+        // based on the transaction's user, account, purpose, and status.
+        // We clear for both old and new status/purpose if they changed.
+
+        $user = $transaction->user;
+        $account = $transaction->account;
+
+        if ($user && $account) {
+            // Clear for the current status and purpose
+            $cacheKeyCurrent = "user:{$user->id}:account:{$account->id}:transactions:sum:purpose:{$transaction->purpose->value}:status:{$transaction->status->value}";
+            Cache::forget($cacheKeyCurrent);
+
+            // If the status changed, also clear the cache for the old status (if applicable)
+            if ($transaction->isDirty('status')) {
+                $originalStatus = $transaction->getOriginal('status');
+                if ($originalStatus instanceof AccountTransactionStatus) {
+                    $cacheKeyOldStatus = "user:{$user->id}:account:{$account->id}:transactions:sum:purpose:{$transaction->purpose->value}:status:{$originalStatus->value}";
+                    Cache::forget($cacheKeyOldStatus);
+                }
+            }
+
+            // If the purpose changed, also clear the cache for the old purpose (if applicable)
+            if ($transaction->isDirty('purpose')) {
+                $originalPurpose = $transaction->getOriginal('purpose');
+                if ($originalPurpose instanceof AccountTransactionPurpose) {
+                    $cacheKeyOldPurpose = "user:{$user->id}:account:{$account->id}:transactions:sum:purpose:{$originalPurpose->value}:status:{$transaction->status->value}";
+                    Cache::forget($cacheKeyOldPurpose);
+                }
+            }
+        }
     }
 
 }

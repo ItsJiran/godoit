@@ -71,7 +71,7 @@
                         required 
                         autofocus 
                         autocomplete="whatsapp">
-                @error('username')
+                @error('whatsapp')
                     <span class="error-message">{{ $message }}</span>
                 @enderror
             </div>
@@ -88,7 +88,7 @@
                         required 
                         autofocus 
                         autocomplete="kota">
-                @error('username')
+                @error('kota')
                     <span class="error-message">{{ $message }}</span>
                 @enderror
             </div>

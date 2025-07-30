@@ -44,7 +44,9 @@
                 @endif
 
                 <div class="box-formulir">
+                    
                     <p><strong>Saldo Tersedia:</strong> Rp {{ number_format($saldo, 0, ',', '.') }}</p>
+                    <p><strong>Saldo Penarikan Pending:</strong> Rp {{ number_format($saldoPenarikanPending, 0, ',', '.') }}</p>
 
                     <div class="bank-info">
                         <p><strong>Bank:</strong> {{ $bank->nama_bank }}</p>

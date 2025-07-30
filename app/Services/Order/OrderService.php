@@ -16,7 +16,7 @@ use Carbon\Carbon;
  */
 class OrderService
 {
-        /**
+    /**
      * Check if the user already has an active (pending) order for the given product.
      *
      * @param int $userId The ID of the user.

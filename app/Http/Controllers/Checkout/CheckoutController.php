@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB; // For database transactions
+use Illuminate\Support\Facades\Cache;
 
 use App\Models\Product;
 use App\Models\Order;

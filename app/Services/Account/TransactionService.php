@@ -67,6 +67,31 @@ class TransactionService
         });
     }
 
+    public static function generateTransaction(
+        User $acquirer = null, // Include for audit/description purposes
+        Account $acquirerAccount = null, // Include for audit/description purposes
+        float $baseAmount,
+        AccountTransactionType $direction,
+        AccountTransactionPurpose $purpose,
+        AccountTransactionStatus $status,
+        ?Model $sourceable = null,
+        ?string $description = null
+    ) {
+        // 3. Create the pending AccountTransaction for the referrer
+        $mainTransaction = AccountTransaction::createTransaction(
+            userId: $acquirer->id,
+            accountId: $acquirerAccount->id,
+            amount: $baseAmount,
+            direction: $direction, // Commission is a credit to the referrer
+            purpose: $purpose, // Or COMMISSION_CREDIT
+            status: $status, // Start as pending
+            description: $description,
+            sourceable: $sourceable
+        );
+
+        return $mainTransaction;
+    }
+
     /**
      * Processes all pending AccountTransactions related to a given sourceable model.
      * This method updates their status (e.g., to COMPLETED or CANCELLED)

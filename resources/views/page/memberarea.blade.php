@@ -10,7 +10,7 @@
             <div class="box-custom">
                 <div class="data-wallet">
                     <h2>Total Balance</h2>
-                    <div class="wallet-balance">Rp 100.000</div>
+                    <div class="wallet-balance">Rp {{$userBalance}}</div>
                     <div class="wallet-button">
                         <a class="btn label-button" href="/withdraw" title="Withdraw">Withdraw</a>
                         <a class="btn label-button classic-button" href="/my-bank" title="Your Bank">Your Bank</a>

@@ -82,44 +82,4 @@
             </div>
         </div>
     </section>
-
-    <!-- SECTION FORMULIR -->
-    <section class="hero orange-bg" id="join-now">
-        <div class="container min-container">
-            <div class="hero-title">
-                <h2>Formulir Pendaftaran</h2>
-            </div>
-            <form class="box-formulir" action="{{ route('payments.create') }}" method="POST">
-                @csrf
-                <div class="form-group">
-                    <label class="form-label" for="nama">Nama Lengkap</label>
-                    <input class="form-input" type="text" id="nama" name="nama" required>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label" for="email">Email Address</label>
-                    <input class="form-input" type="email" id="email" name="email" required>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label" for="phone">Telepon/Whatsapp</label>
-                    <input class="form-input" type="tel" id="phone" name="phone" required pattern="[0-9]{10,15}">
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label" for="alamat">Alamat Lengkap</label>
-                    <textarea class="form-input" id="alamat" name="alamat" rows="3" required></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label" for="umur">Umur</label>
-                    <input class="form-input" type="number" id="umur" name="umur" min="1" max="120" required>
-                </div>
-
-                <div class="form-group">
-                    <button class="btn-primary" type="submit">Submit</button>
-                </div>
-            </form>
-        </div>
-    </section>
 </x-app-layout>
