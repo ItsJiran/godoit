@@ -1,7 +1,137 @@
 @section('title', 'Godoit.id')
 <x-app-layout>
 
-    @forelse($products as $product)
+
+    @forelse($sections as $section):
+
+        @if($section->type == 'homepage_description')
+
+        <section class="hero orange-bg orange-bg-img">
+            <div class="container">
+                <div class="hero-content">
+                    <div class="hero-text">
+                        <h1>{{ $section->meta_content['title'] }}</h1>
+                        <p>{!! nl2br($section->meta_content['description']) !!}</p>
+                        @if(array_key_exists('button_register',$section->meta_content))
+                        <a href="{{ $section->meta_content['button_register']['href'] . '?reg=' . request('reg') }}" class="btn btn-join btn-register">Daftar Sekarang</a>
+                        @endif
+                    </div>
+                    <div class="hero-image">
+                        <img src="{{  $section->meta_content['hero_image'] }}" alt="People collaborating and connecting">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+ 
+        @endif
+
+        @if($section->type == 'homepage_clients')
+            <!-- Client Section -->
+            <section class="clients">
+                <div class="container">
+                    <h2 class="clients-heading">{{$section->meta_content['title']}}</h2>
+                    <div class="client-grid">
+                        @forelse($section->meta_content['content'] as $client)
+                            <div class="client-logo">
+                                <img src="{{$client['src']}}" alt="{{$client['alt']}}">
+                            </div>
+                            @empty
+                        @endforelse
+                    </div>
+                </div>
+            </section>
+        @endif
+
+        @if($section->type == 'homepage_product')
+
+            <section class="hero">
+                <div class="container">
+                    <div class="mysection-wrapper reverse">
+                        <div class="mysection-item reverse">
+                            <div class="mysection-image">
+                                <img src="https://t4.ftcdn.net/jpg/15/02/52/47/360_F_1502524799_DgQUHNZHSrbxB1OQr5nbMLuxQQAcjqf6.jpg" alt="Program"/>
+                            </div>
+                            <div class="mysection-content">
+                                <h2>{{ $section->meta_content['title'] }}</h2>
+                                <p>{!! nl2br($section->meta_content['description']) !!}</p>
+                                @if(array_key_exists('button_more',$section->meta_content))
+                                    <a href="{{ $section->meta_content['button_more']['href'] . '?reg=' . request('reg') }}" class="btn btn-join">Lihat Lebih Lanjut</a>
+                                @endif
+                            </div>
+                        </div>
+                            
+                    </div>
+                </div>
+            </section>
+        @endif
+
+        @if($section->type == 'homepage_testimonials')
+        <section class="testimonials">
+            <div class="container">
+                <h2 class="testimonials-heading">{{ $section->meta_content['title'] }}</h2>
+
+                <div class="testimonials-grid">
+                    @forelse($section->meta_content['content'] as $testimony)
+                    <div class="testimonial-card">
+                        <p class="testimonial-quote">{{$testimony['quote']}}</p>
+                        <div class="testimonial-author">
+                            <img class="author-logo" src="{{$testimony['src']}}" alt="Logo A">
+                            <div class="author-info">
+                                <h4>{{$testimony['name']}}</h4>
+                                <p>{{$testimony['role']}}</p>
+                            </div>
+                        </div>
+                    </div>
+                        @empty 
+                    @endforelse
+                </div>                    
+            </div>
+        </section>
+        @endif
+
+        @if($section->type == 'homepage_faq')
+            <!-- FAQ Section -->
+            <section class="faq">
+                <div class="container">
+                    <h2 class="faq-heading">{{ $section->meta_content['title'] }}</h2>
+                    <div class="faq-container">
+                        @forelse($section->meta_content['content'] as $faq)
+                        <div class="faq-item">
+                            <div class="faq-question">{{$faq['question']}}</div>
+                            <div class="faq-answer">
+                                <p>{{$faq['answer']}}</p>
+                            </div>
+                        </div>
+                            @empty 
+                        @endforelse                        
+                    </div>
+                </div>
+            </section>
+
+            <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                    const faqQuestions = document.querySelectorAll('.faq-question');
+                    faqQuestions.forEach(question => {
+                        question.addEventListener('click', () => {
+                            const activeQuestion = document.querySelector('.faq-question.active');
+                            if (activeQuestion && activeQuestion !== question) {
+                                activeQuestion.classList.remove('active');
+                                activeQuestion.nextElementSibling.classList.remove('active');
+                            }
+                            question.classList.toggle('active');
+                            const answer = question.nextElementSibling;
+                            answer.classList.toggle('active');
+                        });
+                    });
+                });
+            </script>
+        @endif
+
+        @empty
+    @endforelse
+
+    {{-- @forelse($products as $product)
     <section class="hero">
         <div class="container">
             <div class="hero-content">
@@ -18,10 +148,10 @@
     </section>
     @empty
     <b>Kosong!</b>
-    @endforelse
+    @endforelse --}}
 
     <!-- SECTION -->
-    <section class="hero">
+    {{-- <section class="hero">
         <div class="container">
             <div class="mysection-wrapper">
                 <div class="mysection-item">
@@ -81,5 +211,5 @@
                 @endforelse
             </div>
         </div>
-    </section>
+    </section> --}}
 </x-app-layout>

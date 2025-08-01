@@ -1,6 +1,6 @@
 @section('title', 'Godoit.id')
 <x-app-layout>
-    <section class="hero">
+    <section class="hero orange-bg orange-bg-img">
         <div class="container">
             <div class="hero-content">
                 <div class="hero-text">
@@ -15,35 +15,50 @@
         </div>
     </section>
 
-    <!-- SECTION -->
-    <section class="hero">
+    <section class="terms-section">
         <div class="container">
-            <div class="mysection-wrapper">
-                <div class="mysection-item">
-                    <div class="mysection-image">
-                        <img src="https://t4.ftcdn.net/jpg/15/02/52/47/360_F_1502524799_DgQUHNZHSrbxB1OQr5nbMLuxQQAcjqf6.jpg" alt="Program"/>
-                    </div>
-                    <div class="mysection-content">
-                        <h2 class="mysection-title">Program Napak Tilas Kebangsaan</h2>
-                        <p class="mysection-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam suscipit rhoncus gravida. Proin consectetur congue erat, quis finibus lectus posuere at. Donec sed augue eu est malesuada condimentum.</p>
-                        <a href="#join-now" class="btn">Ikuti Sekarang</a>
-                    </div>
-                </div>
+            <h2 class="terms-heading">Syarat Dan Ketentuan</h2>
+            <ol class="terms-list">
 
-                <div class="mysection-item reverse">
-                    <div class="mysection-image">
-                        <img src="https://t4.ftcdn.net/jpg/15/02/52/47/360_F_1502524799_DgQUHNZHSrbxB1OQr5nbMLuxQQAcjqf6.jpg" alt="Program"/>
-                    </div>
-                    <div class="mysection-content">
-                        <h2 class="mysection-title">Program Napak Tilas Kebangsaan</h2>
-                        <div class="mysection-price">
-                            <small>Rp</small> {{ number_format($product->price ?? 0, 0, ',', '.') }}
-                        </div>
-                        <p class="mysection-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam suscipit rhoncus gravida. Proin consectetur congue erat, quis finibus lectus posuere at. Donec sed augue eu est malesuada condimentum.</p>
-                        <a href="#join-now#" class="btn">Ikuti Sekarang</a>
-                    </div>
-                </div>
-            </div>
+                                            <li class="terms-list-item">
+                        <h3>Persyaratan Usia</h3>
+                        <p>Kegiatan bisa diikuti mulai usia 7 tahun.</p>
+                                                    </li>
+                                                <li class="terms-list-item">
+                        <h3>Fasilitas Termasuk Biaya Pendaftaran</h3>
+                        <p>Biaya pendaftaran sudah termasuk:</p>
+                                                    <ul>
+                                                                <li>2x Snack gratis</li>
+                                                                <li>1x Makan</li>
+                                                                <li>T-shirt</li>
+                                                                <li>Armada (kendaraan yang disediakan)</li>
+                                                                <li>Hampers untuk 10 orang pendaftar pertama</li>
+                                                                <li>Tiket masuk setiap titik lokasi.</li>
+                                                        </ul>
+                                                    </li>
+                                                <li class="terms-list-item">
+                        <h3>Batas Waktu Pembayaran</h3>
+                        <p>Peserta diwajibkan melakukan pembayaran kegiatan paling lambat maksimal H-3 (3 hari sebelum) kegiatan.</p>
+                                                    </li>
+                                                <li class="terms-list-item">
+                        <h3>Transportasi</h3>
+                        <p>Perjalanan akan dilaksanakan menggunakan kendaraan yang telah disediakan Rumah Kebangsaan Pancasila.</p>
+                                                    </li>
+                                                <li class="terms-list-item">
+                        <h3>Titik Temu</h3>
+                        <p>Titik temu di Museum Sumpah Pemuda.</p>
+                                                    </li>
+                                                <li class="terms-list-item">
+                        <h3>Sesi Zoom Meeting</h3>
+                        <p>H-3 (3 hari sebelum) kegiatan akan diadakan Zoom Meeting antara para peserta dengan Panitia Pelaksana.</p>
+                                                    </li>
+                                                <li class="terms-list-item">
+                        <h3>Kebijakan Pembatalan/Pengalihan Dana</h3>
+                        <p>Apabila peserta berhalangan sampai H-1 (1 hari sebelum) kegiatan, maka dana yang sudah diberikan akan dialokasikan di event berikutnya.</p>
+                                                    </li>
+                       
+             
+            </ol>
         </div>
     </section>
 

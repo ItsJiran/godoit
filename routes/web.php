@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Route;
 
 // HOME
 Route::get('/', [DashboardController::class, 'home'])->name('welcome.index');
+Route::get('/page/napak_tilas', [DashboardController::class, 'napaktilas'])->name('welcome.index');
 
 // PRODUCT
 Route::get('/product/{product_id}', [DashboardController::class, 'product'])->name('welcome_product.index');
