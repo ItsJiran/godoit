@@ -13,8 +13,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {   
-        \Artisan::call('db:wipe');
-        \Artisan::call('migrate');
+        // \Artisan::call('db:wipe');
+        // \Artisan::call('migrate');
 
         $this->call(SuperAdminSeeder::class);
         $this->call(DebugAdminSeeder::class);

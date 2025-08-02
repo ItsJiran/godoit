@@ -15,12 +15,12 @@ class SettingSeeder extends Seeder
     {
         Setting::create([
             'slug' => 'free_member_comission_percentage',
-            'value' => 5, 
+            'value' => 10, 
         ]);
 
         Setting::create([
             'slug' => 'premium_member_comission_percentage',
-            'value' => 10, 
+            'value' => 20, 
         ]);
 
         Setting::create([

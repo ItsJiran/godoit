@@ -2008,7 +2008,7 @@ a.btn.classic-button {
 }
 
 .testimonial-quote {
-    font-size: .9rem;
+    font-size: 0.9rem;
     line-height: 1.8;
     color: #4a5568;
     font-style: italic;
@@ -2018,11 +2018,11 @@ a.btn.classic-button {
 }
 
 .testimonials .owl-stage-outer {
-    padding:10px 0;
+    padding: 10px 0;
 }
 
 .testimonials .owl-theme .owl-nav {
-    display:none;
+    display: none;
 }
 
 .testimonial-author {
@@ -2046,7 +2046,7 @@ a.btn.classic-button {
 
 .author-info h4 {
     font-weight: 700; /* Equivalent to font-semibold and font-bold for h4 */
-    font-size: .95rem;
+    font-size: 0.95rem;
     color: #2d3748;
     margin-bottom: 0.25rem;
 }
@@ -2361,6 +2361,16 @@ a.btn.classic-button {
     transform: translate(-50%, -50%) scale(1);
     opacity: 1;
 }
+.homepage_product_label {
+    padding: 4px 8px;
+    border: 1px solid #cfcfcf;
+    width: fit-content;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    background: #2e2e2e;
+    color: white;
+}
 /* --- Modal (Lightbox) for Image Zoom --- */
 .modal {
     display: none; /* Hidden by default */
@@ -2659,9 +2669,9 @@ a.btn.classic-button {
     justify-content: center;
     align-items: center;
     z-index: 1000;
-    display:none;
+    display: none;
 }
-.loader-overlay.shows{
+.loader-overlay.shows {
     display: flex;
 }
 
@@ -2675,6 +2685,10 @@ a.btn.classic-button {
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }

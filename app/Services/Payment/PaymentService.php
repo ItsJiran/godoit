@@ -93,47 +93,87 @@ class PaymentService
 
         if ($referrer) {
 
-            $comission_percentage = Setting::where('slug','free_member_comission_percentage')->first()->value;
-
-            if ( $referrer->activeMembershipPremium() )
-                $comission_percentage = Setting::where('slug','premium_member_comission_percentage')->first()->value;
-
-            // if user refferer has parent 
+            // get main percentage comission
+            $main_comission_percentage = Setting::where('slug','free_member_comission_percentage')->first()->value;
+            $main_comission_amount = round($harga * ($main_comission_percentage / 100), 2);
+            
+            // get parent  percentage comission
             $parent_referrer = $referrer->referrer;
-            $commissionAmount = round($harga * ($comission_percentage / 100), 2);
-            $harga -= $commissionAmount;   
 
-            if ( $parent_referrer ) {
-                $comission_parent_percentage = Setting::where('slug','premium_downline')->first()->value;
-                $commissionParentAmount = round($commissionAmount * ($comission_parent_percentage / 100), 2);
+            // if parent referrer exist then subtract it with current 
+            // parent percentage
+            if ($parent_referrer) {
+                $parent_comission_percentage = Setting::where('slug','premium_downline')->first()->value;
+                $parent_comission_amount = round($harga * ($parent_comission_percentage / 100), 2);
 
-                // generate comission transaction
+                // if parent comission percentage exist then subtract it
+                // with parent comission
+                $main_comission_percentage -= $parent_comission_percentage;
+                $main_comission_amount = round($harga * ($main_comission_percentage / 100), 2);
+
+                // update with the harga with the new amount parent amount
+                $harga -= $parent_comission_amount;
+                // $harga -= $parent_comission_amount;
+
+                // generate the referral comission for the parent
                 $referral_transaction = ReferralService::generateReferralCommission(
                     $parent_referrer, // refferer
                     $referrer, // current user refffered
-                    $commissionParentAmount,
-                    $comission_parent_percentage,
+                    $parent_comission_amount,
+                    $parent_comission_percentage,
                     $payment
                 );
-
-                $commissionAmount -= $commissionParentAmount;
-                $comission_percentage -= $comission_parent_percentage;
             }
 
-
-            if ($commissionAmount <= 0) {
-                // If commission is 0 or negative, don't create a transaction
-                throw new \Exception("Calculated referral commission amount is zero or negative.");
-            }
-
-            // generate comission transaction
+            // generate referral for the main comission
             $referral_transaction = ReferralService::generateReferralCommission(
                 $referrer, // refferer
                 $request->user(), // current user refffered
-                $commissionAmount,
-                $comission_percentage,
+                $main_comission_amount,
+                $main_comission_percentage,
                 $payment
             );
+
+            $harga -= $main_comission_amount;
+
+
+            // if ( $referrer->activeMembershipPremium() )
+            //     $comission_percentage = Setting::where('slug','premium_member_comission_percentage')->first()->value;
+
+            // if user refferer has parent 
+            // $parent_referrer = $referrer->referrer;
+            // $commissionAmount = round($harga * ($comission_percentage / 100), 2);
+            // $harga -= $commissionAmount;   
+
+            // if ( $parent_referrer ) {
+            //     $comission_parent_percentage = Setting::where('slug','premium_downline')->first()->value;
+            //     $commissionParentAmount = round($commissionAmount * ($comission_parent_percentage / 100), 2);
+
+            //     // generate comission transaction
+            //     $referral_transaction = ReferralService::generateReferralCommission(
+            //         $parent_referrer, // refferer
+            //         $referrer, // current user refffered
+            //         $commissionParentAmount,
+            //         $comission_parent_percentage,
+            //         $payment
+            //     );
+
+            //     $commissionAmount -= $commissionParentAmount;
+            //     $comission_percentage -= $comission_parent_percentage;
+            // } else {
+
+
+
+
+            // }
+
+
+            // if ($commissionAmount <= 0) {
+            //     // If commission is 0 or negative, don't create a transaction
+            //     throw new \Exception("Calculated referral commission amount is zero or negative.");
+            // }
+
+            // generate comission transaction            
         }
         
         $order_first_item = $order->items->first();

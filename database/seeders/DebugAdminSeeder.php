@@ -45,6 +45,35 @@ class DebugAdminSeeder extends Seeder
         } else {
             $this->command->info('Melewati pembuatan Akun Debug Admin karena bukan di mode development.');
         }
+
+
+        if (App::environment('production')) {
+            // Periksa apakah admin debug sudah ada untuk menghindari duplikasi.
+            if (User::where('email', 'admin@godoit.com')->doesntExist()) {
+                User::create([
+                    'username' => 'admin1',
+                    'name' => 'Admin Go Do It',
+                    'email' => 'admin@godoit.com',
+                    'email_verified_at' => now(), // Verifikasi email secara otomatis untuk kemudahan debug
+                    'password' => Hash::make('G0D01T4DM1N'), // Kata sandi default untuk debug (ubah di produksi!)
+                    'role' => 'admin', // Peran untuk akun debug ini adalah 'admin'
+                'whatsapp' => '0',
+                'kota' => '',
+                'referral_code' => Str::random(10), // Buat kode referral unik
+                    'registration_ip_address' => '127.0.0.1', // IP localhost
+                    'registration_user_agent' => 'Debug Seeder', // User-Agent untuk seeder
+                    'registration_device_cookie_id' => Str::uuid()->toString(), // UUID perangkat unik
+                ]);
+
+                $this->command->info('Akun Debug Admin berhasil dibuat (hanya di mode development)!');
+            } else {
+                $this->command->info('Akun Debug Admin sudah ada. Melewati pembuatan.');
+            }
+        } else {
+            $this->command->info('Melewati pembuatan Akun Debug Admin karena bukan di mode development.');
+        }
+
+
     }
 }
 
