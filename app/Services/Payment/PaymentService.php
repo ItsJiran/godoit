@@ -5,6 +5,8 @@ namespace App\Services\Payment;
 use App\Models\Order;
 use App\Models\Payment;
 use App\Models\User;
+use App\Models\Setting;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -90,16 +92,49 @@ class PaymentService
         $harga = $order->total_price;
 
         if ($referrer) {
+
+            $comission_percentage = Setting::where('slug','free_member_comission_percentage')->first()->value;
+
+            if ( $referrer->activeMembershipPremium() )
+                $comission_percentage = Setting::where('slug','premium_member_comission_percentage')->first()->value;
+
+            // if user refferer has parent 
+            $parent_referrer = $referrer->referrer;
+            $commissionAmount = round($harga * ($comission_percentage / 100), 2);
+            $harga -= $commissionAmount;   
+
+
+            if ( $parent_referrer && $parent_referrer->activeMembershipPremium() ) {
+                $comission_parent_percentage = Setting::where('slug','premium_downline')->first()->value;
+                $commissionParentAmount = round($commissionAmount * ($comission_parent_percentage / 100), 2);
+
+                // generate comission transaction
+                $referral_transaction = ReferralService::generateReferralCommission(
+                    $parent_referrer, // refferer
+                    $referrer, // current user refffered
+                    $commissionParentAmount,
+                    $comission_parent_percentage,
+                    $payment
+                );
+
+                $commissionAmount -= $commissionParentAmount;
+                $comission_percentage -= $comission_parent_percentage;
+            }
+
+
+            if ($commissionAmount <= 0) {
+                // If commission is 0 or negative, don't create a transaction
+                throw new \Exception("Calculated referral commission amount is zero or negative.");
+            }
+
             // generate comission transaction
             $referral_transaction = ReferralService::generateReferralCommission(
                 $referrer, // refferer
                 $request->user(), // current user refffered
-                $harga,
+                $commissionAmount,
+                $comission_percentage,
                 $payment
             );
-
-            // pengerugnan harga dengn jumlah dari potongan dari referral
-            $harga -= $referral_transaction->amount;   
         }
         
         $order_first_item = $order->items->first();

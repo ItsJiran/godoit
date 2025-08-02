@@ -16,6 +16,7 @@ use App\Models\AccountTransaction;
 use App\Models\MarketingKit;
 use App\Models\Payment;
 use App\Models\ContactMessage;
+use App\Models\Setting;
 use App\Models\UserBank;
 use App\Models\WithdrawManual;
 use App\Models\LandingSection;
@@ -188,6 +189,7 @@ class DashboardController extends Controller
             'kits' => $kits,
             'product' => $product,
             'userPremiumMembership' => $user ? $user->activeMembershipPremium() : null,
+            'productEventFinished' => Carbon::parse($product->productable->timestamp)->isPast(),
         ]);
     }
 
@@ -311,6 +313,54 @@ class DashboardController extends Controller
         $kit->konten = $request->konten;
         $kit->save();
         return redirect()->route('marketingkit')->with('success', 'Marketing Kit berhasil diperbarui.');
+    }
+
+    public function editSetting(Request $request)
+    {
+        // SECURITY (THIS PAGE IS NOT FOR USER)
+        if (Auth::check() && Auth::user()->role === 'user') {
+            abort(403, 'Anda tidak memiliki izin!');
+        }
+
+        $free_member_comission_percentage = Setting::where('slug','free_member_comission_percentage')->first()->value;
+        $premium_member_comission_percentage = Setting::where('slug','premium_member_comission_percentage')->first()->value;
+        $premium_downline = Setting::where('slug','premium_downline')->first()->value;
+
+        return view('dashboard.settings')->with(
+            [
+                'free_member_comission_percentage'=>$free_member_comission_percentage,
+                'premium_member_comission_percentage'=>$premium_member_comission_percentage,
+                'premium_downline'=>$premium_downline,
+            ]
+        );
+    }
+
+    public function updateSetting(Request $request)
+    {
+        // SECURITY (THIS PAGE IS NOT FOR USER)
+        if (Auth::check() && Auth::user()->role === 'user') {
+            abort(403, 'Anda tidak memiliki izin!');
+        }
+
+        $request->validate([
+            'free_member_comission_percentage' => 'required|numeric|min:0|max:100',
+            'premium_member_comission_percentage' => 'required|numeric|min:0|max:100',
+            'premium_downline' => 'required|numeric|min:0|max:100',
+        ]);
+
+        $free_member_comission_percentage = Setting::where('slug','free_member_comission_percentage')->first();
+        $premium_member_comission_percentage = Setting::where('slug','premium_member_comission_percentage')->first();
+        $premium_downline = Setting::where('slug','premium_downline')->first();
+
+        $free_member_comission_percentage->value = $request->free_member_comission_percentage;
+        $premium_member_comission_percentage->value = $request->premium_member_comission_percentage;
+        $premium_downline->value = $request->premium_downline;
+    
+        $free_member_comission_percentage->save();
+        $premium_member_comission_percentage->save();
+        $premium_downline->save();
+
+        return redirect()->route('editSetting')->with('success', 'Marketing Kit berhasil diperbarui.');
     }
 
     // HAPUS DATA MARKETING KIT

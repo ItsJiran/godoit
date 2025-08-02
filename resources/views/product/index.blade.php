@@ -85,77 +85,89 @@
         </div>
 
     <div class="call-to-action full-action">
-        @auth
-            {{-- Check if the user already has this product --}}
-            @if (Auth::user()->acquisitions()->where('product_id', $product->id)->active()->exists())
-                <button class="btn-buy" disabled>Already Acquired</button>
-                <p class="mt-3 text-gray-600">You already have an active acquisition for this product.</p>
+
+        @if($productEventFinished)
+            <div class="hero-title">
+                <h2>Formulir Pendaftaran Ditutup</h2>
+                <button style='margin:0px auto; display:block;' class="btn-buy" disabled>Event Kegiatan Telah Selesai</button>
+            </div>
+        @endif
+
+
+        @if(!$productEventFinished)
+            @auth
+                {{-- Check if the user already has this product --}}
+                @if (Auth::user()->acquisitions()->where('product_id', $product->id)->active()->exists())
+                    <button class="btn-buy" disabled>Already Acquired</button>
+                    <p class="mt-3 text-gray-600">You already have an active acquisition for this product.</p>
+                @else
+                    {{-- Use a form for the purchase action --}}
+                    <form action="{{ route('product.checkout') }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="product_id" value="{{ $product->id }}">
+                        <input type="hidden" name="reg" value="{{ request('reg') }}"> {{-- Use the $harga variable for amount --}}
+                        <button type="submit" class="btn-buy full-buy">Buy Now</button>
+                    </form>
+                @endif
             @else
                 {{-- Use a form for the purchase action --}}
                 <form action="{{ route('product.checkout') }}" method="POST">
                     @csrf
                     <input type="hidden" name="product_id" value="{{ $product->id }}">
                     <input type="hidden" name="reg" value="{{ request('reg') }}"> {{-- Use the $harga variable for amount --}}
-                    <button type="submit" class="btn-buy full-buy">Buy Now</button>
+
+                    {{-- User Information Fields --}}
+                    <h3 class="form-section-title">Your Information</h3>
+
+                    @error('error')
+                    <span class="error-message">{{ $message }}</span>
+                @enderror
+
+                    <div class="form-group">
+                        <label for="nama" class="form-label">Nama Lengkap</label>
+                        <input type="text" id="nama" name="nama" class="form-input" value="{{ old('nama') }}" required>
+                        @error('nama')
+                            <span class="error-message">{{ $message }}</span>
+                        @enderror
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email" class="form-label">Email Address</label>
+                        <input type="email" id="email" name="email" class="form-input" value="{{ old('email') }}" required>
+                        @error('email')
+                            <span class="error-message">{{ $message }}</span>
+                        @enderror
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone" class="form-label">Whatsapp</label>
+                        <input type="text" id="phone" name="phone" class="form-input" value="{{ old('phone') }}" required>
+                        @error('phone')
+                            <span class="error-message">{{ $message }}</span>
+                        @enderror
+                    </div>
+
+                    <div class="form-group">
+                        <label for="alamat" class="form-label">Alamat Lengkap</label>
+                        <textarea id="alamat" name="alamat" class="form-input" rows="3" required>{{ old('alamat') }}</textarea>
+                        @error('alamat')
+                            <span class="error-message">{{ $message }}</span>
+                        @enderror
+                    </div>
+
+                    <div class="form-group">
+                        <label for="umur" class="form-label">Umur</label>
+                        <input type="number" id="umur" name="umur" class="form-input" value="{{ old('umur') }}" required>
+                        @error('umur')
+                            <span class="error-message">{{ $message }}</span>
+                        @enderror
+                    </div>
+
+                    <button type="submit" class="btn-buy">Buy Now</button>
                 </form>
-            @endif
-        @else
-            {{-- Use a form for the purchase action --}}
-            <form action="{{ route('product.checkout') }}" method="POST">
-                @csrf
-                <input type="hidden" name="product_id" value="{{ $product->id }}">
-                <input type="hidden" name="reg" value="{{ request('reg') }}"> {{-- Use the $harga variable for amount --}}
+            @endauth
+        @endif
 
-                {{-- User Information Fields --}}
-                <h3 class="form-section-title">Your Information</h3>
-
-                @error('error')
-                <span class="error-message">{{ $message }}</span>
-            @enderror
-
-                <div class="form-group">
-                    <label for="nama" class="form-label">Nama Lengkap</label>
-                    <input type="text" id="nama" name="nama" class="form-input" value="{{ old('nama') }}" required>
-                    @error('nama')
-                        <span class="error-message">{{ $message }}</span>
-                    @enderror
-                </div>
-
-                <div class="form-group">
-                    <label for="email" class="form-label">Email Address</label>
-                    <input type="email" id="email" name="email" class="form-input" value="{{ old('email') }}" required>
-                    @error('email')
-                        <span class="error-message">{{ $message }}</span>
-                    @enderror
-                </div>
-
-                <div class="form-group">
-                    <label for="phone" class="form-label">Whatsapp</label>
-                    <input type="text" id="phone" name="phone" class="form-input" value="{{ old('phone') }}" required>
-                    @error('phone')
-                        <span class="error-message">{{ $message }}</span>
-                    @enderror
-                </div>
-
-                <div class="form-group">
-                    <label for="alamat" class="form-label">Alamat Lengkap</label>
-                    <textarea id="alamat" name="alamat" class="form-input" rows="3" required>{{ old('alamat') }}</textarea>
-                    @error('alamat')
-                        <span class="error-message">{{ $message }}</span>
-                    @enderror
-                </div>
-
-                <div class="form-group">
-                    <label for="umur" class="form-label">Umur</label>
-                    <input type="number" id="umur" name="umur" class="form-input" value="{{ old('umur') }}" required>
-                    @error('umur')
-                        <span class="error-message">{{ $message }}</span>
-                    @enderror
-                </div>
-
-                <button type="submit" class="btn-buy">Buy Now</button>
-            </form>
-        @endauth
     </div>
 </div>
 </x-app-layout>

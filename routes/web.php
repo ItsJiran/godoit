@@ -32,6 +32,19 @@ Route::middleware('auth')->group(function () {
     // DASHBOARD (ADMIN)
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
 
+    // admin settings
+    Route::get('/admin/setting', [DashboardController::class, 'editSetting'])->name('editSetting');
+    Route::put('/admin/setting', [DashboardController::class, 'updateSetting'])->name('updateSetting');
+    
+    // section
+    Route::get('/admin/page/napak', [PageController::class, 'indexPageSectionNapak'])->name('page.napak');
+    Route::get('/admin/page/homepage', [PageController::class, 'indexPageSectionHome'])->name('page.homepage');
+    Route::get('/admin/page/section/create/{landing_type}/{type}', [PageController::class, 'createSection'])->name('createSection');
+    Route::post('/admin/page/section/store', [PageController::class, 'storeSection'])->name('storeSection');
+    Route::get('/admin/page/section/{id}/edit', [PageController::class, 'editSection'])->name('editSection');
+    Route::put('/admin/page/section/{id}', [ProductController::class, 'updateSection'])->name('updateSection');
+    Route::delete('/admin/page/section/{id}', [PageController::class, 'deleteSection'])->name('deleteSection');
+
     // PRODUCT (ADMIN)
     Route::get('/admin/product', [ProductController::class, 'index'])->name('admin.product');
     Route::post('/admin/product', [ProductController::class, 'saveProduct'])->name('saveProduct');

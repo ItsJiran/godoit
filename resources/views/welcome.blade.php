@@ -12,7 +12,10 @@
                     <div class="hero-text">
                         <h1>{{ $section->meta_content['title'] }}</h1>
                         <p>{!! nl2br($section->meta_content['description']) !!}</p>
-                        @if(array_key_exists('button_register',$section->meta_content))
+                        @if(Auth::check())
+                            <a href="{{ '/page/napak_tilas' . '?reg=' . request('reg') }}" class="btn btn-join">Selengkapnya</a>
+                        @endif
+                        @if(!Auth::check() && array_key_exists('button_register',$section->meta_content))
                         <a href="{{ $section->meta_content['button_register']['href'] . '?reg=' . request('reg') }}" class="btn btn-join btn-register">Daftar Sekarang</a>
                         @endif
                     </div>
@@ -50,13 +53,24 @@
                     <div class="mysection-wrapper reverse">
                         <div class="mysection-item reverse">
                             <div class="mysection-image">
-                                <img src="https://t4.ftcdn.net/jpg/15/02/52/47/360_F_1502524799_DgQUHNZHSrbxB1OQr5nbMLuxQQAcjqf6.jpg" alt="Program"/>
+                                @if($products[0] != null)
+                                    <img src="/storage/{{$products[0]->thumbnail->path}}" alt="Program Leader" />
+                                @endif
+
+                                @if($products[0] == null)
+                                    <img src="https://t4.ftcdn.net/jpg/15/02/52/47/360_F_1502524799_DgQUHNZHSrbxB1OQr5nbMLuxQQAcjqf6.jpg" alt="Program"/>
+                                @endif
                             </div>
                             <div class="mysection-content">
+                                {{-- <h3>Event yang akan datang</h3> --}}
+                                <h3>{{ $section->meta_content['subtitle'] }}</h3>
                                 <h2>{{ $section->meta_content['title'] }}</h2>
+                                @if($products[0] != null)
+                                    <p class="hero-date">{{ \Carbon\Carbon::parse($products[0]->productable->timestamp)->translatedFormat('l, j F Y, (H:iA)') }}</p>                                    
+                                @endif
                                 <p>{!! nl2br($section->meta_content['description']) !!}</p>
                                 @if(array_key_exists('button_more',$section->meta_content))
-                                    <a href="{{ $section->meta_content['button_more']['href'] . '?reg=' . request('reg') }}" class="btn btn-join">Lihat Lebih Lanjut</a>
+                                    <a href="{{ $section->meta_content['button_more']['href'] . '?reg=' . request('reg') }}" class="btn btn-join">Selengkapnya</a>
                                 @endif
                             </div>
                         </div>
@@ -71,9 +85,9 @@
             <div class="container">
                 <h2 class="testimonials-heading">{{ $section->meta_content['title'] }}</h2>
 
-                <div class="testimonials-grid">
+                <div class="owl-carousel owl-theme">
                     @forelse($section->meta_content['content'] as $testimony)
-                    <div class="testimonial-card">
+                    <div class="testimonial-card item">
                         <p class="testimonial-quote">{{$testimony['quote']}}</p>
                         <div class="testimonial-author">
                             <img class="author-logo" src="{{$testimony['src']}}" alt="Logo A">

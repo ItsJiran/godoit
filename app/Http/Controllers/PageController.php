@@ -14,10 +14,15 @@ use App\Models\AccountTransaction;
 use App\Models\MarketingKit;
 use App\Models\Payment;
 use App\Models\ContactMessage;
+use App\Models\LandingSection;
 
 use App\Enums\Account\AccountType;
 use App\Enums\Account\AccountTransactionStatus;
 use App\Enums\Account\AccountTransactionPurpose;
+
+use App\Models\Image;
+use App\Enums\Image\ImagePurposeType;
+use App\Services\Media\ImageUploadService; // Ensure this is correct
 
 class PageController extends Controller
 {
@@ -25,7 +30,7 @@ class PageController extends Controller
     public function marketing_kit(Request $request): View
     {
         $user = $request->user();
-        $userReferral = url('/?reg=');                    
+        $userReferral = url('page/napak_tilas/?reg=');                    
         if (!is_null($user)) {
             $userReferral = $user->generateReferralUrl();
         }
@@ -42,7 +47,7 @@ class PageController extends Controller
         $user = $request->user();
 
         // Initialize variables with default values to ensure they are always defined
-        $userReferral = url('/?reg=');                    
+        $userReferral = url('page/napak_tilas');                    
         $userCount = 0;
         $userBalance = 0;
         $userComissionTotal = 0;
@@ -51,7 +56,7 @@ class PageController extends Controller
 
         if (!is_null($user)) {
             // get env from the 
-            $userReferral = $user->generateReferralUrl();
+            $userReferral = $userReferral . $user->generateReferralParam();
             $userCount = User::where('parent_referral_code', $user->referral_code)->count();
 
             $userAccount = Account::getAccountUserByType($user->id, AccountType::E_WALLET->value);        
@@ -147,4 +152,143 @@ class PageController extends Controller
         session(['last_contact_submission' => now()]);
         return back()->with('success', 'Pesan Anda berhasil dikirim.');
     }
+
+    public function indexPageSectionNapak(Request $request){
+        $sections = LandingSection::where('landing_type','napak_tilas')->paginate(5);
+        $landing_type = 'napak_tilas';
+
+        return view('dashboard.pages.index', compact('sections','landing_type'));
+    }
+
+    public function indexPageSectionHome(Request $request){
+        $sections = LandingSection::where('landing_type','homepage')->paginate(5);
+        $landing_type = 'homepage';
+
+        return view('dashboard.pages.index', compact('sections','landing_type'));
+    }
+
+    public function createSection(Request $request, $landing_type, $type){
+        return view('dashboard.pages.create', compact('landing_type', 'type'));
+    }
+
+    public function storeSection(Request $request){
+
+        $request->validate([
+            'landing_type' => 'required',
+            'index' => 'required',
+            'type' => 'required',
+        ]);
+
+        if($request->type == 'homepage_description'){
+            $request->validate([
+                'hero_image' => 'required',
+                'title' => 'required',
+                'description' => 'required',
+            ]);
+
+            $landing_section = LandingSection::create([
+                'index' => $request->index,
+                'landing_type' => $request->landing_type,
+                'type' => $request->type,
+                'meta_content' => [],
+            ]);
+
+            $heroImage = Image::createImageRecord(
+                $request->file('hero_image'),
+                $landing_section,
+                ImagePurposeType::PRODUCT_THUMBNAIL->value,
+                'section' . $landing_section->id,
+                'public',
+                null,
+                ImagePurposeType::PRODUCT_THUMBNAIL->value
+            );
+
+            $landing_section->meta_content = [
+                'title' => $request->title,
+                'subtitle' => $request->subtitle,
+                'description' => $request->description,
+                'hero_image' => $heroImage->path,
+                'hero_model_id' => $heroImage->id,
+            ];
+        };
+
+        if($request->type == 'homepage_clients'){
+            $request->validate([
+                'hero_image' => 'required',
+                'title' => 'required',
+                'description' => 'required',
+                'clients_1' => 'image|nullable',
+                'clients_2' => 'image|nullable',
+                'clients_3' => 'image|nullable',
+                'clients_4' => 'image|nullable',
+            ]);
+
+            // $landing_section = LandingSection::create([
+            //     'index' => $request->index,
+            //     'landing_type' => $request->landing_type,
+            //     'type' => $request->type,
+            //     'meta_content' => [],
+            // ]);
+
+
+            // $heroImage = Image::createImageRecord(
+            //     $request->file('hero_image'),
+            //     $landing_section,
+            //     ImagePurposeType::PRODUCT_THUMBNAIL->value,
+            //     'section' . $landing_section->id,
+            //     'public',
+            //     null,
+            //     ImagePurposeType::PRODUCT_THUMBNAIL->value
+            // );
+
+            // $landing_section->meta_content = [
+            //     'title' => $request->title,
+            //     'subtitle' => $request->subtitle,
+            //     'description' => $request->description,
+            //     'hero_image' => $heroImage->path,
+            //     'hero_model_id' => $heroImage->id,
+            // ];
+        };
+        
+        // if($request->type == 'homepage_product'){
+        //     $request->validate([
+        //         'image' => 'required',
+        //         'title' => 'required',
+        //         'subtitle' => 'required',
+        //         'description' => 'required',
+        //     ]);
+
+        //     LandingSection::create([
+        //         'index' => $request->index,
+        //         'landing_type' => $request->landing_type,
+        //         'type' => $request->type,
+        //         'meta_content' => [
+        //             'title' => $request->title,
+        //             'subtitle' => $request->subtitle,
+        //             'description' => $request->description,
+        //         ],
+        //     ]);
+        // };
+
+
+
+        if($request->landing_type == 'homepage')    
+            return redirect()->route('page.homepage')->with('success', 'Section berhasil ditambah.');
+        else 
+            return redirect()->route('page.napak')->with('success', 'Section berhasil ditambah.');
+    }
+
+    public function updateSection(){
+
+
+    }
+
+    public function deleteSection(Request $request, $id){
+        LandingSection::where('id',$id)->delete();
+        return redirect()->back()->with('success', 'Section berhasil dihapus.');
+    }
+
+
+
+
 }

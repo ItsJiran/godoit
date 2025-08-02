@@ -2034,7 +2034,7 @@ a.btn.classic-button {
     margin-top: 1.5rem; /* Equivalent to mt-6 (approx 24px) */
 }
 
-.author-logo {
+.testimonial-author img.author-logo {
     width: 4rem;
     height: 4rem;
     object-fit: cover;

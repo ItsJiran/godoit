@@ -24,11 +24,8 @@ class LandingSectionSeeder extends Seeder
           'type' => 'homepage_description',
           'meta_content' => [
               'title' => 'Selamat Datang di Go Do It',
-              'description' => 'Selamat datang di Godoit, platform referral inovatif yang memberdayakan Anda untuk mendapatkan penghasilan dari jaringan dan relasi yang Anda miliki. Kami percaya setiap koneksi berharga. 
-              
-              Godoit hadir untuk menjembatani Anda dengan peluang bisnis menarik, memungkinkan Anda merekomendasikan produk atau layanan berkualitas, dan mendapatkan komisi yang menguntungkan. 
-              
-              Baik Anda seorang individu yang ingin menambah pemasukan, atau seorang profesional yang ingin memaksimalkan network Anda, Godoit adalah solusi cerdas untuk mengubah rekomendasi menjadi pendapatan nyata.',
+              'description' => 'Gabung bersama godoit dan dapatkan ppenghasilan tak terbatas!
+Bantu sebarkan semangat Napak Tilas Kebangsaan. Setiap peserta yang mendaftar lewat Anda = komisi langsung ke akun Anda.',
               'hero_image' => 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
               'button_register' => [
                 'href' => 'register'
@@ -40,7 +37,8 @@ class LandingSectionSeeder extends Seeder
           'index' => 1,
           'type' => 'homepage_product',
           'meta_content' => [
-              'title' => 'Tentang Produk Napak Tilas',
+              'subtitle' => 'Event Mendatang',
+              'title' => 'Napak Tilas On The Spot',
               'description' => 'Di Go Do It, kamu dapat memasarkan Produk Napak Tilas Kebangsaan, Napak Tilas Kebangsaan sendiri adalah program outdoor edukatif yang mengajak peserta—mulai dari siswa, guru, hingga keluarga—untuk belajar sejarah secara langsung di titik kejadian.',
               'button_more' => [
                 'href' => 'page/napak_tilas'

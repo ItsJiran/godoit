@@ -18,6 +18,8 @@ use App\Enums\Acquisition\AcquisitionStatus; // Assuming you have this Enum
 use App\Services\Payment\PaymentService;
 use App\Services\Order\OrderService;
 
+use Carbon\Carbon;
+
 class CheckoutController extends Controller
 {
     /**
@@ -82,6 +84,20 @@ class CheckoutController extends Controller
         if (Auth::check() && OrderService::hasPendingOrderForProduct($user->id, $product->id)  ) { 
             return back()->with('error', 'You already have a pending order for this product. Please complete or cancel it first.');            
         }
+
+
+        // Check if the productable is ProductRegular and its timestamp has exceeded the current time
+        if ($product && $product->productable_type === 'App\\Models\\ProductRegular') {
+            $productRegular = $product->productable; // Mengakses model ProductRegular
+            if ($productRegular && $productRegular->timestamp) {
+                // Menggunakan Carbon untuk membandingkan timestamp
+                if (Carbon::parse($productRegular->timestamp)->isPast()) {
+                    return back()->with('error', 'Event kegiatan sudah melewati batas pelaksanaan.');
+                }
+            }
+        }
+
+        // check if time stamp exceed
 
         // If all checks pass, proceed to create the order and order item
         DB::beginTransaction();

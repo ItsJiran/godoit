@@ -22,7 +22,6 @@ use Carbon\Carbon;
 class ProductController extends Controller
 {
 
-
     public function viewProduct(Request $request, $id)
     {
         $user = $request->user();
@@ -32,9 +31,9 @@ class ProductController extends Controller
         return view('product.index', [
             'product' => $product,
             'currentUserId' => $user ? $user->id : null, // Pass user ID for comparison in view
+            'productEventFinished' => Carbon::parse($product->productable->timestamp)->isPast()
         ]);
     }
-
 
     /**
      * Display a listing of the products.
@@ -63,7 +62,6 @@ class ProductController extends Controller
                             ->with('thumbnail')
                             ->paginate(2);
         }
-
         // Pass products and the current user's ID to the view
         return view('dashboard.products.index', compact('products', 'query'));
     }
