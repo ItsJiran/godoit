@@ -5,6 +5,7 @@ use App\Models\User;
 use App\Models\Payment;
 use App\Models\Order;
 use App\Mail\CustomMail;
+use App\Mail\PaymentSuccessAdminNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
@@ -100,7 +101,7 @@ class BuyController
 
         // Konfigurasi Midtrans
         Config::$serverKey = env('MIDTRANS_SERVER_KEY');
-        Config::$isProduction = false; // Ubah ke true jika di production
+        Config::$isProduction = env('MIDTRANS_IS_PRODUCTION'); // Ubah ke true jika di production
         Config::$isSanitized = true;
         Config::$is3ds = true;
 
@@ -168,7 +169,6 @@ class BuyController
     }
     
     // ALUR 3: UPDATE DATA PAYMENT DAN CHECKOUT
-
     public function updatePaymentStatus(Request $request)
     {
         // Validasi data yang masuk
@@ -191,6 +191,11 @@ class BuyController
             // Update status berdasarkan status yang diterima dari JavaScript
             if ($request->status == 'success') {              
                 $payment->status = '1'; 
+                // Tambahkan parsing JSON
+                $customer = json_decode($payment->customer_details);
+                $products = json_decode($payment->product_details);
+                // Kirim email ke admin
+                Mail::to('necromancer080@gmail.com')->send(new PaymentSuccessAdminNotification($payment, $customer, $products));
                 TransactionService::processSourceableTransactions( $payment, AccountTransactionStatus::COMPLETED );
                 if($payment->order){ OrderProcessor::completeOrder( $payment->order ); }
             } elseif ($request->status == 'pending') {
@@ -226,7 +231,7 @@ class BuyController
     {
         // Konfigurasi Midtrans
         \Midtrans\Config::$serverKey = env('MIDTRANS_SERVER_KEY');
-        \Midtrans\Config::$isProduction = false;
+        \Midtrans\Config::$isProduction = env('MIDTRANS_IS_PRODUCTION');
         \Midtrans\Config::$isSanitized = true;
         \Midtrans\Config::$is3ds = true;
         // Tangkap notifikasi dari Midtrans

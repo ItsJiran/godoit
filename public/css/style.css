@@ -262,17 +262,17 @@ nav {
     align-items: center;
 }
 .hero-text h1 {
-    font-size: 2.55rem;
+    font-size: 2.5rem;
     font-weight: 700;
     color: #333;
     margin-bottom: 1rem;
-    line-height: 1.5;
+    line-height: 1.4;
 }
 .hero-date {
     color: #f07052;
     font-size: 0.94rem;
     font-weight: 500;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
 }
 .btn-join {
     background: #333;
@@ -1885,13 +1885,13 @@ a.btn.classic-button {
 
 .hero-text h1 {
     color: #fff;
-    font-size: 3.2rem;
+    font-size: 2.5rem;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .hero-text p {
     color: #f0f0f0;
-    font-size: 1.1rem;
+    font-size: 1rem;
     margin-bottom: 2rem;
 }
 
@@ -1902,23 +1902,6 @@ a.btn.classic-button {
 
 .hero-image img:hover {
     transform: scale(1.03);
-}
-
-.btn-join {
-    background: #fff;
-    color: #f07052;
-    border: 2px solid #fff;
-    font-weight: 700;
-    padding: 18px 40px;
-    font-size: 1rem;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-}
-
-.btn-join:hover {
-    background: #f07052;
-    color: #fff;
-    transform: translateY(-5px);
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
 }
 
 .hero-text {
@@ -1973,7 +1956,7 @@ a.btn.classic-button {
 }
 
 .testimonials-heading {
-    font-size: 2.25rem; /* Equivalent to text-3xl */
+    font-size: 25px; /* Equivalent to text-3xl */
     font-weight: 700; /* Equivalent to font-bold */
     text-align: center;
     margin-bottom: 3rem; /* Equivalent to mb-12 (approx 48px) */
@@ -1991,7 +1974,7 @@ a.btn.classic-button {
     background: #fff;
     padding: 2.5rem;
     border-radius: 1rem;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 6px 0 rgb(12 0 46 / 6%);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -2003,10 +1986,10 @@ a.btn.classic-button {
 .testimonial-card::before {
     content: "“";
     position: absolute;
-    top: -10px;
-    left: -5px;
-    font-size: 10rem;
-    color: #f07052;
+    top: 10px;
+    left: 10px;
+    font-size: 5rem;
+    color: #555;
     opacity: 0.1;
     line-height: 1;
     font-family: Georgia, serif;
@@ -2014,17 +1997,24 @@ a.btn.classic-button {
 
 .testimonial-card:hover {
     transform: translateY(-8px);
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
 }
 
 .testimonial-quote {
-    font-size: 1rem;
+    font-size: .9rem;
     line-height: 1.8;
     color: #4a5568;
     font-style: italic;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
     position: relative;
     z-index: 1;
+}
+
+.testimonials .owl-stage-outer {
+    padding:10px 0;
+}
+
+.testimonials .owl-theme .owl-nav {
+    display:none;
 }
 
 .testimonial-author {
@@ -2035,11 +2025,11 @@ a.btn.classic-button {
 }
 
 .testimonial-author img.author-logo {
-    width: 4rem;
-    height: 4rem;
+    width: 3rem;
+    height: 3rem;
     object-fit: cover;
     border-radius: 50%;
-    border: 2px solid #e2e8f0;
+    border: 1px solid #e2e8f0;
 }
 
 .author-info {
@@ -2048,13 +2038,13 @@ a.btn.classic-button {
 
 .author-info h4 {
     font-weight: 700; /* Equivalent to font-semibold and font-bold for h4 */
-    font-size: 1.1rem;
+    font-size: .95rem;
     color: #2d3748;
     margin-bottom: 0.25rem;
 }
 
 .author-info p {
-    font-size: 0.875rem; /* Equivalent to text-sm */
+    font-size: 0.8rem; /* Equivalent to text-sm */
     color: #718096; /* Equivalent to text-gray-600 */
     margin: 0;
 }
@@ -2065,7 +2055,7 @@ a.btn.classic-button {
 }
 
 .faq-heading {
-    font-size: 2.25rem;
+    font-size: 25px;
     font-weight: 700;
     text-align: center;
     margin-bottom: 3rem;
@@ -2090,8 +2080,8 @@ a.btn.classic-button {
 }
 
 .faq-question {
-    padding: 1.5rem;
-    font-size: 1.1rem;
+    padding: 1.2rem 1.5rem;
+    font-size: 1rem;
     font-weight: 600;
     color: #1f2937;
     cursor: pointer;
@@ -2162,12 +2152,11 @@ a.btn.classic-button {
 }
 
 .clients-heading {
-    font-size: 1.5rem; /* Ukuran font yang lebih kecil untuk heading klien */
+    font-size: 25px;
     font-weight: 700;
-    color: #4a5568;
-    margin-bottom: 2.5rem;
-    text-transform: uppercase;
-    letter-spacing: 2px;
+    text-align: center;
+    margin-bottom: 3rem;
+    color: #1f2937;
 }
 
 .client-grid {
@@ -2283,7 +2272,6 @@ a.btn.classic-button {
     border-radius: 50px;
     transition: all 0.3s ease;
     box-shadow: 0 5px 20px rgba(240, 112, 82, 0.3);
-    max-width: 500px;
 }
 .btn-primary:hover {
     transform: translateY(-3px);

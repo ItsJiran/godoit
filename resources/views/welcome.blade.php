@@ -2,7 +2,7 @@
 <x-app-layout>
 
 
-    @forelse($sections as $section):
+    @forelse($sections as $section)
 
         @if($section->type == 'homepage_description')
 
@@ -63,7 +63,7 @@
                             </div>
                             <div class="mysection-content">
                                 {{-- <h3>Event yang akan datang</h3> --}}
-                                <h3>{{ $section->meta_content['subtitle'] }}</h3>
+                                <h3 class="landing-label">{{ $section->meta_content['subtitle'] }}</h3>
                                 <h2>{{ $section->meta_content['title'] }}</h2>
                                 @if($products[0] != null)
                                     <p class="hero-date">{{ \Carbon\Carbon::parse($products[0]->productable->timestamp)->translatedFormat('l, j F Y, (H:iA)') }}</p>                                    
