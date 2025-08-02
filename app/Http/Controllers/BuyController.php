@@ -178,18 +178,14 @@ class BuyController
             'status' => 'required|string',
             'order_id' => 'required|string',
         ]);
-
         DB::beginTransaction(); // Start database transaction
-
         try {
             // Cari Payment berdasarkan order_id
             $payment = Payment::where('id_order', $request->order_id)->first();
-
             if (!$payment) {
                 DB::rollBack(); // Rollback if payment not found
                 return response()->json(['error' => 'Payment not found'], 404);
             }
-
             // Update status berdasarkan status yang diterima dari JavaScript
             if ($request->status == 'success') {              
                 $payment->status = '1'; 
@@ -209,12 +205,9 @@ class BuyController
                 $payment->status = '2'; // Error
                 TransactionService::processSourceableTransactions( $payment, AccountTransactionStatus::FAILED );
             }
-
             // Simpan perubahan ke database
             $payment->save();
-            
             DB::commit(); // Commit the transaction if all operations are successful
-
             // Return response sebagai indikasi bahwa update berhasil
             return response()->json(['status' => 'Payment status updated successfully']);
 

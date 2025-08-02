@@ -51,13 +51,13 @@
         <div class="spinner"></div>
     </div>
     
-    <script type="text/javascript"
+    <!--<script type="text/javascript"
         src="https://app.sandbox.midtrans.com/snap/snap.js"
         data-client-key="{{ env('MIDTRANS_CLIENT_KEY') }}">
-    </script>
-    <!--<script type="text/javascript"
+    </script>-->
+    <script type="text/javascript"
             src="https://app.midtrans.com/snap/snap.js"
-            data-client-key="{{ env('MIDTRANS_CLIENT_KEY') }}"></script>-->
+            data-client-key="{{ env('MIDTRANS_CLIENT_KEY') }}"></script>
     <!-- PAYMENT -->
     <script type="text/javascript">
         var payButton = document.getElementById('pay-button');
@@ -122,6 +122,7 @@
             }).fail(function(xhr, status, error) {
                 console.error('Gagal memperbarui status:', error);
                 alert('Gagal memperbarui status. Cek konsol untuk detail.');
+                $(".loader-overlay").removeClass('shows');
             });
         });
     </script>
