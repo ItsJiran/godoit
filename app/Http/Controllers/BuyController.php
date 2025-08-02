@@ -32,7 +32,7 @@ use App\Enums\Order\OrderStatus;
 // CREATED BY RIO ILHAM HADI (WWW.BLANTERMEDIA.COM)
 class BuyController 
 {
-    // ALUR 1: PEMBAYARAN MIDTRANS
+    // ALUR 1: PEMBAYARAN MIDTRANS (DISABLED)
     public function createPayment(Request $request)
     {
         // Validasi input dari form checkout
@@ -43,36 +43,29 @@ class BuyController
             'alamat' => 'required',
             'umur' => 'required',
         ]);
-        
         // Calculate Price
         $finalPrices = 10000;
         $grossPrices = 0;
-
         // Detail pembayaran (misalnya dari form atau produk yang dibeli)
         $order_id = uniqid(); // Buat ID pesanan unik
         $transactionDetails = [
             'order_id' => $order_id,
             'gross_amount' => $grossPrices,
         ];
-
         $customerDetails = [
             'first_name' => $request->nama,
             'email' => $request->email,
             'phone' => $request->phone,
         ];
-
         // Siapkan array untuk menyimpan detail produk
         //$productDetails = [];
         $totalPrice = 0;
-    
         // Hitung harga produk
         $hargaProduk = 10000;
         $diskon = 0;
         $hargaSetelahDiskon = 10000;
-
         // Ambil quantity dari array $quantityData
         $quantity = 1;
-
         // Tambahkan detail produk ke array
         $productDetails[] = [
             'id' => 'PRODUCT-PELATIHAN',
@@ -80,7 +73,6 @@ class BuyController
             'quantity' => 1,
             'name' => 'NAPAK TILAS',
         ];
-        
         // Tambahkan biaya tambahan
         $serviceCost = 0;
         $productDetails[] = [
@@ -89,7 +81,6 @@ class BuyController
             'quantity' => 1,
             'name' => 'Biaya Layanan',
         ];
-
         // Simpan transaksi di database
         $payment = Payment::create([
             'user_id' => ($request->user() ? $request->user()->id : null),
@@ -100,36 +91,29 @@ class BuyController
             'product_details' => json_encode($productDetails),
             'status' => '0', // 0 is Pending
         ]);
-
         // Konfigurasi Midtrans
         Config::$serverKey = env('MIDTRANS_SERVER_KEY');
         Config::$isProduction = env('MIDTRANS_IS_PRODUCTION'); // Ubah ke true jika di production
         Config::$isSanitized = true;
         Config::$is3ds = true;
-
         // Buat Snap Token
         $params = [
             'transaction_details' => $transactionDetails,
             'customer_details' => $customerDetails,
             'item_details' => $productDetails,
         ];
-
         // pembuatan komisi pending 
         try {
             $snapToken = Snap::getSnapToken($params);
             $payment->snap_token = $snapToken;
             $payment->save();
             $referrer = null;
-
             if($request->reg != null)
                 $referrer = User::where('username',$request->reg)->first();
-
             if($referrer == null && $request->user())
                 $referrer = $request->user()->referrer;
-
             if($referrer == null)
                 $referrer = User::where('role','admin')->first();
-
             // generate comission transaction
             $referral_transaction = ReferralService::generateReferralCommission(
                 $referrer, // refferer
@@ -137,16 +121,13 @@ class BuyController
                 $hargaSetelahDiskon,
                 $payment
             );
-
             // pengerugnan harga dengn jumlah dari potongan dari referral
             $hargaSetelahDiskon -= $referral_transaction->amount;                
-   
             TransactionService::generateTransactionCheckout(
                 $request->user(),
                 $hargaSetelahDiskon,
                 $payment
             );
-
             return redirect()->route('payments.show', ['id' => $payment->id])->with('success','Berhasil Checkout, silahkan lakukan pembayaran!');
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
@@ -224,7 +205,7 @@ class BuyController
     }
 
 
-    // ALUR 4: Handle Midtrans notifications
+    // ALUR 4: Handle Midtrans notifications (DISABLED)
     public function notificationHandler(Request $request)
     {
         // Konfigurasi Midtrans
