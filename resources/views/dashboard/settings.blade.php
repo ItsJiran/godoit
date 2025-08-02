@@ -19,7 +19,7 @@
                 <input class="form-input" type="text" name="premium_member_comission_percentage" class="form-control" value="{{ old('premium_member_comission_percentage') ?? $premium_member_comission_percentage }}" required>
             </div>
             <div class="form-group">
-                <label class="form-label">Komisi Premium Downline 1 Level ( Percent )</label>
+                <label class="form-label">Komisi Downline 1 Level ( Percent )</label>
                 <input class="form-input" type="text" name="premium_downline" class="form-control" value="{{ old('premium_downline') ?? $premium_downline }}" required>
             </div>        
             <button type="submit" class="btn btn-primary">Update</button>

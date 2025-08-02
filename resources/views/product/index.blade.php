@@ -106,6 +106,13 @@
                         @csrf
                         <input type="hidden" name="product_id" value="{{ $product->id }}">
                         <input type="hidden" name="reg" value="{{ request('reg') }}"> {{-- Use the $harga variable for amount --}}
+                        <div class="form-group">
+                            <label for="alamat" class="form-label">Alamat Lengkap</label>
+                            <textarea id="alamat" name="alamat" class="form-input" rows="3" required>{{ old('alamat') }}</textarea>
+                            @error('alamat')
+                                <span class="error-message">{{ $message }}</span>
+                            @enderror
+                        </div>
                         <button type="submit" class="btn-buy full-buy">Buy Now</button>
                     </form>
                 @endif
@@ -121,7 +128,7 @@
 
                     @error('error')
                     <span class="error-message">{{ $message }}</span>
-                @enderror
+                    @enderror
 
                     <div class="form-group">
                         <label for="nama" class="form-label">Nama Lengkap</label>

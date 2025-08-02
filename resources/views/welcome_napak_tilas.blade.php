@@ -171,10 +171,8 @@
 
     <div class="hero orange-bg orange-bg-img" style="display:flex; flex-direction:column">
         <h2  class="video-heading" style='color:white; margin-bottom:30px;'>Daftar Kegiatan</h2>
-
             <div class="container">
                 <div class="page-product-grid">
-
             @forelse($products as $product)
                 <div class="page-product-card">
                     <a href="/product/{{$product->id}}?reg={{ request('reg') }}">
@@ -186,10 +184,12 @@
                         <p class="page-card-date">Kegiatan Untuk : {{ \Carbon\Carbon::parse($product->productable->timestamp)->translatedFormat('l, j F Y, (H:iA)') }}</p>
                     </div>
                 </div>
+
             @empty
             <b>Kosong!</b>
             @endforelse 
         </div>
+        <x-pagination :paginator="$products" />
     </div>
     </div>
 

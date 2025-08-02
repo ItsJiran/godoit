@@ -32,6 +32,7 @@ class PremiumMembershipController extends Controller
         return view('product.index', [
             'product' => $premium_membership_product,
             'currentUserId' => $user ? $user->id : null, // Pass user ID for comparison in view
+            'productEventFinished' => false,
         ]);
     }
 

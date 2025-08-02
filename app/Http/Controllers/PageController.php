@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\DB; // For database transactions
 use Illuminate\View\View;
 use Carbon\Carbon;
 
@@ -208,46 +209,156 @@ class PageController extends Controller
                 'subtitle' => $request->subtitle,
                 'description' => $request->description,
                 'hero_image' => $heroImage->path,
-                'hero_model_id' => $heroImage->id,
+                'image_model_id' => $heroImage->id,
             ];
+
+            $landing_section->save();
         };
 
-        if($request->type == 'homepage_clients'){
+        if($request->type == 'homepage_product'){
             $request->validate([
-                'hero_image' => 'required',
                 'title' => 'required',
+                'subtitle' => 'required',
                 'description' => 'required',
-                'clients_1' => 'image|nullable',
-                'clients_2' => 'image|nullable',
-                'clients_3' => 'image|nullable',
-                'clients_4' => 'image|nullable',
+                'href' => 'required',
             ]);
 
-            // $landing_section = LandingSection::create([
-            //     'index' => $request->index,
-            //     'landing_type' => $request->landing_type,
-            //     'type' => $request->type,
-            //     'meta_content' => [],
-            // ]);
+            $landing_section = LandingSection::create([
+                'index' => $request->index,
+                'landing_type' => $request->landing_type,
+                'type' => $request->type,
+                'meta_content' => [
+                    'title' => $request->title,
+                    'subtitle' => $request->subtitle,
+                    'description' => $request->description,
+                    'button_more' => [
+                        'href' => $request->href,
+                    ],
+                ],
+            ]);
+        }
 
 
-            // $heroImage = Image::createImageRecord(
-            //     $request->file('hero_image'),
-            //     $landing_section,
-            //     ImagePurposeType::PRODUCT_THUMBNAIL->value,
-            //     'section' . $landing_section->id,
-            //     'public',
-            //     null,
-            //     ImagePurposeType::PRODUCT_THUMBNAIL->value
-            // );
+        if($request->type == 'homepage_clients'){
 
-            // $landing_section->meta_content = [
-            //     'title' => $request->title,
-            //     'subtitle' => $request->subtitle,
-            //     'description' => $request->description,
-            //     'hero_image' => $heroImage->path,
-            //     'hero_model_id' => $heroImage->id,
-            // ];
+            $validatedData = $request->validate([
+                'title' => 'required',
+                'clients' => 'required|array|min:1', // Ensure there's at least one client array
+                'clients.*.name' => 'required|string|max:255', // Validate name for each client
+                'clients.*.image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Validate image for each client (optional)    
+            ]);
+
+            // Using a database transaction for atomicity
+            DB::beginTransaction();
+
+            try {
+                $landing_section = LandingSection::create([
+                    'index' => $request->index,
+                    'landing_type' => $request->landing_type,
+                    'type' => $request->type,
+                    'meta_content' => [],
+                ]);
+
+                $title = $request->title;
+                $content = [];
+
+                // Loop through each client data
+                foreach ($validatedData['clients'] as $index => $clientData) {
+
+                    $image = Image::createImageRecord(
+                        $clientData['image'],
+                        $landing_section,
+                        ImagePurposeType::PRODUCT_THUMBNAIL->value,
+                        'section' . $landing_section->id,
+                        'public',
+                        null,
+                        ImagePurposeType::PRODUCT_THUMBNAIL->value
+                    );
+
+                    array_push($content, [
+                        'name' => $clientData['name'],
+                        // 'quote' => $clientData['quote'],
+                        // 'role' => $clientData['role'],
+                        'src' => $image->path,
+                        'image_model_id' => $image->id,
+                    ]);
+                }
+
+                $landing_section->meta_content = [
+                    'content' => $content,
+                    'title' => $title,
+                ];
+                $landing_section->save();
+
+                DB::commit();
+            } catch (\Exception $e) {
+                DB::rollBack();
+                // Log the error
+                \Log::error('Error storing clients: ' . $e->getMessage());
+                return back()->with('error', 'Failed to add clients. Please try again.');
+            }
+        };
+
+        if($request->type == 'homepage_testimonials'){
+
+            $validatedData = $request->validate([
+                'title' => 'required',
+                'testimonials' => 'required|array|min:1', // Ensure there's at least one client array
+                'testimonials.*.name' => 'required|string|max:255', // Validate name for each client
+                'testimonials.*.role' => 'required|string|min:0|max:150', // Validate age for each client
+                'testimonials.*.quote' => 'required|string|min:0|max:150', // Validate age for each client
+                'testimonials.*.image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Validate image for each client (optional)    
+            ]);
+
+            // Using a database transaction for atomicity
+            DB::beginTransaction();
+
+            try {
+                $landing_section = LandingSection::create([
+                    'index' => $request->index,
+                    'landing_type' => $request->landing_type,
+                    'type' => $request->type,
+                    'meta_content' => [],
+                ]);
+
+                $title = $request->title;
+                $content = [];
+
+                // Loop through each client data
+                foreach ($validatedData['testimonials'] as $index => $clientData) {
+
+                    $image = Image::createImageRecord(
+                        $clientData['image'],
+                        $landing_section,
+                        ImagePurposeType::PRODUCT_THUMBNAIL->value,
+                        'section' . $landing_section->id,
+                        'public',
+                        null,
+                        ImagePurposeType::PRODUCT_THUMBNAIL->value
+                    );
+
+                    array_push($content, [
+                        'name' => $clientData['name'],
+                        'quote' => $clientData['quote'],
+                        'role' => $clientData['role'],
+                        'src' => $image->path,
+                        'image_model_id' => $image->id,
+                    ]);
+                }
+
+                $landing_section->meta_content = [
+                    'content' => $content,
+                    'title' => $title,
+                ];
+                $landing_section->save();
+
+                DB::commit();
+            } catch (\Exception $e) {
+                DB::rollBack();
+                // Log the error
+                \Log::error('Error storing clients: ' . $e->getMessage());
+                return back()->with('error', 'Failed to add clients. Please try again.');
+            }
         };
         
         // if($request->type == 'homepage_product'){

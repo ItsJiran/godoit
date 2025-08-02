@@ -58,7 +58,11 @@ class CheckoutController extends Controller
                 'alamat' => 'required',
                 'umur' => 'required',
             ]);    
-        } 
+        } else {
+            $request->validate([
+                'alamat' => 'required',
+            ]);    
+        }
 
         $user = Auth::user();
 
@@ -107,7 +111,6 @@ class CheckoutController extends Controller
                 'user_id' => $user ? $user->id : null,
                 'total_price' => $product->price, // Assuming simple case where order total is just product price
                 'status' => OrderStatus::PENDING->value, // Set initial status to PENDING
-                // Add other relevant order fields like currency, payment_method, etc.
             ]);
 
             // Create an OrderItem for the product

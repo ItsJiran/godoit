@@ -42,8 +42,8 @@ class PaymentService
         $customerDetails = [
             'first_name' => $request->nama ?? $user->name,
             'email' => $request->email ?? $user->email,
-            'phone' => $request->phone ?? ($user->phone), 
-            'address' => $request->alamat ?? ($user->address), 
+            'phone' => $request->phone ?? $user->whatsapp, 
+            'address' => $request->alamat ?? $user->address, 
         ];
 
         // Prepare item details for Midtrans from order items
@@ -103,8 +103,7 @@ class PaymentService
             $commissionAmount = round($harga * ($comission_percentage / 100), 2);
             $harga -= $commissionAmount;   
 
-
-            if ( $parent_referrer && $parent_referrer->activeMembershipPremium() ) {
+            if ( $parent_referrer ) {
                 $comission_parent_percentage = Setting::where('slug','premium_downline')->first()->value;
                 $commissionParentAmount = round($commissionAmount * ($comission_parent_percentage / 100), 2);
 

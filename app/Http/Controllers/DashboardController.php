@@ -57,7 +57,7 @@ class DashboardController extends Controller
             $userNoId = $user->id;
         }
         $kits = MarketingKit::latest()->paginate(2);
-        $products = Product::latest()->where('productable_type',ProductRegular::class)->with(['productable','thumbnail'])->paginate(2);
+        $products = Product::latest()->where('productable_type',ProductRegular::class)->with(['productable','thumbnail'])->paginate(1);
         // Refferal Save for This Page
         $parentReferralCandidate = $request->query('reg');
         $sessionReferralCode = $request->session()->get('parent_referral_code_session');
@@ -115,7 +115,7 @@ class DashboardController extends Controller
             $userNoId = $user->id;
         }
         $kits = MarketingKit::latest()->paginate(2);
-        $products = Product::latest()->where('productable_type',ProductRegular::class)->with(['productable','thumbnail'])->paginate(2);
+        $products = Product::latest()->where('productable_type',ProductRegular::class)->with(['productable','thumbnail'])->paginate(4);
         // Refferal Save for This Page
         $parentReferralCandidate = $request->query('reg');
         $sessionReferralCode = $request->session()->get('parent_referral_code_session');

@@ -25,8 +25,6 @@
                 </div>
             </div>
         </section>
-
- 
         @endif
 
         @if($section->type == 'homepage_clients')
@@ -37,7 +35,7 @@
                     <div class="client-grid">
                         @forelse($section->meta_content['content'] as $client)
                             <div class="client-logo">
-                                <img src="{{$client['src']}}" alt="{{$client['alt']}}">
+                                <img src="{{$client['src']}}">
                             </div>
                             @empty
                         @endforelse

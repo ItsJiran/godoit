@@ -12,7 +12,7 @@ class DatabaseSeeder extends Seeder
      * Seed the application's database.
      */
     public function run(): void
-    {
+    {   
         \Artisan::call('db:wipe');
         \Artisan::call('migrate');
 
@@ -22,4 +22,5 @@ class DatabaseSeeder extends Seeder
         $this->call(LandingSectionSeeder::class);
         $this->call(SettingSeeder::class);
     }
+
 }
