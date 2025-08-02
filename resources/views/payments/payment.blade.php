@@ -64,6 +64,7 @@
         payButton.addEventListener('click', function () {
             window.snap.pay('{{ $payment->snap_token }}', {
                 onSuccess: function(result){
+                    $(".loader-overlay").addClass('shows');
                     // Kirim status 'success' ke server
                     $.post("{{ route('transaction.pay') }}", {
                         _method: 'POST',
@@ -71,7 +72,6 @@
                         status: 'success',
                         order_id: result.order_id,
                     }, function(data){
-                        $(".loader-overlay").addClass('shows');
                         console.log('Status updated: ', data);
                         window.location.href = '/payment/status/{{ $payment->id }}';
                     });
@@ -84,7 +84,6 @@
                         status: 'pending',
                         order_id: result.order_id,
                     }, function(data){
-                        $(".loader-overlay").addClass('shows');
                         console.log('Status updated: ', data);
                         window.location.href = '/payment/status/{{ $payment->id }}';
                     });
@@ -97,13 +96,13 @@
                         status: 'error',
                         order_id: result.order_id,
                     }, function(data){
-                        $(".loader-overlay").addClass('shows');
                         console.log('Status updated: ', data);
                         window.location.href = '/payment/status/{{ $payment->id }}';
                     });
                 },
                 onClose: function(){
                     alert('Kamu menutup tanpa menyelesaikan pembayaran!');
+                    $(".loader-overlay").removeClass('shows');
                 }
             });
         });
@@ -112,13 +111,13 @@
         var checkStatusButton = document.getElementById('check-status-button');
         checkStatusButton.addEventListener('click', function () {
             var orderId = this.getAttribute('data-order-id');
+            $(".loader-overlay").addClass('shows');
             $.post("{{ route('payment.check-status') }}", {
                 _token: '{{ csrf_token() }}',
                 order_id: orderId
             }, function(response) {
                 console.log('Status dari Midtrans:', response.midtrans_status);
                 console.log('Status di database:', response.data.status);
-                $(".loader-overlay").addClass('shows');
                 window.location.href = '/payment/status/{{ $payment->id }}';
             }).fail(function(xhr, status, error) {
                 console.error('Gagal memperbarui status:', error);
