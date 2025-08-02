@@ -261,8 +261,8 @@
         <!-- Header -->
         <div class="header">
             <div class="success-icon">✓</div>
-            <h1>Pembayaran Masuk!</h1>
-            <p>Ada yang berhasil melakukan order dan payment.</p>
+            <h1>Pembayaran Berhasil!</h1>
+            <p>Terima kasih atas pembelian Anda</p>
         </div>
         
         <!-- Content -->
@@ -319,13 +319,15 @@
             
             <!-- Optional Total Section (if you have total amount) -->
             <div class="total-section">
-                <p>Total Pembayaran Masuk</p>
+                <p>Total Pembayaran</p>
                 <div class="total-amount">Rp{{ number_format($total_amount, 0, ',', '.') }}</div>
             </div>
         </div>
         
         <!-- Footer -->
         <div class="footer">
+            <p>Terima kasih telah berbelanja dengan kami!</p>
+            <p>Jika ada pertanyaan, silakan hubungi <a href="mailto:support@example.com">support@example.com</a></p>
             <p>&copy; 2025 Godoit. All rights reserved.</p>
         </div>
     </div>

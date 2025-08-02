@@ -26,7 +26,8 @@ Route::get('/payments/{id}', [BuyController::class, 'showPayment'])->name('payme
 Route::post('/payment/notification', [BuyController::class, 'notificationHandler'])->name('payment.notification');
 Route::post('/transaction/pay', [BuyController::class, 'updatePaymentStatus'])->name('transaction.pay');
 Route::get('/payment/status/{id}', [BuyController::class, 'paymentStatus'])->name('payment.status');
-Route::get('/update/payment/status/{id}/{status}', [BuyController::class, 'manualUpdate']);
+//Route::get('/update/payment/status/{id}/{status}', [BuyController::class, 'manualUpdate']);
+Route::post('/payment/check-status', [BuyController::class, 'checkPaymentStatus'])->name('payment.check-status');
 
 Route::middleware('auth')->group(function () {
     // DASHBOARD (ADMIN)

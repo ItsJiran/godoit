@@ -128,4 +128,24 @@
             </div>
         </div>
     </section>
+    @if(session('success'))
+    <!-- Success -->
+    <div class="alert alert-success">
+        <div class="alert-icon">✓</div>
+        <div class="alert-text">
+            <div class="alert-title">Success!</div>
+            <div class="alert-message">{{ session('success') }}</div>
+        </div>
+    </div>
+    @endif
+   @if(session('error'))
+    <!-- Error -->
+    <div class="alert alert-error">
+        <div class="alert-icon">✕</div>
+        <div class="alert-text">
+            <div class="alert-title">Error!</div>
+            <div class="alert-message">{{ session('error') }}</div>
+        </div>
+    </div>
+    @endif
 </x-app-layout>

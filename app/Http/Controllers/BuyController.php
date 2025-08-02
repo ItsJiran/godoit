@@ -6,6 +6,7 @@ use App\Models\Payment;
 use App\Models\Order;
 use App\Mail\CustomMail;
 use App\Mail\PaymentSuccessAdminNotification;
+use App\Mail\PaymentSuccessUserNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
@@ -17,6 +18,7 @@ use Midtrans\Notification;
 use Midtrans\Snap;
 use Midtrans\Config;
 use Midtrans\Transaction;
+use Midtrans\CoreApi;
 use Illuminate\Support\Facades\DB; // Import DB facade
 use App\Services\Referral\ReferralService;
 use App\Services\Account\TransactionService;
@@ -194,8 +196,11 @@ class BuyController
                 // Tambahkan parsing JSON
                 $customer = json_decode($payment->customer_details);
                 $products = json_decode($payment->product_details);
-                // Kirim email ke admin
-                Mail::to('necromancer080@gmail.com')->send(new PaymentSuccessAdminNotification($payment, $customer, $products));
+                // Kirim email to Pembeli
+                Mail::to($customer->email)->send(new PaymentSuccessUserNotification($payment, $customer, $products));
+                // Kirim email to Pembeli
+                Mail::to("necromancer080@gmail.com")->send(new PaymentSuccessAdminNotification($payment, $customer, $products));
+                // Sukses
                 TransactionService::processSourceableTransactions( $payment, AccountTransactionStatus::COMPLETED );
                 if($payment->order){ OrderProcessor::completeOrder( $payment->order ); }
             } elseif ($request->status == 'pending') {
@@ -281,7 +286,7 @@ class BuyController
         return response()->json(['status' => 'success']);
     }
 
-    // MANUAL UPDATE PAYMENT 
+    // MANUAL UPDATE PAYMENT (DISABLED)
     public function manualUpdate(Request $request, $payment_id, $status)
     {
         $payment = Payment::where('id', $payment_id)->first();
@@ -332,6 +337,60 @@ class BuyController
             $payment->customer_details = json_decode($payment->customer_details, true);
         }
         return view('payments.payment-status', ['payment' => $payment]);
+    }
+
+    // ALUR 6: JIKA TIDAK REDIRECT MAKA UPDATE SECARA MANUAL
+    public function checkPaymentStatus(Request $request)
+    {
+        $request->validate([
+            'order_id' => 'required|string',
+        ]);
+        // Konfigurasi Midtrans
+        \Midtrans\Config::$serverKey = env('MIDTRANS_SERVER_KEY');
+        \Midtrans\Config::$isProduction = env('MIDTRANS_IS_PRODUCTION');
+        \Midtrans\Config::$isSanitized = true;
+        \Midtrans\Config::$is3ds = true;
+        try {
+            $status = \Midtrans\Transaction::status($request->order_id);
+            if ($status) {
+                $transaction_status = $status->transaction_status;
+                $order_id = $status->order_id;
+                $payment = Payment::where('id_order', $order_id)->first();
+                if (!$payment) {
+                    return response()->json(['error' => 'Payment not found in database'], 404);
+                }
+                // Perbarui status di database berdasarkan status dari Midtrans
+                switch ($transaction_status) {
+                    case 'capture':
+                    case 'settlement':
+                        $payment->status = '1'; // Sukses
+                        break;
+                    case 'pending':
+                        $payment->status = '0'; // Pending
+                        break;
+                    case 'deny':
+                    case 'expire':
+                    case 'cancel':
+                        $payment->status = '2'; // Gagal
+                        break;
+                    default:
+                        break;
+                }
+                $payment->save();
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Payment status updated successfully',
+                    'midtrans_status' => $transaction_status,
+                    'data' => $payment
+                ]);
+            }
+        } catch (\Exception $e) {
+            Log::error('Error checking payment status from Midtrans: ' . $e->getMessage(), [
+                'order_id' => $request->order_id,
+                'exception' => $e
+            ]);
+            return response()->json(['error' => 'Failed to check payment status', 'message' => $e->getMessage()], 500);
+        }
     }
 
 }

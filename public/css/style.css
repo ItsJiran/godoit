@@ -996,6 +996,14 @@ section.hero-title {
 .pay-btn:active {
     transform: translateY(0);
 }
+.pay-btn {
+    margin: 5px 0;
+}
+.pay-btn svg {
+    width: 20px;
+    float: left;
+    fill: #fff;
+}
 .call-to-action.full-action form h3 {
     text-align: center;
     padding: 0 0 15px;
@@ -2634,4 +2642,38 @@ a.btn.classic-button {
 
 .page-modal-ok-btn:hover {
     background-color: #4338ca;
+}
+
+/* Loader */
+.loader-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    display:none;
+}
+.loader-overlay.shows{
+    display: flex;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-top: 4px solid #333;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
